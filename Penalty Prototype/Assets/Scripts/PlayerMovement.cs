@@ -2,11 +2,13 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+using UnityEngine.InputSystem;
+
 public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody2D body;
 
-    [SerializeField] private float speed; // seralizeField makes it editable from unity
+    [SerializeField] private float speed; // seralizeField makes it editable from unity ui
     private float originalSpeed;
     [SerializeField] private float jumpPower;
     private float originalJumpPower;
@@ -17,9 +19,30 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float penaltyLength;
     float startTime;
 
-    [SerializeField] private bool frozen = false; // version 1
+    // to track if a penalty is active
+    private bool frozen = false; // version 1
     private bool sluggish = false; // version 2
     private bool holdingFood = false; // version 3
+
+    // cheat codes to speed up prototype testing
+    private bool version1 = false;
+    private bool version2 = false;
+    private bool version3 = false;
+
+
+    // Variables for grabbing
+    [SerializeField] private Transform grabPoint;
+
+    [SerializeField] private Transform rayPoint;
+    [SerializeField] private float rayDistance;
+
+    private GameObject grabbedObject;
+    private int layerIndex;
+
+    private void Start()
+    {
+        layerIndex = LayerMask.NameToLayer("Food");
+    }
 
     private void Awake()
     {
@@ -32,15 +55,63 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        horizontalInput = Input.GetAxis("Horizontal");
+        horizontalInput = Input.GetAxis("Horizontal"); // for moving
+        RaycastHit2D hitInfo = Physics2D.Raycast(rayPoint.position, transform.right, rayDistance); // for grabbing
 
+        // for testing: allow the player to choose which prototype version in game
+        if (Input.GetKey(KeyCode.Alpha1))
+        {
+            NoVersion();
+            version1 = true;
+            Debug.Log("Version 1");
+        }
+
+        if (Input.GetKey(KeyCode.Alpha2))
+        {
+            NoVersion();
+            version2 = true;
+            Debug.Log("Version 2");
+        }
+
+        if (Input.GetKey(KeyCode.Alpha3))
+        {
+            NoVersion();
+            version3 = true;
+            Debug.Log("Version 3");
+        }
+
+        // game logic
+        // if the player is frozen, they cannot make any actions
         if (!frozen)
         {
             body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
 
+            // space bar to jump
             if (Input.GetKey(KeyCode.Space))
             {
                 Jump();
+            }
+
+            // Grabbing
+            if (hitInfo.collider != null && hitInfo.collider.gameObject.layer == layerIndex)
+            {
+                // w to grab object
+                if (Keyboard.current.wKey.wasPressedThisFrame && grabbedObject == null)
+                {
+                    grabbedObject = hitInfo.collider.gameObject;
+                    grabbedObject.GetComponent<Rigidbody2D>().isKinematic = true;
+                    grabbedObject.transform.position = grabPoint.position;
+                    grabbedObject.transform.SetParent(transform);
+                    holdingFood = true;
+                }
+
+                // w to release object
+                else if (Keyboard.current.wKey.wasPressedThisFrame)
+                {
+                    DropFood();
+                }
+
+                // Debug.DrawRay(rayPoint.position, transform.right * rayDistance);
             }
         }
 
@@ -50,6 +121,7 @@ public class PlayerMovement : MonoBehaviour
             // don't use frames bc frame rate differs by device
         }
 
+        // for testing: reset the player's position and all settings
         if (Input.GetKey(KeyCode.R))
         {
             Reset();
@@ -66,8 +138,22 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.gameObject.tag == "Ground Floor")
         {
-            Freeze();
             Debug.Log("OnCollisionEnter2D");
+
+            if (version1)
+            {
+                Freeze();
+            }
+
+            else if (version2)
+            {
+                Slow();
+            }
+
+            else if (version3)
+            {
+                DropFood();
+            }
         }
     }
 
@@ -84,6 +170,15 @@ public class PlayerMovement : MonoBehaviour
         jumpPower = originalJumpPower;
         sluggish = false;
         frozen = false;
+        NoVersion();
+    }
+
+    // reset version
+    private void NoVersion()
+    {
+        version1 = false;
+        version2 = false;
+        version3 = false;
     }
 
     // version 1: player freezes for x seconds
@@ -105,8 +200,9 @@ public class PlayerMovement : MonoBehaviour
             startTime = Time.time;
             sluggish = true;
 
-            speed = 0.5f;
-            jumpPower = 0.5f;
+            // speed = 2f;
+            // jumpPower = 2f;
+            body.drag = 50f;
         }
     }
 
@@ -116,9 +212,13 @@ public class PlayerMovement : MonoBehaviour
         if (holdingFood)
         {
             holdingFood = false;
+            grabbedObject.GetComponent<Rigidbody2D>().isKinematic = false;
+            grabbedObject.transform.SetParent(null);
+            grabbedObject = null;
         }
     }
 
+    // remove any debuffs
     private void EndPenalty()
     {
         if (frozen) { frozen = false; }
@@ -126,8 +226,9 @@ public class PlayerMovement : MonoBehaviour
         if (sluggish)
         {
             sluggish = false;
-            speed = originalSpeed;
-            jumpPower = originalJumpPower;
+            // speed = originalSpeed;
+            // jumpPower = originalJumpPower;
+            body.drag = 0f;
         }
     }
 }
