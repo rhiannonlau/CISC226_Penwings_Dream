@@ -29,8 +29,13 @@ public class PlayerMovement : MonoBehaviour
     private bool version2 = false;
     private bool version3 = false;
 
+    // ice variables
     private SpriteRenderer iceRenderer;
     [SerializeField] private GameObject ice;
+
+    // snail variables
+    private SpriteRenderer snailRenderer;
+    [SerializeField] private GameObject snail;
 
 
     // Variables for grabbing
@@ -51,8 +56,10 @@ public class PlayerMovement : MonoBehaviour
     {
         body = GetComponent<Rigidbody2D>();
         iceRenderer = ice.GetComponent<SpriteRenderer>();
+        snailRenderer = snail.GetComponent<SpriteRenderer>();
 
         iceRenderer.enabled = false; // ice animation off
+        snailRenderer.enabled = false; // snail animation off
 
         // to be able to return to original speed and jumpPower after penalty effects
         originalSpeed = speed;
@@ -211,6 +218,8 @@ public class PlayerMovement : MonoBehaviour
             // speed = 2f;
             // jumpPower = 2f;
             body.drag = 50f;
+
+            snailRenderer.enabled = true; // turn on snail animation
         }
     }
 
@@ -241,6 +250,7 @@ public class PlayerMovement : MonoBehaviour
             // speed = originalSpeed;
             // jumpPower = originalJumpPower;
             body.drag = 0f;
+            snailRenderer.enabled = false; // snail animation off
         }
     }
 }
