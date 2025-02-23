@@ -29,6 +29,9 @@ public class PlayerMovement : MonoBehaviour
     private bool version2 = false;
     private bool version3 = false;
 
+    private SpriteRenderer iceRenderer;
+    [SerializeField] private GameObject ice;
+
 
     // Variables for grabbing
     [SerializeField] private Transform grabPoint;
@@ -47,6 +50,9 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         body = GetComponent<Rigidbody2D>();
+        iceRenderer = ice.GetComponent<SpriteRenderer>();
+
+        iceRenderer.enabled = false; // ice animation off
 
         // to be able to return to original speed and jumpPower after penalty effects
         originalSpeed = speed;
@@ -188,6 +194,8 @@ public class PlayerMovement : MonoBehaviour
         {
             startTime = Time.time;
             frozen = true;
+
+            iceRenderer.enabled = true; // turn on ice animation
         }
     }
 
@@ -221,7 +229,11 @@ public class PlayerMovement : MonoBehaviour
     // remove any debuffs
     private void EndPenalty()
     {
-        if (frozen) { frozen = false; }
+        if (frozen)
+        {
+            frozen = false;
+            iceRenderer.enabled = false; // ice animation off
+        }
 
         if (sluggish)
         {
