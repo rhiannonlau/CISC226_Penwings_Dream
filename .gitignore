@@ -74,3 +74,8 @@ crashlytics-build.properties
 
 # Auto-generated Mac files
 .DS_Store
+
+# Ignore the prototype files
+/Elevator Prototype/Library
+/Elevator Prototype/Logs
+/Elevator Prototype/UserSettings
