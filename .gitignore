@@ -71,3 +71,11 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+# Auto-generated Mac files
+.DS_Store
+
+# Ignore the prototype files
+/Elevator Prototype/Library
+/Elevator Prototype/Logs
+/Elevator Prototype/UserSettings
