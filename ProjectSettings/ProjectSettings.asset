@@ -782,7 +782,13 @@ PlayerSettings:
   XboxOneOverrideIdentityName: 
   XboxOneOverrideIdentityPublisher: 
   vrEditorSettings: {}
-  cloudServicesEnabled: {}
+  cloudServicesEnabled:
+    Build: 0
+    Game Performance: 0
+    Legacy Analytics: 0
+    Purchasing: 0
+    UDP: 0
+    Unity Ads: 0
   luminIcon:
     m_Name: 
     m_ModelFolderPath: 
@@ -802,11 +808,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: 7f674387-7faf-4a14-b2d5-eb434ca6ca59
+  cloudProjectId: a2ef8a2f-79b3-4b33-887c-6ad25b1e765d
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
   projectName: Penwing's Dream
-  organizationId: rhiannonlau
+  organizationId: tofurkey_luver
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
