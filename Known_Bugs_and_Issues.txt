@@ -1,0 +1,42 @@
+1. Bug: food falling infinitely when double clicking w
+	- precondition: picked up food
+	- trigger: pressing w (picking up/putting down) twice fast
+	- effect: food falls infinitely and through floor
+	- notes:
+		- /sometimes/ the food only falls a certain distance (nearly one screen's length), noticeable if penwing's at the top of the screen
+
+2. Bug: floating penwing
+	- precondition: penwing is grounded (i.e. on floor)
+	- trigger: pressing left/right-arrow then down-arrow (slide) really fast
+	- effect: penwing freezes in the pre-slide animation
+	- notes:
+		- penwing can still do actions
+		- hit box remains in the vertical position (as if they are idle or running)
+		- left/right movement, picking up/putting down food, and falling don't break them out of it
+		- manually triggering another animation (space bar/jumping, reclicking down-arrow/slide) breaks them out of it
+		- doesn't trigger when pressing the offending buttons in the reverse order
+
+3. Issue: can't put down food while facing left
+	- precondition: picked up food and facing left
+	- effect: none and that's the problem TT
+
+5. FIXED Issue: penwing's hit box not changed when jumping
+	- effect: they can't jump over obstacles, only holes
+
+4. Issue: penwing unlocked the ability to fly
+	- trigger: holding down space bar (jumping)
+	- effect: causes you to fly for as long as you hold it :D
+
+5. Issue: penwing can become spider-man and stick to walls
+	- trigger: holding left/right-arrow while beside the edge of a wall
+	- effect: lets you defy gravity for as long as you want
+
+6. Bug: putting down food makes the food become self-driving car
+	- precondition: holding food, maybe more ?
+	- trigger: idk i can't recreate TT it just happens sometimes and i can't figure out what the trigger is
+	- effect: the food will fall when put down (intended), then after about one or two seconds, the food just starts moving away from penwing
+
+7. Issue: penwing's animation/collider dips into floor when he in pre-slide animation
+	- trigger: sliding
+	- effect: he falls into the floor before coming back up to normal
+	- notes: the problem lies with his pre-slide animation and collider box

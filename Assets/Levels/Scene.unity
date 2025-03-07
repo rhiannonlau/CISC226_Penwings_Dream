@@ -1647,6 +1647,37 @@ PolygonCollider2D:
       - {x: 1.68, y: 2.06}
       - {x: 1.65, y: 2.04}
   m_UseDelaunayMesh: 0
+--- !u!1 &898905032
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 898905033}
+  m_Layer: 11
+  m_Name: UpperRayPosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &898905033
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 898905032}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.16, y: 0.45, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1859751996}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &915653882
 GameObject:
   m_ObjectHideFlags: 0
@@ -1948,7 +1979,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1084843093}
   m_Layer: 11
-  m_Name: RayPosition
+  m_Name: LowerRayPosition
   m_TagString: Untagged
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -2361,6 +2392,7 @@ Transform:
   m_Children:
   - {fileID: 1014771622}
   - {fileID: 1084843093}
+  - {fileID: 898905033}
   - {fileID: 217161605}
   - {fileID: 1487594193}
   m_Father: {fileID: 0}
@@ -2380,12 +2412,14 @@ MonoBehaviour:
   speed: 10
   jumpPower: 5
   slidingLength: 1
+  upperRayPoint: {fileID: 898905033}
+  upperRayDistance: 1
   penaltyLength: 2
   ice: {fileID: 217161603}
   snail: {fileID: 1487594192}
   grabPoint: {fileID: 1014771622}
-  rayPoint: {fileID: 1084843093}
-  rayDistance: 1
+  lowerRayPoint: {fileID: 1084843093}
+  lowerRayDistance: 1
 --- !u!95 &1859751998
 Animator:
   serializedVersion: 5

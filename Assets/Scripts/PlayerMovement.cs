@@ -29,6 +29,10 @@ public class PlayerMovement : MonoBehaviour
 
     // swinging variables
     private bool swinging;
+    [SerializeField] private Transform upperRayPoint;
+    [SerializeField] private float upperRayDistance;
+    private int chandelierLayer;
+    private GameObject chandelierObject;
 
 
     // penalty time length variables
@@ -59,14 +63,15 @@ public class PlayerMovement : MonoBehaviour
 
     // Variables for grabbing
     [SerializeField] private Transform grabPoint;
-    [SerializeField] private Transform rayPoint;
-    [SerializeField] private float rayDistance;
-    private GameObject grabbedObject;
-    private int foodLayerIdx;
+    [SerializeField] private Transform lowerRayPoint;
+    [SerializeField] private float lowerRayDistance;
+    private GameObject foodObject;
+    private int foodLayer;
 
     private void Start()
     {
-        foodLayerIdx = LayerMask.NameToLayer("Food");
+        foodLayer = LayerMask.NameToLayer("Food");
+        chandelierLayer = LayerMask.NameToLayer("Chandelier");
     }
 
     private void Awake()
@@ -94,8 +99,11 @@ public class PlayerMovement : MonoBehaviour
         horizontalInput = Input.GetAxis("Horizontal");
         body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
 
+        // for swinging
+        RaycastHit2D upperHitInfo = Physics2D.Raycast(upperRayPoint.position, transform.right, upperRayDistance);
+
         // for grabbing
-        RaycastHit2D hitInfo = Physics2D.Raycast(rayPoint.position, transform.right, rayDistance);
+        RaycastHit2D lowerHitInfo = Physics2D.Raycast(lowerRayPoint.position, transform.right, lowerRayDistance);
 
         // game logic
         // if the player is frozen, they cannot make any actions
@@ -104,8 +112,13 @@ public class PlayerMovement : MonoBehaviour
             AnimateMove();
 
             // space bar to jump
-            if (Input.GetKey(KeyCode.Space) && grounded)
+            if (Input.GetKey(KeyCode.Space))
             {
+                if (swinging)
+                {
+                    StopSwinging(upperHitInfo);
+                }
+
                 Jump();
             }
 
@@ -120,24 +133,38 @@ public class PlayerMovement : MonoBehaviour
                 EndSlide();
             }
 
+            // check if trying to grab while swinging
+            if (upperHitInfo.collider != null && upperHitInfo.collider.gameObject.layer == chandelierLayer)
+            {
+                if (Input.GetKeyDown(KeyCode.E) && chandelierObject == null && !grounded)
+                {
+                    Swing(upperHitInfo);
+                }
+
+                // release e to unswing or press jump (done above) to unswing
+                else if (Input.GetKeyUp(KeyCode.E) || grounded)
+                {
+                    StopSwinging(upperHitInfo);
+                }
+                // rename grabbedObject vars OR use identifiers like "holdingFood" and "swinging" bools
+                // i think it would be better practice to have the vars renamed to grabbedFood and grabbedChandelier, which are assigned through a check
+                // have a method called CheckGrabbed() { if chandelierLayer then use grabbedChandelier, etc }?
+            }
+
 
             // Grabbing
-            if (hitInfo.collider != null && hitInfo.collider.gameObject.layer == foodLayerIdx)
+            if (lowerHitInfo.collider != null && lowerHitInfo.collider.gameObject.layer == foodLayer)
             {
                 // w to grab object
-                if (Keyboard.current.wKey.wasPressedThisFrame && grabbedObject == null)
+                if (Keyboard.current.wKey.wasPressedThisFrame && foodObject == null)
                 {
-                    grabbedObject = hitInfo.collider.gameObject;
-                    grabbedObject.GetComponent<Rigidbody2D>().isKinematic = true;
-                    grabbedObject.transform.position = grabPoint.position;
-                    grabbedObject.transform.SetParent(transform);
-                    holdingFood = true;
+                    PickUpFood(lowerHitInfo);
                 }
 
                 // w to release object
                 else if (Keyboard.current.wKey.wasPressedThisFrame)
                 {
-                    DropFood();
+                    DropFood(lowerHitInfo);
                 }
             }
         }
@@ -191,6 +218,16 @@ public class PlayerMovement : MonoBehaviour
         anim.SetBool("sliding", sliding);
     }
 
+    // reset to original settings for testing
+    private void Reset()
+    {
+        transform.position = new Vector2(-8, 4);
+        speed = originalSpeed;
+        jumpPower = originalJumpPower;
+        slowed = false;
+        frozen = false;
+    }
+
     private void Jump()
     {
         body.velocity = new Vector2(body.velocity.x, jumpPower);
@@ -218,14 +255,30 @@ public class PlayerMovement : MonoBehaviour
         // later: re enable direction changing
     }
 
-    // reset to original settings for testing
-    private void Reset()
+    private void Swing(RaycastHit2D hitInfo)
     {
-        transform.position = new Vector2(-8, 4);
-        speed = originalSpeed;
-        jumpPower = originalJumpPower;
-        slowed = false;
-        frozen = false;
+        chandelierObject = hitInfo.collider.gameObject;
+        // chandelierObject.GetComponent<Rigidbody2D>().isKinematic = true;
+        // chandelierObject.transform.SetParent(transform);
+
+        swinging = true;
+    }
+
+    private void StopSwinging(RaycastHit2D hitInfo)
+    {
+        // chandelierObject.GetComponent<Rigidbody2D>().isKinematic = false;
+        // chandelierObject.transform.SetParent(null);
+        chandelierObject = null;
+        swinging = false;
+    }
+
+    private void PickUpFood(RaycastHit2D hitInfo)
+    {
+        foodObject = hitInfo.collider.gameObject;
+        foodObject.GetComponent<Rigidbody2D>().isKinematic = true;
+        foodObject.transform.position = grabPoint.position;
+        foodObject.transform.SetParent(transform);
+        holdingFood = true;
     }
 
     // player freezes for x seconds
@@ -259,14 +312,14 @@ public class PlayerMovement : MonoBehaviour
     }
 
     // player drops the food if they were holding any
-    private void DropFood()
+    private void DropFood(RaycastHit2D HitInfo)
     {
         if (holdingFood)
         {
             holdingFood = false;
-            grabbedObject.GetComponent<Rigidbody2D>().isKinematic = false;
-            grabbedObject.transform.SetParent(null);
-            grabbedObject = null;
+            foodObject.GetComponent<Rigidbody2D>().isKinematic = false;
+            foodObject.transform.SetParent(null);
+            foodObject = null;
         }
     }
 
