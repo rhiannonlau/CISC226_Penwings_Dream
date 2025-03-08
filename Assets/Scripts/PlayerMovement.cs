@@ -111,8 +111,8 @@ public class PlayerMovement : MonoBehaviour
         {
             AnimateMove();
 
-            // space bar to jump
-            if (Input.GetKey(KeyCode.Space))
+            // x to jump
+            if (Input.GetKey(KeyCode.X))
             {
                 if (swinging)
                 {
@@ -136,13 +136,13 @@ public class PlayerMovement : MonoBehaviour
             // check if trying to grab while swinging
             if (upperHitInfo.collider != null && upperHitInfo.collider.gameObject.layer == chandelierLayer)
             {
-                if (Input.GetKeyDown(KeyCode.E) && chandelierObject == null && !grounded)
+                if (Input.GetKeyDown(KeyCode.Z) && chandelierObject == null && !grounded)
                 {
                     Swing(upperHitInfo);
                 }
 
                 // release e to unswing or press jump (done above) to unswing
-                else if (Input.GetKeyUp(KeyCode.E) || grounded)
+                else if (Input.GetKeyUp(KeyCode.Z) || grounded)
                 {
                     StopSwinging(upperHitInfo);
                 }
@@ -152,17 +152,17 @@ public class PlayerMovement : MonoBehaviour
             }
 
 
-            // Grabbing
+            // Picking up and putting down
             if (lowerHitInfo.collider != null && lowerHitInfo.collider.gameObject.layer == foodLayer)
             {
                 // w to grab object
-                if (Keyboard.current.wKey.wasPressedThisFrame && foodObject == null)
+                if (Keyboard.current.zKey.wasPressedThisFrame && foodObject == null)
                 {
                     PickUpFood(lowerHitInfo);
                 }
 
                 // w to release object
-                else if (Keyboard.current.wKey.wasPressedThisFrame)
+                else if (Keyboard.current.zKey.wasPressedThisFrame)
                 {
                     DropFood(lowerHitInfo);
                 }
@@ -216,6 +216,7 @@ public class PlayerMovement : MonoBehaviour
         anim.SetBool("run", horizontalInput != 0);
         anim.SetBool("grounded", grounded);
         anim.SetBool("sliding", sliding);
+        anim.SetBool("holdingObject", holdingFood); // || holdingTicket
     }
 
     // reset to original settings for testing
