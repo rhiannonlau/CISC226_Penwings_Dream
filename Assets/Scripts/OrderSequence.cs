@@ -34,6 +34,18 @@ public class OrderSequence : MonoBehaviour
     private float table2Timer;
     private float table3Timer;
 
+    // Current state for each table (where are they in the order sequence)
+    // // 0 = there are no customers at the table
+    // // 1 = customers have now sat at the table but they have not yet put in their order
+    // // 2 = customers are ready to place their order
+    // // 3 = order has been placed by the player
+    // // 4 = kitchen has finished cooking the food and food is ready to be picked up by player for delivery
+    // // 5 = customer has received their food and is currently eating
+    // // 6 = customers have finished their meal and have left the table
+    public int table1CurrentState = 0;
+    public int table2CurrentState = 0;
+    public int table3CurrentState = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -56,10 +68,13 @@ public class OrderSequence : MonoBehaviour
         else
         {
             spawnSpeechBubble(table1);
+            table1CurrentState = 2;
+
             table1Timer = 0;
 
             // Determine the next random spawn time for table
             table1NextSpawn = Random.Range(minSpawnRate, maxSpawnRate);
+
         }
 
         if (table2Timer < table2NextSpawn)
@@ -90,4 +105,5 @@ public class OrderSequence : MonoBehaviour
     {
         Instantiate(speechBubbleWithOrder, customerTable.position + Vector3.up, customerTable.rotation);
     }
+
 }
