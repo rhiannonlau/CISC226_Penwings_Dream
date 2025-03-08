@@ -16,9 +16,13 @@ public class OrderSequence : MonoBehaviour
     public Transform table2;
     public Transform table3;
 
-    // Sets parameters for the range from which the time between orders will be determined
-    public float minSpawnRate = 3;
-    public float maxSpawnRate = 15;
+    // Set time range of order spawning for starting tables
+    public float minStartSpawnRate = 1;
+    public float maxStartSpawnRate = 8;
+
+    // Set time range of order spawning for non-starting tables
+    public float minSpawnRate = 10;
+    public float maxSpawnRate = 20;
 
     // Time for next order to spawn for specific table
     public float table1NextSpawn;
@@ -33,10 +37,10 @@ public class OrderSequence : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // Spawns random time for next order for each table
-        table1NextSpawn = Random.Range(minSpawnRate, maxSpawnRate);
-        table2NextSpawn = Random.Range(minSpawnRate, maxSpawnRate);
-        table3NextSpawn = Random.Range(minSpawnRate, maxSpawnRate);
+        // Spawns random time for next order for each starting table
+        table1NextSpawn = Random.Range(minStartSpawnRate, maxStartSpawnRate);
+        table2NextSpawn = Random.Range(minStartSpawnRate, maxStartSpawnRate);
+        table3NextSpawn = Random.Range(minStartSpawnRate, maxStartSpawnRate);
     }
 
     // Update is called once per frame
@@ -54,7 +58,7 @@ public class OrderSequence : MonoBehaviour
             spawnSpeechBubble(table1);
             table1Timer = 0;
 
-            // Determine the next random spawn time
+            // Determine the next random spawn time for table
             table1NextSpawn = Random.Range(minSpawnRate, maxSpawnRate);
         }
 
