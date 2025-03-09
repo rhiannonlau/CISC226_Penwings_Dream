@@ -132,7 +132,7 @@ GameObject:
   m_Component:
   - component: {fileID: 217161605}
   - component: {fileID: 217161604}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Ice
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -488,7 +488,8 @@ GameObject:
   m_Component:
   - component: {fileID: 552313248}
   - component: {fileID: 552313247}
-  - component: {fileID: 552313246}
+  - component: {fileID: 552313249}
+  - component: {fileID: 552313250}
   m_Layer: 8
   m_Name: Chandelier
   m_TagString: Untagged
@@ -496,76 +497,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!60 &552313246
-PolygonCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 552313245}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.49, y: 1.45}
-    newSize: {x: 1.49, y: 1.45}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 0.475, y: -0.72499996}
-      - {x: 0.525, y: -0.675}
-      - {x: 0.545, y: -0.515}
-      - {x: 0.49499997, y: -0.275}
-      - {x: 0.72499996, y: -0.044999998}
-      - {x: 0.745, y: 0.035}
-      - {x: 0.745, y: 0.24499999}
-      - {x: 0.635, y: 0.325}
-      - {x: 0.265, y: 0.405}
-      - {x: 0.155, y: 0.655}
-      - {x: 0.114999995, y: 0.72499996}
-      - {x: -0.125, y: 0.72499996}
-      - {x: -0.185, y: 0.60499996}
-      - {x: -0.315, y: 0.355}
-      - {x: -0.645, y: 0.325}
-      - {x: -0.745, y: 0.255}
-      - {x: -0.745, y: 0.015}
-      - {x: -0.53499997, y: -0.325}
-      - {x: -0.555, y: -0.525}
-      - {x: -0.53499997, y: -0.685}
-      - {x: -0.49499997, y: -0.72499996}
-      - {x: -0.21499999, y: -0.72499996}
-      - {x: -0.095, y: -0.685}
-      - {x: 0.055, y: -0.715}
-      - {x: 0.175, y: -0.72499996}
-  m_UseDelaunayMesh: 0
 --- !u!212 &552313247
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -633,6 +564,78 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &552313249
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 552313245}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.49, y: 1.45}
+    newSize: {x: 1.49, y: 1.45}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1.49, y: 1.45}
+  m_EdgeRadius: 0
+--- !u!50 &552313250
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 552313245}
+  m_BodyType: 2
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &698171134
 GameObject:
   m_ObjectHideFlags: 0
@@ -1770,7 +1773,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 898905033}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: UpperRayPosition
   m_TagString: Untagged
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
@@ -1786,7 +1789,7 @@ Transform:
   m_GameObject: {fileID: 898905032}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.62, y: -0.05, z: 0}
+  m_LocalPosition: {x: 0.85, y: 0.32, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2061,7 +2064,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1014771622}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: GrabPosition
   m_TagString: Untagged
   m_Icon: {fileID: 3936346786652291628, guid: 0000000000000000d000000000000000, type: 0}
@@ -2097,7 +2100,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1084843093}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: LowerRayPosition
   m_TagString: Untagged
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
@@ -2113,7 +2116,7 @@ Transform:
   m_GameObject: {fileID: 1084843092}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.17, y: -1.11, z: 0}
+  m_LocalPosition: {x: 1.37, y: -1.11, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2129,7 +2132,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1487594193}
   - component: {fileID: 1487594194}
-  m_Layer: 11
+  m_Layer: 0
   m_Name: Snail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2370,7 +2373,8 @@ GameObject:
   - component: {fileID: 1859751994}
   - component: {fileID: 1859751993}
   - component: {fileID: 1859751998}
-  m_Layer: 11
+  - component: {fileID: 1859751999}
+  m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2389,10 +2393,10 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 0.0001
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 3.5
+  m_GravityScale: 2.5
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -2510,7 +2514,7 @@ Transform:
   m_GameObject: {fileID: 1859751992}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.14, y: 3.72, z: 0}
+  m_LocalPosition: {x: -0.85, y: 4.39, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2533,11 +2537,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0bbd877e621c0b4daf8aa68bddb8625, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  FloorLayer:
+    serializedVersion: 2
+    m_Bits: 8
   speed: 10
   jumpPower: 5
-  slidingLength: 1
   upperRayPoint: {fileID: 898905033}
-  upperRayDistance: 1
+  upperRayDistance: 0.3
   penaltyLength: 2
   ice: {fileID: 217161603}
   snail: {fileID: 1487594192}
@@ -2565,6 +2571,31 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!233 &1859751999
+HingeJoint2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1859751992}
+  m_Enabled: 0
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_BreakAction: 3
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0.84133536, y: 0.29446697}
+  m_ConnectedAnchor: {x: -0.42933235, y: 4.5372334}
+  m_UseMotor: 1
+  m_Motor:
+    m_MotorSpeed: 100
+    m_MaximumMotorForce: 10
+  m_UseLimits: 1
+  m_AngleLimits:
+    m_LowerAngle: 33.526196
+    m_UpperAngle: 146.04303
 --- !u!1001 &1873942589
 PrefabInstance:
   m_ObjectHideFlags: 0

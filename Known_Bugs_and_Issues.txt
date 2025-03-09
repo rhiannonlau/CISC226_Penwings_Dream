@@ -16,14 +16,14 @@
 		- manually triggering another animation (space bar/jumping, reclicking down-arrow/slide) breaks them out of it
 		- doesn't trigger when pressing the offending buttons in the reverse order
 
-3. Issue: can't put down food while facing left
+3. FIXED Issue: can't put down food while facing left
 	- precondition: picked up food and facing left
 	- effect: none and that's the problem TT
 
 5. FIXED Issue: penwing's hit box not changed when jumping
 	- effect: they can't jump over obstacles, only holes
 
-4. Issue: penwing unlocked the ability to fly
+4. FIXED Issue: penwing unlocked the ability to fly
 	- trigger: holding down space bar (jumping)
 	- effect: causes you to fly for as long as you hold it :D
 
