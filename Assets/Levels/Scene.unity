@@ -376,7 +376,8 @@ MonoBehaviour:
   currentState: 0
   food: {fileID: 8179428232940298069, guid: 7c55e2f974da9430ba4157d906b5d42b, type: 3}
   counter: {fileID: 4221233061464560534}
-  spawnRate: 5
+  ponderingMenuSpawnRate: 2
+  cookTimeSpawnRate: 5
 --- !u!1 &256308183
 GameObject:
   m_ObjectHideFlags: 0
@@ -901,7 +902,8 @@ MonoBehaviour:
   currentState: 0
   food: {fileID: 125409195404879558, guid: a8003a4f4127649a5af8a9bfe0820eb2, type: 3}
   counter: {fileID: 4221233061464560529}
-  spawnRate: 5
+  ponderingMenuSpawnRate: 2
+  cookTimeSpawnRate: 5
 --- !u!1 &767819647
 GameObject:
   m_ObjectHideFlags: 0
@@ -2195,7 +2197,8 @@ MonoBehaviour:
   currentState: 0
   food: {fileID: 7458428919731577502, guid: abee5844ceaac4b9596a4bc8c33992b0, type: 3}
   counter: {fileID: 4221233061464560535}
-  spawnRate: 5
+  ponderingMenuSpawnRate: 2
+  cookTimeSpawnRate: 5
 --- !u!1 &987553851
 GameObject:
   m_ObjectHideFlags: 0

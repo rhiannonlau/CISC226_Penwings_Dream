@@ -25,10 +25,14 @@ public class Table : MonoBehaviour
 
     public GameObject food;
 
+    // References the kitchen counter objects' positionality and such
     public Transform counter;
 
-    public float spawnRate = 5;
-    private float cookingTimer;
+    public float ponderingMenuSpawnRate = 2;
+    private float ponderingTimer = 0;
+
+    public float cookTimeSpawnRate = 5;
+    private float cookingTimer = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -57,7 +61,18 @@ public class Table : MonoBehaviour
         // 1 = customers sit at the table but they have not yet put in their order
         else if (currentState == 1)
         {
-            
+            // If the timer is less than the spawn rate, then we want to make the timer count up by one
+            if (ponderingTimer < ponderingMenuSpawnRate)
+            {
+                ponderingTimer += Time.deltaTime;
+            }
+
+            // If timer has met or exceeded the spawn rate, then spawn the order and start the time again
+            else
+            {
+                ponderingTimer = 0;
+                currentState = 2;
+            }
         }
 
         // 2 = customers are ready to place their order
@@ -70,7 +85,7 @@ public class Table : MonoBehaviour
         else if (currentState == 3)
         {
             // If the timer is less than the spawn rate, then we want to make the timer count up by one
-            if (cookingTimer < spawnRate)
+            if (cookingTimer < cookTimeSpawnRate)
             {
                 cookingTimer += Time.deltaTime;
             }
