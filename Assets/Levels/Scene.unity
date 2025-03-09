@@ -558,7 +558,7 @@ Transform:
   m_GameObject: {fileID: 552313245}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.41, y: 1.32, z: 0}
+  m_LocalPosition: {x: -0.03, y: 1.37, z: 0}
   m_LocalScale: {x: 0.9085, y: 0.8824, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -617,11 +617,11 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 552313245}
-  m_BodyType: 2
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 100
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
@@ -1919,8 +1919,8 @@ Transform:
   m_GameObject: {fileID: 915653882}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.22, y: -1.2, z: 0}
-  m_LocalScale: {x: 7.647439, y: 0.4598547, z: 0.5}
+  m_LocalPosition: {x: -6.5338, y: -1.1638, z: 0}
+  m_LocalScale: {x: 7.1197658, y: 0.3990159, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -2393,7 +2393,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 0.0001
+  m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 2.5
@@ -2585,17 +2585,17 @@ HingeJoint2D:
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_BreakAction: 3
-  m_AutoConfigureConnectedAnchor: 1
-  m_Anchor: {x: 0.84133536, y: 0.29446697}
-  m_ConnectedAnchor: {x: -0.42933235, y: 4.5372334}
-  m_UseMotor: 1
+  m_AutoConfigureConnectedAnchor: 0
+  m_Anchor: {x: 1.3, y: -0.4}
+  m_ConnectedAnchor: {x: 0.04, y: -0.6}
+  m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 100
-    m_MaximumMotorForce: 10
+    m_MaximumMotorForce: 25
   m_UseLimits: 1
   m_AngleLimits:
-    m_LowerAngle: 33.526196
-    m_UpperAngle: 146.04303
+    m_LowerAngle: 180
+    m_UpperAngle: 0
 --- !u!1001 &1873942589
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2858,8 +2858,8 @@ Transform:
   m_GameObject: {fileID: 1931683323}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.75, y: -1.2, z: 0}
-  m_LocalScale: {x: 8.166932, y: 0.5225547, z: 0.5}
+  m_LocalPosition: {x: 6.4742, y: -1.1397, z: 0}
+  m_LocalScale: {x: 6.9502053, y: 0.42109567, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}

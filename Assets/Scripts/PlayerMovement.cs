@@ -4,6 +4,8 @@ using UnityEngine.UIElements;
 
 using UnityEngine.InputSystem;
 
+using System.Collections;
+
 public class PlayerMovement : MonoBehaviour
 {
     private Rigidbody2D body;
@@ -67,6 +69,7 @@ public class PlayerMovement : MonoBehaviour
     private GameObject foodObject;
     private int foodLayer;
 
+
     private void Start()
     {
         foodLayer = LayerMask.NameToLayer("Food");
@@ -97,15 +100,15 @@ public class PlayerMovement : MonoBehaviour
     {
         bool grounded = isGrounded();
 
-        // for moving
-        horizontalInput = Input.GetAxis("Horizontal");
-        body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
-
         // for swinging
         RaycastHit2D upperHitInfo = Physics2D.Raycast(upperRayPoint.position, transform.right, upperRayDistance);
 
         // for grabbing
         RaycastHit2D lowerHitInfo = Physics2D.Raycast(lowerRayPoint.position, transform.right, lowerRayDistance);
+
+        // for moving
+        horizontalInput = Input.GetAxis("Horizontal");
+        body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
 
         // game logic
         AnimateMove();
@@ -143,10 +146,22 @@ public class PlayerMovement : MonoBehaviour
                 Swing(upperHitInfo.collider.gameObject);
             }
 
-            // release e to unswing or press jump (done above) to unswing
-            else if (Input.GetKeyUp(KeyCode.Z) || isGrounded())
+            
+            // else if (Input.GetKeyUp(KeyCode.Z) || isGrounded())
+            // {
+            //     Debug.Log("key up");
+            //     StopSwinging(upperHitInfo.collider.gameObject);
+            // }
+        }
+
+        if (swinging)
+        {
+            // release z to unswing
+            if (Input.GetKeyUp(KeyCode.Z) || isGrounded())
             {
-                StopSwinging(upperHitInfo.collider.gameObject);
+                Debug.Log("key up");
+                Debug.Log(isGrounded());
+                StopSwinging(chandelierObject);
             }
         }
 
@@ -217,7 +232,13 @@ public class PlayerMovement : MonoBehaviour
 
     private bool isGrounded()
     {
-        RaycastHit2D raycastHit = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0, Vector2.down, 0.2f, FloorLayer);
+        // check if the player is grounded or not by using a boxcast to check the space under the player
+
+        // make the boxcast a sliver that's the same width as the player's collider
+        Vector2 offset = new Vector2(coll.bounds.center.x, coll.bounds.center.y - coll.bounds.size.y * 0.5f);
+        Vector2 sliver = new Vector2(coll.bounds.size.x, 0.2f);
+
+        RaycastHit2D raycastHit = Physics2D.BoxCast(offset, sliver, 0, Vector2.down, 0.2f, FloorLayer);
 
         return raycastHit.collider != null;
     }
@@ -242,11 +263,15 @@ public class PlayerMovement : MonoBehaviour
     // reset to original settings for testing
     private void Reset()
     {
+        body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
         transform.position = new Vector2(-8, 4);
         speed = originalSpeed;
         jumpPower = originalJumpPower;
         slowed = false;
-        frozen = false;
+        hinge.enabled = false;
+        transform.eulerAngles = new Vector3(0, 0, 0);
+        body.freezeRotation = true;
+        body.mass = 1f;
     }
 
     private void Jump()
@@ -273,34 +298,54 @@ public class PlayerMovement : MonoBehaviour
 
     private void Swing(GameObject chandelier)
     {
-        // float x = chandelier.GetComponent<BoxCollider2D>().bounds.center.x;
-    //     float y = chandelier.GetComponent<BoxCollider2D>().bounds.center.y - chandelier.GetComponent<BoxCollider2D>().bounds.size.y * 0.5f;
+        hinge.enabled = true;
 
-    //     Debug.Log($"{x}, {y}");
-    //     // lock the player's position
-    //     transform.position = new Vector2(x, y);
-    //     body.mass = 0;
-    //     speed = 0;
+        body.mass = 0.0001f;
 
-    //     transform.RotateAround(chandelier.transform.localPosition, Vector3.back, Time.deltaTime * 50f);
-
-        // hinge.enabled = true;
-
-        hinge.connectedBody = chandelier.GetComponent<Rigidbody2D>();
-        float chandelierX = chandelier.GetComponent<BoxCollider2D>().bounds.size.x * 0.5f;
-        float chandelierY = chandelier.GetComponent<BoxCollider2D>().bounds.size.y * -1f;
+        BoxCollider2D cColl = chandelier.GetComponent<BoxCollider2D>(); // the chandelier's box collider
+        hinge.connectedBody = chandelier.GetComponent<Rigidbody2D>(); // connect this chandelier's instance to penwing's hinge
 
 
-        hinge.anchor = new Vector2(chandelierX, chandelierY);
-        hinge.connectedAnchor = new Vector2(0.5f, 5f);
+        // needed for later
+        // the point the sprite rotates around relative to itself in local space
+        // hinge.anchor = new Vector2(1.3f, -0.4f);
+
+        // // connected anchor = the point relative to the connected item (in this case, the chandelier)
+        // // 0, 0 = the center of the chandelier
+        // // so the relative x is the center, i.e. 0
+        // float aX = 0;
+        // // and the relative y is the center (0) minus half the height of the chandelier
+        // float aY = cColl.bounds.size.y * -0.5f;
+        // hinge.connectedAnchor = new Vector2(aX, aY);
+        
+        // move penwing so they are positioned at the middle of the bottom of the chandelier.
+        // the additional modifiers using penwing's size are done because transform.position places penwing's center point at the given coordinates, which we need to account for
+        // x = the x-value of the chandelier's center
+        float pX = cColl.bounds.center.x + coll.bounds.size.x * 0.5f;
+        // y = the y-value of the chandelier's center minus half the height of the chandelier minus half the height of penwing
+        float pY = cColl.bounds.center.y - cColl.bounds.size.y * 0.5f - coll.bounds.size.y * 0.5f;
+        transform.position = new Vector2(pX, pY);
+
+        // unfreeze rotation
+        body.freezeRotation = false;
+
+        body.angularVelocity = speed;
 
         swinging = true;
     }
 
     private void StopSwinging(GameObject chandelier)
     {
-        // hinge.enabled = false;
+        hinge.enabled = false;
+
+        body.mass = 1f;
+
         chandelierObject = null;
+
+        // re-freeze rotations
+        transform.eulerAngles = new Vector3(0, 0, 0);
+        body.freezeRotation = true;
+
         swinging = false;
     }
 
