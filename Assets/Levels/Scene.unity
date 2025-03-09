@@ -376,6 +376,7 @@ MonoBehaviour:
   currentState: 0
   food: {fileID: 8179428232940298069, guid: 7c55e2f974da9430ba4157d906b5d42b, type: 3}
   counter: {fileID: 4221233061464560534}
+  spawnRate: 5
 --- !u!1 &256308183
 GameObject:
   m_ObjectHideFlags: 0
@@ -900,6 +901,7 @@ MonoBehaviour:
   currentState: 0
   food: {fileID: 125409195404879558, guid: a8003a4f4127649a5af8a9bfe0820eb2, type: 3}
   counter: {fileID: 4221233061464560529}
+  spawnRate: 5
 --- !u!1 &767819647
 GameObject:
   m_ObjectHideFlags: 0
@@ -2193,6 +2195,7 @@ MonoBehaviour:
   currentState: 0
   food: {fileID: 7458428919731577502, guid: abee5844ceaac4b9596a4bc8c33992b0, type: 3}
   counter: {fileID: 4221233061464560535}
+  spawnRate: 5
 --- !u!1 &987553851
 GameObject:
   m_ObjectHideFlags: 0
@@ -3239,86 +3242,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Kitchen
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3024644440884702239, guid: 372487b2b5a864e4f9d6428f86641d3f, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3987049776188392696, guid: 372487b2b5a864e4f9d6428f86641d3f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4221233061464560528}
-    - targetCorrespondingSourceObject: {fileID: 5613933469772778615, guid: 372487b2b5a864e4f9d6428f86641d3f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4221233061464560527}
-    - targetCorrespondingSourceObject: {fileID: 8694263411429044906, guid: 372487b2b5a864e4f9d6428f86641d3f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4221233061464560526}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 372487b2b5a864e4f9d6428f86641d3f, type: 3}
---- !u!1 &4221233061464560523 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8694263411429044906, guid: 372487b2b5a864e4f9d6428f86641d3f, type: 3}
-  m_PrefabInstance: {fileID: 4221233061464560522}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &4221233061464560524 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5613933469772778615, guid: 372487b2b5a864e4f9d6428f86641d3f, type: 3}
-  m_PrefabInstance: {fileID: 4221233061464560522}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &4221233061464560525 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3987049776188392696, guid: 372487b2b5a864e4f9d6428f86641d3f, type: 3}
-  m_PrefabInstance: {fileID: 4221233061464560522}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &4221233061464560526
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4221233061464560523}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fd9af937aa774a3593ec4e301c01642, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  id: 0
-  foodCounter: {fileID: 4221233061464560529}
-  fishPlatter: {fileID: 7458428919731577502, guid: abee5844ceaac4b9596a4bc8c33992b0, type: 3}
-  fishSoup: {fileID: 8179428232940298069, guid: 7c55e2f974da9430ba4157d906b5d42b, type: 3}
-  veggieBurger: {fileID: 125409195404879558, guid: a8003a4f4127649a5af8a9bfe0820eb2, type: 3}
---- !u!114 &4221233061464560527
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4221233061464560524}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fd9af937aa774a3593ec4e301c01642, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  id: 0
-  foodCounter: {fileID: 4221233061464560534}
-  fishPlatter: {fileID: 7458428919731577502, guid: abee5844ceaac4b9596a4bc8c33992b0, type: 3}
-  fishSoup: {fileID: 8179428232940298069, guid: 7c55e2f974da9430ba4157d906b5d42b, type: 3}
-  veggieBurger: {fileID: 125409195404879558, guid: a8003a4f4127649a5af8a9bfe0820eb2, type: 3}
---- !u!114 &4221233061464560528
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4221233061464560525}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1fd9af937aa774a3593ec4e301c01642, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  id: 0
-  foodCounter: {fileID: 4221233061464560535}
-  fishPlatter: {fileID: 7458428919731577502, guid: abee5844ceaac4b9596a4bc8c33992b0, type: 3}
-  fishSoup: {fileID: 8179428232940298069, guid: 7c55e2f974da9430ba4157d906b5d42b, type: 3}
-  veggieBurger: {fileID: 125409195404879558, guid: a8003a4f4127649a5af8a9bfe0820eb2, type: 3}
 --- !u!4 &4221233061464560529 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6466312822142477608, guid: 372487b2b5a864e4f9d6428f86641d3f, type: 3}

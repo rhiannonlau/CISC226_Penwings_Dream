@@ -27,10 +27,13 @@ public class Table : MonoBehaviour
 
     public Transform counter;
 
+    public float spawnRate = 5;
+    private float cookingTimer;
+
     // Start is called before the first frame update
     void Start()
     {
-        spawnFoodItem(food, counter);
+        // spawnFoodItem(food, counter);
     }
 
     // Update is called once per frame
@@ -66,7 +69,19 @@ public class Table : MonoBehaviour
         // 3 = order has been placed by the player
         else if (currentState == 3)
         {
+            // If the timer is less than the spawn rate, then we want to make the timer count up by one
+            if (cookingTimer < spawnRate)
+            {
+                cookingTimer += Time.deltaTime;
+            }
 
+            // If timer has met or exceeded the spawn rate, then spawn the order and start the time again
+            else
+            {
+                spawnFoodItem(food, counter);
+                cookingTimer = 0;
+                currentState = 4;
+            }
         }
 
         // 4 = kitchen has finished cooking the food and food is ready to be picked up by player for delivery
