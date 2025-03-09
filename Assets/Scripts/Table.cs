@@ -19,10 +19,18 @@ public class Table : MonoBehaviour
     // // 6 = customers have finished their meal and have left the table
     public int currentState = 0;
 
+    // public GameObject fishPlatter;
+    // public GameObject fishSoup;
+    // public GameObject veggieBurger;
+
+    public GameObject food;
+
+    public Transform counter;
+
     // Start is called before the first frame update
     void Start()
     {
-
+        spawnFoodItem(food, counter);
     }
 
     // Update is called once per frame
@@ -86,4 +94,11 @@ public class Table : MonoBehaviour
     {
         this.isCustomerPresent = isPresent;
     }
+
+    void spawnFoodItem(GameObject foodItem, Transform counter)
+    {
+            Instantiate(foodItem, counter.position + Vector3.up, counter.rotation);
+
+    }
+
 }

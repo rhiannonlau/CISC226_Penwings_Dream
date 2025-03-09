@@ -6,7 +6,7 @@ public class FishSoup : MonoBehaviour
 {
 
     public string foodName = "Fish Soup";
-    public int id;
+    public int id = 2;
 
     public GameObject fishSoup;
 

@@ -6,7 +6,7 @@ public class VeggieBurger : MonoBehaviour
 {
 
     public string foodName = "Veggie Burger";
-    public int id;
+    public int id = 3;
 
     public GameObject veggieBurger;
 

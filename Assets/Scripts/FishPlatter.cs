@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class FishPlatter : MonoBehaviour
 {
-    
+
     public string foodName = "Fish Platter";
-    public int id;
+    public int id = 1;
 
     public GameObject fishPlatter;
 
