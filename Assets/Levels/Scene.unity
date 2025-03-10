@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 132742883}
   - component: {fileID: 132742882}
   - component: {fileID: 132742881}
-  m_Layer: 5
+  m_Layer: 13
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -224,53 +224,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!1 &137125869
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 137125871}
-  - component: {fileID: 137125870}
-  m_Layer: 0
-  m_Name: Fish Platter
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &137125870
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 137125869}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d1a42b3c2d0a48ad996a271bab73afc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  foodName: Fish Platter
-  id: 0
-  fishPlatter: {fileID: 7458428919731577502, guid: abee5844ceaac4b9596a4bc8c33992b0, type: 3}
---- !u!4 &137125871
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 137125869}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.7431393, y: -0.09553121, z: 5.570258}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &217161603
 GameObject:
   m_ObjectHideFlags: 0
@@ -378,6 +331,65 @@ MonoBehaviour:
   counter: {fileID: 4221233061464560534}
   ponderingMenuSpawnRate: 2
   cookTimeSpawnRate: 5
+  foodOptions:
+  - {fileID: 7458428919731577502, guid: abee5844ceaac4b9596a4bc8c33992b0, type: 3}
+  - {fileID: 8179428232940298069, guid: 7c55e2f974da9430ba4157d906b5d42b, type: 3}
+  - {fileID: 125409195404879558, guid: a8003a4f4127649a5af8a9bfe0820eb2, type: 3}
+  foodOrders:
+  - {fileID: 3789291723905910973, guid: 97e9ddb4568a34e049a927df3d7b48ff, type: 3}
+  - {fileID: 5781770148760138791, guid: 1f3cc83f6f69449828858ad9d3423fd7, type: 3}
+  - {fileID: 2133235243730507376, guid: 90744a1ddb27248e29e093e69bcaee84, type: 3}
+  tableFurniture: {fileID: 225269275}
+--- !u!4 &225269275 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7832295009012461655, guid: 357ec1b426ab04843ac1221f86fac56b, type: 3}
+  m_PrefabInstance: {fileID: 1876916797}
+  m_PrefabAsset: {fileID: 0}
+--- !u!61 &225269277
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 225269272}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 2.32, y: 1.66}
+    newSize: {x: 2.32, y: 1.66}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 2.32, y: 1.66}
+  m_EdgeRadius: 0
 --- !u!1 &256308183
 GameObject:
   m_ObjectHideFlags: 0
@@ -504,53 +516,6 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 7.8972, y: 2.3239, z: 0}
   m_LocalScale: {x: 4.6195626, y: 0.4323854, z: 0.5}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &471531886
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 471531888}
-  - component: {fileID: 471531887}
-  m_Layer: 0
-  m_Name: Fish Soup
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &471531887
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 471531886}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a5c824a952ea463bb9756a90c4116c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  foodName: Fish Soup
-  id: 0
-  fishSoup: {fileID: 8179428232940298069, guid: 7c55e2f974da9430ba4157d906b5d42b, type: 3}
---- !u!4 &471531888
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 471531886}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.7431393, y: -0.09553121, z: 5.570258}
-  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -904,6 +869,65 @@ MonoBehaviour:
   counter: {fileID: 4221233061464560529}
   ponderingMenuSpawnRate: 2
   cookTimeSpawnRate: 5
+  foodOptions:
+  - {fileID: 7458428919731577502, guid: abee5844ceaac4b9596a4bc8c33992b0, type: 3}
+  - {fileID: 8179428232940298069, guid: 7c55e2f974da9430ba4157d906b5d42b, type: 3}
+  - {fileID: 125409195404879558, guid: a8003a4f4127649a5af8a9bfe0820eb2, type: 3}
+  foodOrders:
+  - {fileID: 3789291723905910973, guid: 97e9ddb4568a34e049a927df3d7b48ff, type: 3}
+  - {fileID: 5781770148760138791, guid: 1f3cc83f6f69449828858ad9d3423fd7, type: 3}
+  - {fileID: 2133235243730507376, guid: 90744a1ddb27248e29e093e69bcaee84, type: 3}
+  tableFurniture: {fileID: 755400198}
+--- !u!4 &755400198 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7832295009012461655, guid: 357ec1b426ab04843ac1221f86fac56b, type: 3}
+  m_PrefabInstance: {fileID: 1873942589}
+  m_PrefabAsset: {fileID: 0}
+--- !u!61 &755400200
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 755400195}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 2.32, y: 1.66}
+    newSize: {x: 2.32, y: 1.66}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 2.32, y: 1.66}
+  m_EdgeRadius: 0
 --- !u!1 &767819647
 GameObject:
   m_ObjectHideFlags: 0
@@ -2129,53 +2153,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &918107116
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 918107118}
-  - component: {fileID: 918107119}
-  m_Layer: 0
-  m_Name: Veggie Burger
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &918107118
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 918107116}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.7431393, y: -0.09553121, z: 5.570258}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &918107119
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 918107116}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c669f7b58c8e64252bc3da6a4106fc88, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  foodName: Veggie Burger
-  id: 3
-  veggieBurger: {fileID: 125409195404879558, guid: a8003a4f4127649a5af8a9bfe0820eb2, type: 3}
 --- !u!1 &920332083 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 636535415174822031, guid: 357ec1b426ab04843ac1221f86fac56b, type: 3}
@@ -2199,6 +2176,65 @@ MonoBehaviour:
   counter: {fileID: 4221233061464560535}
   ponderingMenuSpawnRate: 2
   cookTimeSpawnRate: 5
+  foodOptions:
+  - {fileID: 7458428919731577502, guid: abee5844ceaac4b9596a4bc8c33992b0, type: 3}
+  - {fileID: 8179428232940298069, guid: 7c55e2f974da9430ba4157d906b5d42b, type: 3}
+  - {fileID: 125409195404879558, guid: a8003a4f4127649a5af8a9bfe0820eb2, type: 3}
+  foodOrders:
+  - {fileID: 3789291723905910973, guid: 97e9ddb4568a34e049a927df3d7b48ff, type: 3}
+  - {fileID: 5781770148760138791, guid: 1f3cc83f6f69449828858ad9d3423fd7, type: 3}
+  - {fileID: 2133235243730507376, guid: 90744a1ddb27248e29e093e69bcaee84, type: 3}
+  tableFurniture: {fileID: 920332086}
+--- !u!4 &920332086 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7832295009012461655, guid: 357ec1b426ab04843ac1221f86fac56b, type: 3}
+  m_PrefabInstance: {fileID: 8667494534197416496}
+  m_PrefabAsset: {fileID: 0}
+--- !u!61 &920332088
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 920332083}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 2.32, y: 1.66}
+    newSize: {x: 2.32, y: 1.66}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 2.32, y: 1.66}
+  m_EdgeRadius: 0
 --- !u!1 &987553851
 GameObject:
   m_ObjectHideFlags: 0
@@ -2402,8 +2438,8 @@ GameObject:
   - component: {fileID: 1428425726}
   - component: {fileID: 1428425728}
   - component: {fileID: 1428425727}
-  m_Layer: 5
-  m_Name: Text (Legacy)
+  m_Layer: 13
+  m_Name: Counter Numbers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2718,7 +2754,7 @@ GameObject:
   - component: {fileID: 1859751998}
   m_Layer: 11
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2982,6 +3018,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 636535415174822031, guid: 357ec1b426ab04843ac1221f86fac56b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 755400197}
+    - targetCorrespondingSourceObject: {fileID: 636535415174822031, guid: 357ec1b426ab04843ac1221f86fac56b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 755400200}
   m_SourcePrefab: {fileID: 100100000, guid: 357ec1b426ab04843ac1221f86fac56b, type: 3}
 --- !u!1001 &1876916797
 PrefabInstance:
@@ -3054,6 +3093,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 636535415174822031, guid: 357ec1b426ab04843ac1221f86fac56b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 225269274}
+    - targetCorrespondingSourceObject: {fileID: 636535415174822031, guid: 357ec1b426ab04843ac1221f86fac56b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 225269277}
   m_SourcePrefab: {fileID: 100100000, guid: 357ec1b426ab04843ac1221f86fac56b, type: 3}
 --- !u!1 &1931683323
 GameObject:
@@ -3337,6 +3379,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 636535415174822031, guid: 357ec1b426ab04843ac1221f86fac56b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 920332085}
+    - targetCorrespondingSourceObject: {fileID: 636535415174822031, guid: 357ec1b426ab04843ac1221f86fac56b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 920332088}
   m_SourcePrefab: {fileID: 100100000, guid: 357ec1b426ab04843ac1221f86fac56b, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
@@ -3356,8 +3401,5 @@ SceneRoots:
   - {fileID: 8667494534197416496}
   - {fileID: 1876916797}
   - {fileID: 1873942589}
-  - {fileID: 137125871}
-  - {fileID: 471531888}
-  - {fileID: 918107118}
   - {fileID: 132742884}
   - {fileID: 690128365}
