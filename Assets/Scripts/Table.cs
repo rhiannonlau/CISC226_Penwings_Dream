@@ -31,8 +31,9 @@ public class Table : MonoBehaviour
 
     public GameObject[] foodOptions;
     public GameObject[] foodOrders;
+    public GameObject customerOrder;
 
-    public Transform tableFurniture;
+    public Transform customerTable;
 
     // For currentState == 2
     private PlayerMovement playerMovement;
@@ -41,17 +42,30 @@ public class Table : MonoBehaviour
     // For currentState == 3
     public float cookingRate = 5;
     private float cookingTimer = 0;
-    public int selectedFoodItem;
+    public int selectedFoodItem = -1;
     
     // For currentState == 4
-    public float eatingRate = 3;
+    // public bool isPlayerHoldingFood = false;
+    // public float foodDropRadius = 5f;
+    // Vector3 tableTop;
+    // // public GameObject correctFoodItem;
+    // // public Collider customerTableCollider;
+    // public GameObject heldFoodItem;
+
+    public GameObject heldFoodItem;
+    public bool isFoodDelivered = false;
+    Vector3 tableTop;
+    private Renderer[] speechBubbleRender;
+
+    // For currentState == 5
+    public float eatingRate = 5;
     private float eatingTimer = 0;
 
     
     // Start is called before the first frame update
     void Start()
     {
-        // spawnFoodItem(food, counter);
+        
     }
 
     // Update is called once per frame
@@ -89,17 +103,28 @@ public class Table : MonoBehaviour
                 selectedFoodItem = Random.Range(0, foodOptions.Length);
                 // Debug.Log("Random out is: " + selectedFoodItem);
 
-                if (selectedFoodItem == 0)
+                Vector3 offset = new Vector3(0, 1.26f, 0);
+
+                // if (selectedFoodItem == 0)
+                // {
+                //     Instantiate(foodOrders[0], customerTable.position + offset, customerTable.rotation);
+                // }
+                // else if (selectedFoodItem == 1)
+                // {
+                //     Instantiate(foodOrders[1], customerTable.position + offset, customerTable.rotation);
+                // }
+                // else if (selectedFoodItem == 2)
+                // {
+                //     Instantiate(foodOrders[2], customerTable.position + offset, customerTable.rotation);
+                // }
+            
+                customerOrder = Instantiate(foodOrders[selectedFoodItem], customerTable.position + offset, customerTable.rotation);
+
+                speechBubbleRender = customerOrder.GetComponentsInChildren<Renderer>();
+
+                foreach (Renderer r in speechBubbleRender)
                 {
-                    Instantiate(foodOrders[0], tableFurniture.position + Vector3.up, tableFurniture.rotation);
-                }
-                else if (selectedFoodItem == 1)
-                {
-                    Instantiate(foodOrders[1], tableFurniture.position + Vector3.up, tableFurniture.rotation);
-                }
-                else if (selectedFoodItem == 2)
-                {
-                    Instantiate(foodOrders[2], tableFurniture.position + Vector3.up, tableFurniture.rotation);
+                    r.enabled = true;
                 }
 
                 currentState = 2;
@@ -133,10 +158,23 @@ public class Table : MonoBehaviour
             }
         }
 
-        // 4 = food is ready to be picked up by player for delivery
+        // 4 = deliver food to customer's table and make sure its the correct table's order
         else if (currentState == 4)
         {
 
+            if (Input.GetKeyDown(KeyCode.W) == true && isFoodDelivered == true)
+            {
+                Destroy(heldFoodItem);
+                // speechBubbleRender.enabled = false;
+                foreach (Renderer r in speechBubbleRender)
+                {
+                    r.enabled = false;
+                }
+
+                isFoodDelivered = false;
+                heldFoodItem = null;
+                currentState = 5;
+            }
         }
 
         // 5 = customer has received their food and is currently eating
@@ -184,6 +222,13 @@ public class Table : MonoBehaviour
         {
             isPlayerNear = true;
         }
+
+        if (collider.CompareTag("Food"))
+        {
+            heldFoodItem = collider.gameObject;
+            isFoodDelivered = true;
+        }
+
     }
 
     private void OnTriggerExit2D(Collider2D collider)
@@ -191,6 +236,12 @@ public class Table : MonoBehaviour
         if (collider.CompareTag("Player"))
         {
             isPlayerNear = false;
+        }
+
+        if (collider.CompareTag("Food"))
+        {
+            isFoodDelivered = false;
+            heldFoodItem = null;
         }
     }
 

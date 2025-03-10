@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 4410225361831410653}
   - component: {fileID: 6717017653010928109}
   - component: {fileID: -2701983553338363218}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Fish Soup
-  m_TagString: Untagged
+  m_TagString: Food
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

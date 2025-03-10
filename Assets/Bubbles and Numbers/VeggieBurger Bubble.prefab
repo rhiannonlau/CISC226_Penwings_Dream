@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &3789291723905910973
+--- !u!1 &2125029731167301614
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,38 +8,37 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5821754079551117532}
-  - component: {fileID: 1109652380374605572}
+  - component: {fileID: 5914202286664095837}
+  - component: {fileID: 7718258846193246357}
   m_Layer: 0
-  m_Name: FishPlatter Bubble
+  m_Name: Speechbubble_0006 (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5821754079551117532
+--- !u!4 &5914202286664095837
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3789291723905910973}
+  m_GameObject: {fileID: 2125029731167301614}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.62, y: 4.27, z: 0}
-  m_LocalScale: {x: 0.16416883, y: 0.14230838, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.01, y: -0.34, z: 0}
+  m_LocalScale: {x: 6.6900353, y: 6.890679, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 5980647352535232368}
-  m_Father: {fileID: 0}
+  m_Children: []
+  m_Father: {fileID: 9085967219048563283}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &1109652380374605572
+--- !u!212 &7718258846193246357
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3789291723905910973}
+  m_GameObject: {fileID: 2125029731167301614}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -74,18 +73,18 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: c09662579df12473d809ff5f2fa932f3, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7c099b7ea0db77f4db04f4cb0e3c14ae, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 10.24, y: 10.24}
+  m_Size: {x: 2, y: 2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &8941078041817462269
+--- !u!1 &6174885096671900691
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -93,37 +92,38 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5980647352535232368}
-  - component: {fileID: 6541298635656508939}
+  - component: {fileID: 9085967219048563283}
+  - component: {fileID: 943788014391436398}
   m_Layer: 0
-  m_Name: Speechbubble_0006
+  m_Name: VeggieBurger Bubble
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5980647352535232368
+--- !u!4 &9085967219048563283
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8941078041817462269}
+  m_GameObject: {fileID: 6174885096671900691}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.24, y: -0.46, z: 0}
-  m_LocalScale: {x: 5.9944396, y: 6.4663672, z: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.32, y: -2.41, z: 0}
+  m_LocalScale: {x: 0.14874765, y: 0.12881918, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5821754079551117532}
+  m_Children:
+  - {fileID: 5914202286664095837}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &6541298635656508939
+--- !u!212 &943788014391436398
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8941078041817462269}
+  m_GameObject: {fileID: 6174885096671900691}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -157,13 +157,13 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -1
-  m_Sprite: {fileID: 21300000, guid: 7c099b7ea0db77f4db04f4cb0e3c14ae, type: 3}
+  m_SortingOrder: 1
+  m_Sprite: {fileID: 21300000, guid: 5dae3e08b74314b7dace817224fb4f7d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 2, y: 2}
+  m_Size: {x: 10.24, y: 10.24}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

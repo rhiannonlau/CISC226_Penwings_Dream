@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 578822317726462040}
   - component: {fileID: 2774425536490223119}
   - component: {fileID: -4418136997066210607}
-  - component: {fileID: -2301321918149501535}
+  - component: {fileID: -7038833852339603640}
   m_Layer: 12
   m_Name: Fish Platter
-  m_TagString: Untagged
+  m_TagString: Food
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -121,7 +121,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 5.12
---- !u!50 &-2301321918149501535
+--- !u!50 &-7038833852339603640
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
