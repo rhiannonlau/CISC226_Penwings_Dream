@@ -22,8 +22,6 @@ public class Table : MonoBehaviour
     // public GameObject fishSoup;
     // public GameObject veggieBurger;
 
-    public GameObject food;
-
     // References the kitchen counter objects' positionality and such
     public Transform counter;
 
@@ -43,6 +41,7 @@ public class Table : MonoBehaviour
     // For currentState == 3
     public float cookingRate = 5;
     private float cookingTimer = 0;
+    public int selectedFoodItem;
     
     // For currentState == 4
     public float eatingRate = 3;
@@ -87,18 +86,18 @@ public class Table : MonoBehaviour
             {
                 ponderingTimer = 0;
 
-                int randomFoodIndex = Random.Range(0, foodOptions.Length);
-                // Debug.Log("Random out is: " + randomFoodIndex);
+                selectedFoodItem = Random.Range(0, foodOptions.Length);
+                // Debug.Log("Random out is: " + selectedFoodItem);
 
-                if (randomFoodIndex == 0)
+                if (selectedFoodItem == 0)
                 {
                     Instantiate(foodOrders[0], tableFurniture.position + Vector3.up, tableFurniture.rotation);
                 }
-                else if (randomFoodIndex == 1)
+                else if (selectedFoodItem == 1)
                 {
                     Instantiate(foodOrders[1], tableFurniture.position + Vector3.up, tableFurniture.rotation);
                 }
-                else if (randomFoodIndex == 2)
+                else if (selectedFoodItem == 2)
                 {
                     Instantiate(foodOrders[2], tableFurniture.position + Vector3.up, tableFurniture.rotation);
                 }
@@ -128,7 +127,7 @@ public class Table : MonoBehaviour
             // If timer has met or exceeded the spawn rate, then spawn the order and reset timer
             else
             {
-                spawnFoodItem(food, counter);
+                spawnFoodItem(foodOptions[selectedFoodItem], counter);
                 cookingTimer = 0;
                 currentState = 4;
             }
