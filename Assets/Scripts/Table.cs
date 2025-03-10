@@ -28,22 +28,27 @@ public class Table : MonoBehaviour
     public Transform counter;
 
     // For currentState == 1
-    public float ponderingMenuSpawnRate = 2;
+    public float ponderingMenuRate = 2;
     private float ponderingTimer = 0;
 
-    // For currentState == 3
-    public float cookTimeSpawnRate = 5;
-    private float cookingTimer = 0;
-
-    // For currentState == 2
     public GameObject[] foodOptions;
     public GameObject[] foodOrders;
 
     public Transform tableFurniture;
 
+    // For currentState == 2
     private PlayerMovement playerMovement;
     private bool isPlayerNear = false;
 
+    // For currentState == 3
+    public float cookingRate = 5;
+    private float cookingTimer = 0;
+    
+    // For currentState == 4
+    public float eatingRate = 3;
+    private float eatingTimer = 0;
+
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -72,7 +77,7 @@ public class Table : MonoBehaviour
         else if (currentState == 1)
         {
             // If the timer is less than the spawn rate, then we want to make the timer count up by one
-            if (ponderingTimer < ponderingMenuSpawnRate)
+            if (ponderingTimer < ponderingMenuRate)
             {
                 ponderingTimer += Time.deltaTime;
             }
@@ -115,12 +120,12 @@ public class Table : MonoBehaviour
         else if (currentState == 3)
         {
             // If the timer is less than the spawn rate, then we want to make the timer count up by one
-            if (cookingTimer < cookTimeSpawnRate)
+            if (cookingTimer < cookingRate)
             {
                 cookingTimer += Time.deltaTime;
             }
 
-            // If timer has met or exceeded the spawn rate, then spawn the order and start the time again
+            // If timer has met or exceeded the spawn rate, then spawn the order and reset timer
             else
             {
                 spawnFoodItem(food, counter);
@@ -138,13 +143,26 @@ public class Table : MonoBehaviour
         // 5 = customer has received their food and is currently eating
         else if (currentState == 5)
         {
+            if (eatingTimer < eatingRate)
+            {
+                eatingTimer += Time.deltaTime;
+            }
 
+            // If timer has met or exceeded the spawn rate, then customer is done eating so reset timer and move to the next state
+            else
+            {
+                eatingTimer = 0;
+                currentState = 6;
+            }
         }
 
         // 6 = customers have finished their meal and have left the table
         else if (currentState == 6)
         {
+            // TODO: add post-meal customer interactions (like leaving the table and resuming wandering) and money interactions
 
+            // Set currentState back to 0 to start the cycle over again
+            currentState = 0;
         }
 
     }
@@ -176,6 +194,5 @@ public class Table : MonoBehaviour
             isPlayerNear = false;
         }
     }
-
 
 }
