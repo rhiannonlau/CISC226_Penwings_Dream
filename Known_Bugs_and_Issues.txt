@@ -36,7 +36,7 @@
 	- trigger: idk i can't recreate TT it just happens sometimes and i can't figure out what the trigger is
 	- effect: the food will fall when put down (intended), then after about one or two seconds, the food just starts moving away from penwing
 
-7. Issue: penwing's animation/collider dips into floor when he in pre-slide animation
+7. Issue: penwing's animation/collider dips into floor when he is in pre-slide animation
 	- trigger: sliding
 	- effect: he falls into the floor before coming back up to normal
 	- notes: the problem lies with his pre-slide animation and collider box
