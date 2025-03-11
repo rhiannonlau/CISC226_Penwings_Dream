@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 using System.Collections;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -71,11 +72,22 @@ public class PlayerMovement : MonoBehaviour
     private int foodLayer;
     [SerializeField] private LayerMask foodMask;
 
+    // Variables for taking and placing orders
+    private int tableLayer;
+    private GameObject table;
+    // later:
+    // private Table table;
+    private int kitchenLayer;
+    // private Kitchen kitchen;
+    // private Ticket ticket;
+
 
     private void Start()
     {
         foodLayer = LayerMask.NameToLayer("Food");
         chandelierLayer = LayerMask.NameToLayer("Chandelier");
+        tableLayer = LayerMask.NameToLayer("Table");
+        kitchenLayer = LayerMask.NameToLayer("Kitchen");
     }
 
     private void Awake()
@@ -218,12 +230,59 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
+        // taking orders
+        if (lowerHitInfo.collider != null && lowerHitInfo.collider.gameObject.layer == tableLayer)
+        {
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+                // GameObject self = transform.gameObject;
+                // table = lowerHitInfo.collider.gameObject;
+
+                int state = 0;
+                // int state = table.currentState;
+                // OR
+                // table.SendMessage("GetState", self);
+
+                switch (state)
+                {
+                    // customer is ready to order
+                    case 2:
+                    {
+                        // table.SendMessage("TakeOrder", self);
+                        break;
+                    }
+
+                    // customer is waiting for order
+                    case 4:
+                    {
+                        // if (food.id = table.number)
+                        // {
+                        //      table.SendMessage("DeliverOrder", self);
+                        // }
+                        break;
+                    }
+                }
+            }
+        }
+
+        // sending orders to the kitchen
+        if (lowerHitInfo.collider != null && lowerHitInfo.collider.gameObject.layer == kitchenLayer)
+        {
+            if (Input.GetKeyDown(KeyCode.Z)) //  && ticket != null
+            {
+                // kitchen.SendMessage("SendOrder") // shouldn't need to return anything, thus don't need self
+            }
+        }
+
+        
+
         // issue food drop penalty if they fell to the next floor
         // do this by checking 3 things:
         // 1. !wasGrounded and grounded: checks that they were not grounded last frame, and are now grounded, signifying a landing of some sort
         // 2. lastFloor != currentFloor: they've changed floors, meaning the landing was not from a successful jump or swing
         // 3. !usedElevator: they didn't use the elevator to change floors
-        if (!wasGroundedLastUpdate && grounded && lastFloor != currentFloor && !usedElevator)
+        // the fourth check, lastFloor == 0, checks if it was the start of the game, which is the only case when lastFloor = 0
+        if (!wasGroundedLastUpdate && grounded && lastFloor != currentFloor && !usedElevator && lastFloor == 0)
         {
             DropFood();
 
@@ -594,4 +653,33 @@ public class PlayerMovement : MonoBehaviour
             // snailRenderer.enabled = false; // snail animation off
         }
     }
+
+
+    // ORDER AND TABLE INTERACTION METHODS ///////////////////////////////////////////////////////////////////////////////////
+    
+    // is this even necessary????
+    private void ReceiveState(int state)
+    {
+
+    }
+
+    // takes the order from the customer
+    private void TakeOrder() // Table table
+    {
+        // spawn a ticket in penwing's hand - make a ticket class?
+    }
+
+    // gives the order to the kitchen
+    private void SendOrder()
+    {
+        // kitchen.SendMessage("DeliverOrder");
+    }
+
+    // give the order to the customer
+    private void DeliverOrder() // Table table
+    {
+        // table.SendMessage("DeliverOrder");
+        // food.SetParent(table);
+    }
+
 }

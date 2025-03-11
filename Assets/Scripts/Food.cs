@@ -12,7 +12,7 @@ public class Food : MonoBehaviour
     // private Rigidbody2D body;
 
     // properties
-    private int id;
+    public int id { get; private set; }
     
     // layer references
     private LayerMask tableLayer;

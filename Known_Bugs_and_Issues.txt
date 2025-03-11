@@ -27,7 +27,7 @@
 	- trigger: holding down space bar (jumping)
 	- effect: causes you to fly for as long as you hold it :D
 
-5. Issue: penwing can become spider-man and stick to walls
+5. FIXED Issue: penwing can become spider-man and stick to walls
 	- trigger: holding left/right-arrow while beside the edge of a wall
 	- effect: lets you defy gravity for as long as you want
 
