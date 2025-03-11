@@ -2544,12 +2544,18 @@ MonoBehaviour:
   jumpPower: 5
   upperRayPoint: {fileID: 898905033}
   upperRayDistance: 0.3
+  chandelierMask:
+    serializedVersion: 2
+    m_Bits: 0
   penaltyLength: 2
   ice: {fileID: 217161603}
   snail: {fileID: 1487594192}
   grabPoint: {fileID: 1014771622}
   lowerRayPoint: {fileID: 1084843093}
   lowerRayDistance: 1
+  foodMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!95 &1859751998
 Animator:
   serializedVersion: 5

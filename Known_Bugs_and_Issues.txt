@@ -1,6 +1,6 @@
-1. Bug: food falling infinitely when double clicking w
+1. Bug: food falling infinitely when double clicking z
 	- precondition: picked up food
-	- trigger: pressing w (picking up/putting down) twice fast
+	- trigger: pressing z (picking up/putting down) twice fast
 	- effect: food falls infinitely and through floor
 	- notes:
 		- /sometimes/ the food only falls a certain distance (nearly one screen's length), noticeable if penwing's at the top of the screen
@@ -40,3 +40,15 @@
 	- trigger: sliding
 	- effect: he falls into the floor before coming back up to normal
 	- notes: the problem lies with his pre-slide animation and collider box
+
+8. FIXED Issue: getting off the chandelier is broken when holding food
+	- precondition: holding food and swinging (holding z down)
+	- trigger: releasing z (stop swinging)
+	- desired effect: penwing is propelled in the direction you are holding down
+	- actual effect: penwing freezes mid-air, then falls when you release z and the arrow key
+
+9. Bug: the jump animation is constantly triggered when penwing is holding food and swinging
+	- precondition: holding food and swinging
+	- desired effect: penwing is locked in swing animation
+	- actual effect: penwing's jump animation is played on loop
+	- notes: swinging still works fine, it's just an animation bug

@@ -32,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform upperRayPoint;
     [SerializeField] private float upperRayDistance;
     private int chandelierLayer;
+    [SerializeField] private LayerMask chandelierMask;
     private GameObject chandelierObject;
     private HingeJoint2D hinge;
 
@@ -41,16 +42,14 @@ public class PlayerMovement : MonoBehaviour
     private float penaltyStartTime;
 
 
-    // to track if a penalty is active
-    private bool frozen = false; // version 1
-    private bool slowed = false; // version 2
-    private bool holdingFood = false; // version 3
-
-    // private bool currentFloor; // tracks what floor the player is currently on for the falling penalty
-    // i.e. on collision, if the new floor != currentfloor, issue penalty
-    // how to tell if they used elevator to switch floors? 
-        // elevatorswitch bool that is true when they use the elevator, which means that we would check if currentFloor != new Floor AND if elevatorSwitch?
-
+    // penalty variables
+    private bool slowed = false;
+    private int currentFloor; // tracks what floor the player is currently on for the falling penalty
+    private int lastFloor;
+    private bool usedElevator = false;
+    private bool grounded;
+    private bool wasGroundedLastUpdate = false;
+    
 
     // ice variables
     private SpriteRenderer iceRenderer;
@@ -63,11 +62,13 @@ public class PlayerMovement : MonoBehaviour
 
 
     // Variables for grabbing
+    private bool holdingFood = false;
     [SerializeField] private Transform grabPoint;
     [SerializeField] private Transform lowerRayPoint;
     [SerializeField] private float lowerRayDistance;
     private GameObject foodObject;
     private int foodLayer;
+    [SerializeField] private LayerMask foodMask;
 
 
     private void Start()
@@ -98,7 +99,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        bool grounded = isGrounded();
+        grounded = isGrounded();
+        // currentFloor = 
 
         // for swinging
         RaycastHit2D upperHitInfo = Physics2D.Raycast(upperRayPoint.position, transform.right, upperRayDistance);
@@ -114,7 +116,7 @@ public class PlayerMovement : MonoBehaviour
         AnimateMove();
 
         // x to jump
-        if (Input.GetKeyDown(KeyCode.X) && grounded) // key down prevents them from holding down the button and floating
+        if (Input.GetKeyDown(KeyCode.X) && grounded && !swinging) // key down prevents them from holding down the button and floating
         {
             // if (swinging)
             // {
@@ -137,6 +139,40 @@ public class PlayerMovement : MonoBehaviour
 
         // Debug.Log(hitObject());
 
+        // if (sideInfo.collider != null)
+        // {
+        //     Debug.Log(sideInfo);
+        //     LayerMask layer = sideInfo.collider.gameObject.layer;
+
+        //     if (Input.GetKeyDown(KeyCode.Z))
+        //     {
+        //         if (isGrounded() && layer == foodLayer)
+        //         {
+        //             if (!foodObject)
+        //             {
+        //                 PickUpFood(sideInfo);
+        //             }
+                    
+        //             else
+        //             {
+        //                 DropFood(sideInfo);
+        //             }
+        //         }
+
+        //         if (layer == chandelierLayer && !isGrounded())
+        //         {
+        //             Swing(sideInfo.collider.gameObject);
+        //         }
+        //     }
+
+            
+        // }
+
+        // if (Input.GetKeyUp(KeyCode.Z) || isGrounded())
+        // {
+        //     StopSwinging(chandelierObject);
+        // }
+
         // check if trying to grab while swinging
         if (upperHitInfo.collider != null && upperHitInfo.collider.gameObject.layer == chandelierLayer)
         {
@@ -145,23 +181,21 @@ public class PlayerMovement : MonoBehaviour
                 Debug.Log("swinging!");
                 Swing(upperHitInfo.collider.gameObject);
             }
-
-            
-            // else if (Input.GetKeyUp(KeyCode.Z) || isGrounded())
-            // {
-            //     Debug.Log("key up");
-            //     StopSwinging(upperHitInfo.collider.gameObject);
-            // }
         }
 
         if (swinging)
         {
             // release z to unswing
             if (Input.GetKeyUp(KeyCode.Z) || isGrounded())
-            {
-                Debug.Log("key up");
-                Debug.Log(isGrounded());
+            {            
+                // store the angular velocity before stopping to use for propulsion
+                float currentAngularVelocity = body.angularVelocity;
+                // Vector2 currentVelocity = body.velocity;
+                
                 StopSwinging(chandelierObject);
+                
+                // propel penwing after stopping swing
+                Propel(currentAngularVelocity);
             }
         }
 
@@ -169,17 +203,23 @@ public class PlayerMovement : MonoBehaviour
         // Picking up and putting down
         if (lowerHitInfo.collider != null && lowerHitInfo.collider.gameObject.layer == foodLayer)
         {
-            // w to grab object
-            if (Keyboard.current.zKey.wasPressedThisFrame && foodObject == null && isGrounded())
+            // z to grab object
+            if (Input.GetKeyDown(KeyCode.Z) && foodObject == null && isGrounded())
             {
                 PickUpFood(lowerHitInfo);
             }
 
-            // w to release object
-            else if (Keyboard.current.zKey.wasPressedThisFrame && isGrounded())
+            // z to release object
+            else if (Input.GetKeyDown(KeyCode.Z) && isGrounded())
             {
                 DropFood(lowerHitInfo);
             }
+        }
+
+        if (!wasGroundedLastUpdate && grounded && lastFloor != currentFloor && !usedElevator)
+        {
+            // i.e. on collision, if the new floor != currentfloor, issue penalty
+
         }
 
         // for testing: reset the player's position and all settings
@@ -189,11 +229,41 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // check if the penalty time has passed
-        if ((frozen || slowed) && Time.time - penaltyStartTime >= penaltyLength)
+        if (slowed && Time.time - penaltyStartTime >= penaltyLength)
         {
             EndSlow();
         }
+
+        wasGroundedLastUpdate = grounded;
     }
+    
+
+    // void OnDrawGizmos()
+    // {
+    //     if (Application.isPlaying)
+    //     {
+    //         Vector2 position = new Vector2(coll.bounds.center.x + coll.bounds.size.x * 0.5f, coll.bounds.center.y + 0.2f);
+    //         Vector2 sliver = new Vector2(0.2f, coll.bounds.size.y * 0.8f);
+    //         int combinedMask = LayerMask.GetMask("foodLayer", "chandelierLayer");
+    //         float maxDistance = 0.2f; // Adjust as needed
+            
+    //         // Perform the actual BoxCast
+    //         RaycastHit2D hit = Physics2D.BoxCast(position, sliver, 0, Vector2.right, maxDistance, combinedMask);
+            
+    //         // Set color based on hit
+    //         Gizmos.color = hit.collider != null ? Color.green : Color.red;
+            
+    //         // Draw the starting box
+    //         Gizmos.DrawWireCube(position, sliver);
+            
+    //         // Draw the ray
+    //         Gizmos.DrawRay(position, Vector2.right * (hit.collider != null ? hit.distance : maxDistance));
+            
+    //         // Draw the ending box
+    //         Vector2 endPos = position + Vector2.right * (hit.collider != null ? hit.distance : maxDistance);
+    //         Gizmos.DrawWireCube(endPos, sliver);
+    //     }
+    // }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
@@ -227,7 +297,7 @@ public class PlayerMovement : MonoBehaviour
         anim.SetBool("grounded", isGrounded());
         anim.SetBool("sliding", sliding);
         anim.SetBool("holdingObject", holdingFood); // || holdingTicket
-        // anim.SetBool("swing", swinging);
+        anim.SetBool("swinging", swinging);
     }
 
     private bool isGrounded()
@@ -235,15 +305,15 @@ public class PlayerMovement : MonoBehaviour
         // check if the player is grounded or not by using a boxcast to check the space under the player
 
         // make the boxcast a sliver that's the same width as the player's collider
-        Vector2 offset = new Vector2(coll.bounds.center.x, coll.bounds.center.y - coll.bounds.size.y * 0.5f);
+        Vector2 position = new Vector2(coll.bounds.center.x, coll.bounds.center.y - coll.bounds.size.y * 0.5f);
         Vector2 sliver = new Vector2(coll.bounds.size.x, 0.2f);
 
-        RaycastHit2D raycastHit = Physics2D.BoxCast(offset, sliver, 0, Vector2.down, 0.2f, FloorLayer);
+        RaycastHit2D raycastHit = Physics2D.BoxCast(position, sliver, 0, Vector2.down, 0.2f, FloorLayer);
 
         return raycastHit.collider != null;
     }
 
-    // laying the groundwork for switching over from two raycasts to one
+    // laying the groundwork for switching over from two raycasts to one boxcast
     private GameObject hitObject()
     {
         Vector2 raisedCenter = new Vector2(coll.bounds.center.x, coll.bounds.center.y + 0.1f);
@@ -258,6 +328,12 @@ public class PlayerMovement : MonoBehaviour
         }
         
         return null;
+
+        // make the boxcast a sliver that's the nearly the same height as the player's collider
+        // Vector2 position = new Vector2(coll.bounds.center.x + coll.bounds.size.x * 0.5f, coll.bounds.center.y + 0.2f);
+        // Vector2 sliver = new Vector2(0.2f, coll.bounds.size.y * 0.8f);
+        // int combinedMask = LayerMask.GetMask("foodLayer", "chandelierLayer");
+        // RaycastHit2D sideInfo = Physics2D.BoxCast(position, sliver, 0, Vector2.right, 0.2f, combinedMask);
     }
 
     // reset to original settings for testing
@@ -298,6 +374,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Swing(GameObject chandelier)
     {
+        anim.SetTrigger("Swing");
+        
         hinge.enabled = true;
 
         body.mass = 0.0001f;
@@ -349,24 +427,73 @@ public class PlayerMovement : MonoBehaviour
         swinging = false;
     }
 
+    private void Propel(float angularVelocity)
+    {
+        // calculate the direction based on the angular velocity
+        float direction = Mathf.Sign(angularVelocity);
+        
+        // disable collisions between player and food while propelling
+        if (holdingFood && foodObject != null)
+        {
+            // temporarily disable the food's collider
+            Collider2D foodColl = foodObject.GetComponent<Collider2D>();
+
+            if (foodColl != null)
+            {
+                foodColl.enabled = false;
+            }
+        }
+        
+        // change the velocity
+        float xForce = 10f;
+        float yForce = 5f;
+        body.velocity = new Vector2(direction * xForce, yForce);
+        
+        // re-enable collisions after a short delay
+        if (holdingFood && foodObject != null)
+        {
+            StartCoroutine(EnableFoodCollision());
+        }
+    }
+
+    private IEnumerator EnableFoodCollision()
+    {
+        // wait for propulsion to complete before re-enabling the collider
+        yield return new WaitForSeconds(0.5f);
+        
+        if (foodObject != null)
+        {
+            Collider2D foodColl = foodObject.GetComponent<Collider2D>();
+            
+            if (foodColl != null)
+            {
+                foodColl.enabled = true;
+            }
+        }
+    }
+
     private void PickUpFood(RaycastHit2D hitInfo)
     {
         foodObject = hitInfo.collider.gameObject;
-        foodObject.GetComponent<Rigidbody2D>().isKinematic = true;
+
+        Rigidbody2D foodObjectRb = foodObject.GetComponent<Rigidbody2D>();
+        foodObjectRb.isKinematic = true;
+
         foodObject.transform.position = grabPoint.position;
         foodObject.transform.SetParent(transform);
+        foodObjectRb.mass = 0.0001f;
         holdingFood = true;
     }
 
     // player drops the food if they were holding any
     private void DropFood(RaycastHit2D HitInfo)
     {
-        if (holdingFood)
-        {
-            holdingFood = false;
+        if (holdingFood && foodObject != null)
+        {            
             foodObject.GetComponent<Rigidbody2D>().isKinematic = false;
             foodObject.transform.SetParent(null);
             foodObject = null;
+            holdingFood = false;
         }
     }
 
