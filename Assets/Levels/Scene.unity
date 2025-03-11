@@ -218,7 +218,7 @@ GameObject:
   - component: {fileID: 256308185}
   - component: {fileID: 256308184}
   m_Layer: 3
-  m_Name: Floor 1 Right
+  m_Name: Floor 3 Right
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1937,7 +1937,7 @@ GameObject:
   - component: {fileID: 987553853}
   - component: {fileID: 987553852}
   m_Layer: 3
-  m_Name: Floor 1 Left
+  m_Name: Floor 3 Left
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

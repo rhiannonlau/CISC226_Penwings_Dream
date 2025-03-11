@@ -5,6 +5,7 @@ using UnityEngine.UIElements;
 using UnityEngine.InputSystem;
 
 using System.Collections;
+using System.Runtime.InteropServices;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     
     // variables for animation
     private Animator anim;
+    private SpriteRenderer rend;
     private bool sliding;
     [SerializeField] private LayerMask FloorLayer;
 
@@ -49,7 +51,6 @@ public class PlayerMovement : MonoBehaviour
     private bool usedElevator = false;
     private bool grounded;
     private bool wasGroundedLastUpdate = false;
-    
 
     // ice variables
     private SpriteRenderer iceRenderer;
@@ -82,6 +83,7 @@ public class PlayerMovement : MonoBehaviour
         // get references from Player object
         body = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        rend = GetComponent<SpriteRenderer>();
         coll = GetComponent<BoxCollider2D>();
         hinge = GetComponent<HingeJoint2D>();
 
@@ -100,7 +102,11 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         grounded = isGrounded();
-        // currentFloor = 
+
+        if (grounded)
+        {
+            currentFloor = GetFloorNum();
+        }
 
         // for swinging
         RaycastHit2D upperHitInfo = Physics2D.Raycast(upperRayPoint.position, transform.right, upperRayDistance);
@@ -112,17 +118,12 @@ public class PlayerMovement : MonoBehaviour
         horizontalInput = Input.GetAxis("Horizontal");
         body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
 
-        // game logic
         AnimateMove();
 
+        // game logic
         // x to jump
         if (Input.GetKeyDown(KeyCode.X) && grounded && !swinging) // key down prevents them from holding down the button and floating
         {
-            // if (swinging)
-            // {
-            //     StopSwinging(upperHitInfo);
-            // }
-
             Jump();
         }
 
@@ -137,6 +138,7 @@ public class PlayerMovement : MonoBehaviour
             EndSlide();
         }
 
+        // groundwork for optimizing later
         // Debug.Log(hitObject());
 
         // if (sideInfo.collider != null)
@@ -212,14 +214,20 @@ public class PlayerMovement : MonoBehaviour
             // z to release object
             else if (Input.GetKeyDown(KeyCode.Z) && isGrounded())
             {
-                DropFood(lowerHitInfo);
+                DropFood();
             }
         }
 
+        // issue food drop penalty if they fell to the next floor
+        // do this by checking 3 things:
+        // 1. !wasGrounded and grounded: checks that they were not grounded last frame, and are now grounded, signifying a landing of some sort
+        // 2. lastFloor != currentFloor: they've changed floors, meaning the landing was not from a successful jump or swing
+        // 3. !usedElevator: they didn't use the elevator to change floors
         if (!wasGroundedLastUpdate && grounded && lastFloor != currentFloor && !usedElevator)
         {
-            // i.e. on collision, if the new floor != currentfloor, issue penalty
+            DropFood();
 
+            StartCoroutine(Blink());
         }
 
         // for testing: reset the player's position and all settings
@@ -228,13 +236,15 @@ public class PlayerMovement : MonoBehaviour
             Reset();
         }
 
-        // check if the penalty time has passed
+        // if the player is slowed, check if the penalty time for the slow has passed
         if (slowed && Time.time - penaltyStartTime >= penaltyLength)
         {
             EndSlow();
         }
 
+        // update the information from this frame
         wasGroundedLastUpdate = grounded;
+        lastFloor = currentFloor;
     }
     
 
@@ -268,6 +278,37 @@ public class PlayerMovement : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     {
         
+    }
+
+ 
+    private int GetFloorNum()
+    {
+        Vector2 position = new Vector2(coll.bounds.center.x, coll.bounds.center.y - coll.bounds.size.y * 0.5f);
+        Vector2 sliver = new Vector2(coll.bounds.size.x, 0.2f);
+
+        RaycastHit2D raycastHit = Physics2D.BoxCast(position, sliver, 0, Vector2.down, 0.2f, FloorLayer);
+
+        int num = 1;
+
+        string name = raycastHit.collider.gameObject.name;
+
+        // temp hard coded
+        if (name.Contains("Ground"))
+        {
+            num = 1;
+        }
+
+        else if (name.Contains("2"))
+        {
+            num = 2;
+        }
+
+        else if (name.Contains("3"))
+        {
+            num = 3;
+        }
+
+        return num;
     }
 
     private void AnimateMove()
@@ -356,6 +397,7 @@ public class PlayerMovement : MonoBehaviour
         anim.SetTrigger("jump"); // trigger the jump animation
     }
 
+    // METHODS FOR SLIDING ////////////////////////////////////////////////////////////////////////////////////////
     private void Slide()
     {
         anim.SetTrigger("slide");
@@ -372,10 +414,11 @@ public class PlayerMovement : MonoBehaviour
         // later: re enable direction changing
     }
 
+    // METHODS FOR SWINGING ////////////////////////////////////////////////////////////////////////////////////////
     private void Swing(GameObject chandelier)
     {
         anim.SetTrigger("Swing");
-        
+
         hinge.enabled = true;
 
         body.mass = 0.0001f;
@@ -472,6 +515,8 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+
+    // METHODS FOR PICKING UP AND PUTTING DOWN FOOD ////////////////////////////////////////////////////////////////////////////////////////
     private void PickUpFood(RaycastHit2D hitInfo)
     {
         foodObject = hitInfo.collider.gameObject;
@@ -486,7 +531,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     // player drops the food if they were holding any
-    private void DropFood(RaycastHit2D HitInfo)
+    private void DropFood()
     {
         if (holdingFood && foodObject != null)
         {            
@@ -497,6 +542,27 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private IEnumerator Blink()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (rend.enabled)
+            {
+                rend.enabled = false;
+            }
+
+            else
+            {
+                rend.enabled = true;
+            }
+
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        rend.enabled = true;
+    }        
+
+    // METHODS FOR SLOWS ////////////////////////////////////////////////////////////////////////////////////////
     // player is slowed for x seconds
     private void Slow()
     {
@@ -504,12 +570,12 @@ public class PlayerMovement : MonoBehaviour
         if (!slowed)
         {
             penaltyStartTime = Time.time;
-            anim.speed /= 3;
+            anim.speed /= 4;
             slowed = true;
 
             // speed = 2f;
             // jumpPower = 2f;
-            body.drag = 50f;
+            body.drag = 100f;
 
             // snailRenderer.enabled = true; // turn on snail animation
         }
@@ -520,7 +586,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (slowed)
         {
-            anim.speed *= 3;
+            anim.speed *= 4;
             slowed = false;
             // speed = originalSpeed;
             // jumpPower = originalJumpPower;
