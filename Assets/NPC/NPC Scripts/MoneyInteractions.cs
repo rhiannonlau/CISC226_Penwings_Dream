@@ -107,6 +107,7 @@ public class MoneyInteractions : MonoBehaviour
             yield return null;
         }
         ani.SetBool("iswalk", false);
+
     }
 
     IEnumerator StartCountdown()
@@ -121,6 +122,14 @@ public class MoneyInteractions : MonoBehaviour
         // Time ran out, player loses chance to earn money
         timerUI.gameObject.SetActive(false);
         npcInter = false;
+
+
+        rbNPC.bodyType = RigidbodyType2D.Dynamic;
+        ani.SetBool("iswalk", true);
+
+        wanderScript.StartWandering();
+
+        StartCoroutine(NPCDecide());
     }
 
     void Interactions()
