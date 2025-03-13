@@ -12,6 +12,12 @@ public class UpDownChunk : MonoBehaviour
     [SerializeField] private LayerMask eleLayer;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private Rigidbody2D rb;
+
+    [SerializeField] private Transform floor1;
+    [SerializeField] private Transform floor2;
+    [SerializeField] private Transform floor3;
+
+
     private float moveSpeed = 15f; // Speed of smooth movement
 
     private void Start()
@@ -41,12 +47,12 @@ public class UpDownChunk : MonoBehaviour
 
                 if(level == 0)
                 {
-                    targetPosition = new Vector3(ele.position.x, ele.position.y + 3, ele.position.z);
+                    targetPosition = new Vector3(ele.position.x, floor2.position.y , ele.position.z);
                     
                 }
                 else if (level == 1)
                 {
-                    targetPosition = new Vector3(ele.position.x, ele.position.y + 3, ele.position.z);
+                    targetPosition = new Vector3(ele.position.x, floor3.position.y, ele.position.z);
                 }
 
                 level += 1;
@@ -57,11 +63,11 @@ public class UpDownChunk : MonoBehaviour
                 
                 if (level == 0)
                 {
-                    targetPosition = new Vector3(ele.position.x, ele.position.y - 3, ele.position.z);
+                    targetPosition = new Vector3(ele.position.x, floor1.position.y, ele.position.z);
                 }
                 else if (level == 1)
                 {
-                    targetPosition = new Vector3(ele.position.x, ele.position.y - 3, ele.position.z);
+                    targetPosition = new Vector3(ele.position.x, floor2.position.y, ele.position.z);
                 }
                 level -= 1;
             }
@@ -69,7 +75,7 @@ public class UpDownChunk : MonoBehaviour
 
         // Smoothly move towards the target position
         ele.position = Vector3.MoveTowards(ele.position, targetPosition, moveSpeed * Time.deltaTime);
-        target = new Vector3(ele.position.x, ele.position.y + 2, ele.position.z);
+        target = new Vector3(ele.position.x, ele.position.y + 10, ele.position.z);
         rb.position = Vector2.MoveTowards(rb.position, target, Time.deltaTime * 2);
     }
 }
