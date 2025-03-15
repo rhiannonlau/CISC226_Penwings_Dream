@@ -2848,7 +2848,7 @@ MonoBehaviour:
   rb: {fileID: 1700744110}
   speed: 2
   leftboundX: -9
-  rightboundX: -4
+  rightboundX: -2
   ani: {fileID: 1700744112}
   minpause: 1
   maxpause: 2
@@ -2868,8 +2868,8 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_LinearDrag: 7
+  m_AngularDrag: 7
   m_GravityScale: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -3420,7 +3420,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1859751992}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a07f87d90155c1e48ac71391584733ad, type: 3}
   m_Name: 
