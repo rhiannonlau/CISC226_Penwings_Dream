@@ -35,6 +35,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform upperRayPoint;
     [SerializeField] private float upperRayDistance;
     private int chandelierLayer;
+    [SerializeField] private LayerMask chandelierMask;
     private GameObject chandelierObject;
     private HingeJoint2D hinge;
 
@@ -69,6 +70,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float lowerRayDistance;
     private GameObject foodObject;
     private int foodLayer;
+    [SerializeField] private LayerMask foodMask;
 
     // Variables for taking and placing orders
     private int tableLayer;
@@ -112,7 +114,6 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         grounded = isGrounded();
-        Debug.Log(grounded);
 
         if (grounded)
         {
@@ -281,7 +282,7 @@ public class PlayerMovement : MonoBehaviour
         // 2. lastFloor != currentFloor: they've changed floors, meaning the landing was not from a successful jump or swing
         // 3. !usedElevator: they didn't use the elevator to change floors
         // the fourth check, lastFloor == 0, checks if it was the start of the game, which is the only case when lastFloor = 0
-        if ((!wasGroundedLastUpdate && grounded && lastFloor != currentFloor && !usedElevator) || lastFloor == 0)
+        if (!wasGroundedLastUpdate && grounded && lastFloor != currentFloor && !usedElevator && lastFloor == 0)
         {
             DropFood();
 
