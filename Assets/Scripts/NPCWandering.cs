@@ -21,6 +21,7 @@ public class NPCWandering : MonoBehaviour
     private float randomtime, timer;
     private bool iswalk = true;
     private bool isflip;
+    private bool wander = true;
 
     // Start is called before the first frame update
     void Start()
@@ -35,18 +36,37 @@ public class NPCWandering : MonoBehaviour
     {
         timer += Time.deltaTime;
 
-        if(timer >= randomtime) // idle
+        if (wander)
         {
-            change();
+            if (timer >= randomtime) // idle
+            {
+                change();
+            }
+            // boundary constraints
+            if (!isflip && (transform.position.x > rightboundX || transform.position.x < leftboundX))
+                StartCoroutine(Flip());
+
+            if (iswalk)
+                rb.velocity = Vector2.right * facingDirection * speed;
         }
-        // boundary constraints
-        if (!isflip && (transform.position.x > rightboundX || transform.position.x < leftboundX))
-            StartCoroutine(Flip());
-        
-        if(iswalk)
-            rb.velocity = Vector2.right * facingDirection * speed;
+
 
     }
+
+    public void StopWandering()
+    {
+        wander = false;
+        // Stop any movement logic
+        GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+    }
+
+    public void StartWandering()
+    {
+        wander = true;
+        // Resume wandering logic
+    }
+
+
     // moves in opposite direction
     IEnumerator Flip()
     {
