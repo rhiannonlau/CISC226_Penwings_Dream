@@ -6,22 +6,30 @@ using UnityEngine;
 public class Table : MonoBehaviour
 {
 
+    // Transform for kitchen counters and customer tables
     public Transform counter;
     public Transform customerTable;
 
+    // Arrays of game objects and their corresponding speech bubbles
     public GameObject[] foodOptions;
     public GameObject[] foodOrders;
+
+    // Variables for ordering
     public int selectedFoodItem = -1;
     public GameObject customerFoodSelection;
     public GameObject customerOrder;
 
+    // Time and condition variables for "pondering" (when customer is "thinking" about what to order)
     public float ponderingMenuRate = 2;
     private float ponderingTimer = 0;
     public bool isPondering = false;
+
+    // Time and condition variables for "pondering" (when "kitchen" is making the order)
     public float cookingRate = 5;
     private float cookingTimer = 0;
     public bool isCooking = false;
     
+    // Array of speech bubble renderer components
     private Renderer[] speechBubbleRender;
 
 
@@ -52,6 +60,8 @@ public class Table : MonoBehaviour
 
                 // Gets all renderer references of game object and its children
                 speechBubbleRender = customerOrder.GetComponentsInChildren<Renderer>();
+
+                // Enable the speech bubble renderers
                 foreach (Renderer r in speechBubbleRender)
                 {
                     r.enabled = true;
@@ -81,11 +91,13 @@ public class Table : MonoBehaviour
 
     }
 
+    // Spawns the correct order for a table on top of its corresponding kitchen counter when it's done "cooking"
     void SpawnFoodItem(GameObject foodItem, Transform counter)
     {
         Instantiate(foodItem, counter.position + Vector3.up, counter.rotation);
     }
 
+    // When player meets conditions to take customer order, the customer's selected menu item reference is sent back to player
     void TakeOrder(GameObject player)
     {
         customerFoodSelection = foodOptions[selectedFoodItem];
@@ -93,8 +105,10 @@ public class Table : MonoBehaviour
         isCooking = true;
     }
 
+    // If order is being delivered to the correct table and other player-based conditions are met, the speech bubble disappears 
     void DeliverOrder(Renderer[] customerSpeechBubble)
     {
+        // Disable the speech bubble renderers
         foreach (Renderer r in customerSpeechBubble)
         {
             r.enabled = false;
