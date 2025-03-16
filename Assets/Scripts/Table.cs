@@ -15,7 +15,7 @@ public class Table : MonoBehaviour
     public GameObject[] foodOrders;
 
     // Variables for ordering
-    public int selectedFoodItem = -1;
+    public int selectedFoodItem = 0;
     public GameObject customerFoodSelection;
     public GameObject customerOrder;
 
