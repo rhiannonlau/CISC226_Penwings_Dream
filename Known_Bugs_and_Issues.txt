@@ -83,3 +83,5 @@
 	- precondition: standing beside food
 	- desired effect: detecting food
 	- actual effect: hitObject() returns null
+
+15. Bug: player gets pushed by food when holding food
