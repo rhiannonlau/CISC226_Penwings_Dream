@@ -33,8 +33,8 @@
 
 6. Bug: putting down food makes the food become self-driving car
 	- precondition: holding food, maybe more ?
-	- trigger: idk i can't recreate TT it just happens sometimes and i can't figure out what the trigger is
-	- effect: the food will fall when put down (intended), then after about one or two seconds, the food just starts moving away from penwing
+	- trigger: idk i can't recreate TT it just happens sometimes and i can't figure out 	what the trigger is
+	- effect: the food will fall when put down (intended), then after about one or two 	seconds, the food just starts moving away from penwing
 
 7. Issue: penwing's animation/collider dips into floor when he is in pre-slide animation
 	- trigger: sliding
@@ -45,10 +45,41 @@
 	- precondition: holding food and swinging (holding z down)
 	- trigger: releasing z (stop swinging)
 	- desired effect: penwing is propelled in the direction you are holding down
-	- actual effect: penwing freezes mid-air, then falls when you release z and the arrow key
+	- actual effect: penwing freezes mid-air, then falls when you release z and the arrow 	key
 
 9. Bug: the jump animation is constantly triggered when penwing is holding food and swinging
 	- precondition: holding food and swinging
 	- desired effect: penwing is locked in swing animation
 	- actual effect: penwing's jump animation is played on loop
 	- notes: swinging still works fine, it's just an animation bug
+
+10. FIXED Bug: flight unlocked
+	- trigger: pressing jump (x) repeatedly
+	- desired effect: penwing can only jump when he is on the ground
+	- actual effect: he jumps from midair and gets higher and higher
+	- note: only happens when he is on elevator
+
+11. Bug: jumping on elevator leaves penwing stuck in jump animation
+	- precondition: standing on elevator
+	- trigger: jumping (x)
+	- desired effect: normal jump
+	- actual effect: penwing stops midair and just hangs there
+	- note: moving off of the elevator resets/fixes it
+
+12. Issue: penwing doesn't directly follow elevator when moving up and down
+	- precondition: on elevator and moving
+	- desired effect: penwing and elevator move simultaneously
+	- actual effect:
+		- when moving up, penwing dips slightly into the elevator for a second
+		- when moving down, penwing takes a second before falling to where the 				elevator is
+	- note: setting the player's parent to the elevator works to have the intended 			effect, but has the unintended effect of shrinking the player's scale to match the 		elevator, distorting penwing's size
+
+13. Issue: penwing doesn't get the falling penalty when landing on the elevator
+	- precondition: falling on to elevator
+	- desired effect: blink and drop food
+	- actual effect: none
+
+14. FIXED Bug: penwing doesn't detect food/chandelier if you're not inputting a direction
+	- precondition: standing beside food
+	- desired effect: detecting food
+	- actual effect: hitObject() returns null

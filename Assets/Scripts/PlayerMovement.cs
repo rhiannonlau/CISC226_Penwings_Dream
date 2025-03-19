@@ -7,6 +7,9 @@ using UnityEngine.InputSystem;
 using System.Collections;
 using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
+using System.Dynamic;
+using UnityEditor.UI;
+using System;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -16,7 +19,16 @@ public class PlayerMovement : MonoBehaviour
     private Animator anim;
     private SpriteRenderer rend;
     private bool sliding;
-    [SerializeField] private LayerMask FloorLayer;
+    private LayerMask floorMask;
+
+    private Vector2 lookDirection;
+
+    // elevator vars
+    private LayerMask elevatorMask;
+    private bool onElevator;
+    private GameObject elevator;
+    private Vector3 elevatorPosition;
+    private Vector2 originalScale = new Vector2(0.5f, 0.5f);
 
 
     // movement variables
@@ -32,10 +44,10 @@ public class PlayerMovement : MonoBehaviour
 
     // swinging variables
     private bool swinging;
-    [SerializeField] private Transform upperRayPoint;
-    [SerializeField] private float upperRayDistance;
+    // [SerializeField] private Transform upperRayPoint;
+    // [SerializeField] private float upperRayDistance;
     private int chandelierLayer;
-    [SerializeField] private LayerMask chandelierMask;
+    private LayerMask chandelierMask;
     private GameObject chandelierObject;
     private HingeJoint2D hinge;
 
@@ -66,24 +78,31 @@ public class PlayerMovement : MonoBehaviour
     // Variables for grabbing
     private bool holdingFood = false;
     [SerializeField] private Transform grabPoint;
-    [SerializeField] private Transform lowerRayPoint;
-    [SerializeField] private float lowerRayDistance;
+    // [SerializeField] private Transform lowerRayPoint;
+    // [SerializeField] private float lowerRayDistance;
     private GameObject foodObject;
     private int foodLayer;
-    [SerializeField] private LayerMask foodMask;
+    private LayerMask foodMask;
 
     // Variables for taking and placing orders
+    private LayerMask tableMask;
     private int tableLayer;
     private GameObject table;
+    private int tableState;
     // later:
     // private Table table;
     private int kitchenLayer;
     // private Kitchen kitchen;
-    // private Ticket ticket;
 
 
     private void Start()
     {
+        floorMask = LayerMask.GetMask("Floor");
+        elevatorMask = LayerMask.GetMask("Elevator");
+        chandelierMask = LayerMask.GetMask("Chandelier");
+        foodMask = LayerMask.GetMask("Food");
+        tableMask = LayerMask.GetMask("Table");
+
         foodLayer = LayerMask.NameToLayer("Food");
         chandelierLayer = LayerMask.NameToLayer("Chandelier");
         tableLayer = LayerMask.NameToLayer("Table");
@@ -98,6 +117,9 @@ public class PlayerMovement : MonoBehaviour
         rend = GetComponent<SpriteRenderer>();
         coll = GetComponent<BoxCollider2D>();
         hinge = GetComponent<HingeJoint2D>();
+
+        // elevator
+        elevator = GameObject.Find("Elevator");
 
         // get the renderers for the special effects
         iceRenderer = ice.GetComponent<SpriteRenderer>();
@@ -114,6 +136,7 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         grounded = isGrounded();
+        onElevator = isOnElevator();
 
         if (grounded)
         {
@@ -121,20 +144,55 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // for swinging
-        RaycastHit2D upperHitInfo = Physics2D.Raycast(upperRayPoint.position, transform.right, upperRayDistance);
+        // RaycastHit2D upperHitInfo = Physics2D.Raycast(upperRayPoint.position, transform.right, upperRayDistance);
 
         // for grabbing
-        RaycastHit2D lowerHitInfo = Physics2D.Raycast(lowerRayPoint.position, transform.right, lowerRayDistance);
+        // RaycastHit2D lowerHitInfo = Physics2D.Raycast(lowerRayPoint.position, transform.right, lowerRayDistance);
 
         // for moving
         horizontalInput = Input.GetAxis("Horizontal");
         body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
 
+        lookDirection = new Vector2(horizontalInput, 0f);
+
         AnimateMove();
 
-        // game logic
+        // elevator logic /////////////////////////
+        if (isOnElevator()) // && !grounded
+        {
+            // my attempts to get the player to follow the elevator more closely
+            // Transform eleTransform = elevator.transform;
+            // float invElevatorXScale = 1 / eleTransform.localScale.x;
+            // float invElevatorYScale = 1 / eleTransform.localScale.y;
+
+            // transform.SetParent(eleTransform);
+            // transform.localScale = new Vector2(invElevatorXScale, invElevatorYScale);
+            // transform.localScale = originalScale;
+            // elevatorPosition = new Vector2(body.position.x, elevatorPosition.y);
+            // body.position = Vector2.MoveTowards(body.position, elevatorPosition, Time.deltaTime * 2);
+
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                elevator.SendMessage("Up");
+            }
+
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                elevator.SendMessage("Down");
+            }
+        }
+
+        // more attempts to get the player to follow the elevator
+        // else
+        // {
+        //     transform.SetParent(null);
+        //     transform.localScale = originalScale;
+        // }
+
+
+        // game logic /////////////////////////////////
         // x to jump
-        if (Input.GetKeyDown(KeyCode.X) && grounded && !swinging) // key down prevents them from holding down the button and floating
+        if (Input.GetKeyDown(KeyCode.X) && (grounded || onElevator) && !swinging) // key down prevents them from holding down the button and floating
         {
             Jump();
         }
@@ -150,51 +208,52 @@ public class PlayerMovement : MonoBehaviour
             EndSlide();
         }
 
-        // groundwork for optimizing later
-        // Debug.Log(hitObject());
-
-        // if (sideInfo.collider != null)
-        // {
-        //     Debug.Log(sideInfo);
-        //     LayerMask layer = sideInfo.collider.gameObject.layer;
-
-        //     if (Input.GetKeyDown(KeyCode.Z))
-        //     {
-        //         if (isGrounded() && layer == foodLayer)
-        //         {
-        //             if (!foodObject)
-        //             {
-        //                 PickUpFood(sideInfo);
-        //             }
-                    
-        //             else
-        //             {
-        //                 DropFood(sideInfo);
-        //             }
-        //         }
-
-        //         if (layer == chandelierLayer && !isGrounded())
-        //         {
-        //             Swing(sideInfo.collider.gameObject);
-        //         }
-        //     }
-
-            
-        // }
-
-        // if (Input.GetKeyUp(KeyCode.Z) || isGrounded())
-        // {
-        //     StopSwinging(chandelierObject);
-        // }
-
-        // check if trying to grab while swinging
-        if (upperHitInfo.collider != null && upperHitInfo.collider.gameObject.layer == chandelierLayer)
+        // look for collision with interactable objects, namely:
+        // food, chandelier, tables
+        if (hitObject())
         {
-            if (Input.GetKeyDown(KeyCode.Z) && chandelierObject == null && !isGrounded())
+            GameObject obj = hitObject();
+            int layer = obj.layer;
+
+            if (Input.GetKeyDown(KeyCode.Z))
             {
-                Debug.Log("swinging!");
-                Swing(upperHitInfo.collider.gameObject);
-            }
+                if (isGrounded() && layer == foodLayer)
+                {
+                    if (!foodObject)
+                    {
+                        PickUpFood(obj);
+                    }
+                    
+                    else
+                    {
+                        DropFood();
+                    }
+                }
+
+                if (layer == chandelierLayer && !isGrounded())
+                {
+                    Swing(obj);
+                }
+
+                if (layer == tableLayer)
+                {
+                    table = obj;
+                    table.SendMessage("GetState");
+                    // table calls GetState() and tableState now = the state
+                    // if (tableState == 4)
+                    // {
+                    //     table.SendMessage
+                    // }
+                    // but shouldn't it be on the table to check its own state?
+                    // the player should just be in charge to checking if its interacting
+                    // with the table and if its the table that placed the order they are holding
+                }
+            }         
+        }
+
+        if (Input.GetKeyUp(KeyCode.Z) || isGrounded())
+        {
+            StopSwinging(chandelierObject);
         }
 
         if (swinging)
@@ -213,86 +272,59 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-
-        // Picking up and putting down
-        if (lowerHitInfo.collider != null && lowerHitInfo.collider.gameObject.layer == foodLayer)
-        {
-            // z to grab object
-            if (Input.GetKeyDown(KeyCode.Z) && foodObject == null && isGrounded())
-            {
-                PickUpFood(lowerHitInfo);
-            }
-
-            // z to release object
-            else if (Input.GetKeyDown(KeyCode.Z) && isGrounded())
-            {
-                DropFood();
-            }
-        }
-
         // taking orders
-        if (lowerHitInfo.collider != null && lowerHitInfo.collider.gameObject.layer == tableLayer)
-        {
-            if (Input.GetKeyDown(KeyCode.Z))
-            {
-                // GameObject self = transform.gameObject;
-                // table = lowerHitInfo.collider.gameObject;
+        // if (lowerHitInfo.collider != null && lowerHitInfo.collider.gameObject.layer == tableLayer)
+        // {
+        //     if (Input.GetKeyDown(KeyCode.Z))
+        //     {
+        //         // GameObject self = transform.gameObject;
+        //         // table = lowerHitInfo.collider.gameObject;
 
-                int state = 0;
-                // int state = table.currentState;
-                // OR
-                // table.SendMessage("GetState", self);
+        //         int state = 0;
+        //         // int state = table.currentState;
+        //         // OR
+        //         // table.SendMessage("GetState", self);
 
-                switch (state)
-                {
-                    // customer is ready to order
-                    case 2:
-                    {
-                        // table.SendMessage("TakeOrder", self);
-                        break;
-                    }
+        //         switch (state)
+        //         {
+        //             // customer is ready to order
+        //             case 2:
+        //             {
+        //                 // table.SendMessage("TakeOrder", self);
+        //                 break;
+        //             }
 
-                    // customer is waiting for order
-                    case 4:
-                    {
-                        // if (food.id = table.number)
-                        // {
-                        //      table.SendMessage("DeliverOrder", self);
-                        // }
-                        break;
-                    }
-                }
-            }
-        }
+        //             // customer is waiting for order
+        //             case 4:
+        //             {
+        //                 // if (food.id = table.number)
+        //                 // {
+        //                 //      table.SendMessage("DeliverOrder", self);
+        //                 // }
+        //                 break;
+        //             }
+        //         }
+        //     }
+        // }
 
-        // sending orders to the kitchen
-        if (lowerHitInfo.collider != null && lowerHitInfo.collider.gameObject.layer == kitchenLayer)
-        {
-            if (Input.GetKeyDown(KeyCode.Z)) //  && ticket != null
-            {
-                // kitchen.SendMessage("SendOrder") // shouldn't need to return anything, thus don't need self
-            }
-        }
-
+        // penalties //////////////////////////////////////////////////////////////
         
-
         // issue food drop penalty if they fell to the next floor
         // do this by checking 3 things:
-        // 1. !wasGrounded and grounded: checks that they were not grounded last frame, and are now grounded, signifying a landing of some sort
+        // 1. !wasGrounded and grounded or onElevator: checks that they were not grounded last frame, and are now grounded/on the elevator, signifying a landing of some sort
         // 2. lastFloor != currentFloor: they've changed floors, meaning the landing was not from a successful jump or swing
         // 3. !usedElevator: they didn't use the elevator to change floors
         // the fourth check, lastFloor == 0, checks if it was the start of the game, which is the only case when lastFloor = 0
-        if (!wasGroundedLastUpdate && grounded && lastFloor != currentFloor && !usedElevator && lastFloor == 0)
+        if ((!wasGroundedLastUpdate && (grounded || onElevator) && lastFloor != currentFloor && !usedElevator) || lastFloor == 0)
         {
             DropFood();
 
             StartCoroutine(Blink());
         }
 
-        // for testing: reset the player's position and all settings
-        if (Input.GetKey(KeyCode.R))
+        if (isGrounded() && usedElevator)
         {
-            Reset();
+            usedElevator = false;
         }
 
         // if the player is slowed, check if the penalty time for the slow has passed
@@ -301,23 +333,38 @@ public class PlayerMovement : MonoBehaviour
             EndSlow();
         }
 
+        // for testing: reset the player's position and all settings
+        if (Input.GetKey(KeyCode.R))
+        {
+            Reset();
+        }
+
+        if (hitObject())
+        {
+            Debug.Log(hitObject().name);
+        }
+
+        else
+        {
+            Debug.Log("null");
+        }
+
         // update the information from this frame
         wasGroundedLastUpdate = grounded;
         lastFloor = currentFloor;
     }
     
-
     // void OnDrawGizmos()
     // {
     //     if (Application.isPlaying)
     //     {
-    //         Vector2 position = new Vector2(coll.bounds.center.x + coll.bounds.size.x * 0.5f, coll.bounds.center.y + 0.2f);
-    //         Vector2 sliver = new Vector2(0.2f, coll.bounds.size.y * 0.8f);
-    //         int combinedMask = LayerMask.GetMask("foodLayer", "chandelierLayer");
+    //         Vector2 position = new Vector2(coll.bounds.center.x + coll.bounds.size.x * 0.5f, coll.bounds.center.y + 0.1f);
+    //         Vector2 sliver = new Vector2(0.1f, coll.bounds.size.y * 0.9f);
+    //         int combinedMask = foodMask | chandelierMask;
     //         float maxDistance = 0.2f; // Adjust as needed
             
     //         // Perform the actual BoxCast
-    //         RaycastHit2D hit = Physics2D.BoxCast(position, sliver, 0, Vector2.right, maxDistance, combinedMask);
+    //         RaycastHit2D hit = Physics2D.BoxCast(position, sliver, 0, lookDirection, maxDistance, combinedMask);
             
     //         // Set color based on hit
     //         Gizmos.color = hit.collider != null ? Color.green : Color.red;
@@ -326,10 +373,10 @@ public class PlayerMovement : MonoBehaviour
     //         Gizmos.DrawWireCube(position, sliver);
             
     //         // Draw the ray
-    //         Gizmos.DrawRay(position, Vector2.right * (hit.collider != null ? hit.distance : maxDistance));
+    //         Gizmos.DrawRay(position, lookDirection * (hit.collider != null ? hit.distance : maxDistance));
             
     //         // Draw the ending box
-    //         Vector2 endPos = position + Vector2.right * (hit.collider != null ? hit.distance : maxDistance);
+    //         Vector2 endPos = position + lookDirection * (hit.collider != null ? hit.distance : maxDistance);
     //         Gizmos.DrawWireCube(endPos, sliver);
     //     }
     // }
@@ -345,7 +392,7 @@ public class PlayerMovement : MonoBehaviour
         Vector2 position = new Vector2(coll.bounds.center.x, coll.bounds.center.y - coll.bounds.size.y * 0.5f);
         Vector2 sliver = new Vector2(coll.bounds.size.x, 0.2f);
 
-        RaycastHit2D raycastHit = Physics2D.BoxCast(position, sliver, 0, Vector2.down, 0.2f, FloorLayer);
+        RaycastHit2D raycastHit = Physics2D.BoxCast(position, sliver, 0, Vector2.down, 0.2f, floorMask);
 
         int num = 1;
 
@@ -400,40 +447,70 @@ public class PlayerMovement : MonoBehaviour
         anim.SetBool("swinging", swinging);
     }
 
+    // use box cast to check when the player is on the floor
     private bool isGrounded()
     {
         // check if the player is grounded or not by using a boxcast to check the space under the player
-
+ 
         // make the boxcast a sliver that's the same width as the player's collider
         Vector2 position = new Vector2(coll.bounds.center.x, coll.bounds.center.y - coll.bounds.size.y * 0.5f);
         Vector2 sliver = new Vector2(coll.bounds.size.x, 0.2f);
 
-        RaycastHit2D raycastHit = Physics2D.BoxCast(position, sliver, 0, Vector2.down, 0.2f, FloorLayer);
+        RaycastHit2D raycastHit = Physics2D.BoxCast(position, sliver, 0, Vector2.down, 0.2f, floorMask);
 
         return raycastHit.collider != null;
     }
 
-    // laying the groundwork for switching over from two raycasts to one boxcast
+    // use box cast to check when the player is on the elevator
+    private bool isOnElevator()
+    {
+        // check if the player is grounded or not by using a boxcast to check the space under the player
+ 
+        // make the boxcast a sliver that's the same width as the player's collider
+        Vector2 position = new Vector2(coll.bounds.center.x, coll.bounds.center.y - coll.bounds.size.y * 0.5f);
+        Vector2 sliver = new Vector2(coll.bounds.size.x, 0.2f);
+
+        RaycastHit2D raycastHit = Physics2D.BoxCast(position, sliver, 0, Vector2.down, 0.2f, elevatorMask);
+
+        return raycastHit.collider != null;
+    }
+
+    // use box cast to check if there is an interactable object beside the player
     private GameObject hitObject()
     {
-        Vector2 raisedCenter = new Vector2(coll.bounds.center.x, coll.bounds.center.y + 0.1f);
-        Vector2 size = new Vector2(coll.bounds.size.x, coll.bounds.size.y - 0.1f);
-        RaycastHit2D raycastHit = Physics2D.BoxCast(raisedCenter, size, 0, Vector2.right, 0.1f);
+        // use sign as a multiplier to move the box cast to
+        // the left or right side of the player depending on
+        // which way they're moving
+        float sign = MathF.Sign(horizontalInput);
 
-        GameObject obj = raycastHit.collider.gameObject;
-
-        if (obj != body.gameObject)
+        // if they are not moving, leave it where it is
+        if (sign == 0)
         {
-            return obj;
+            sign = 1;
+        }
+
+        // make the boxcast
+        // position = the side of the player, multiplied by sign
+        float xPos = coll.bounds.center.x + coll.bounds.size.x * 0.5f * sign;
+        float yPos = coll.bounds.center.y + 0.1f;
+        Vector2 position = new Vector2(xPos, yPos);
+
+        // size = a sliver that's the nearly the same height as the player's collider
+        Vector2 sliver = new Vector2(0.2f, coll.bounds.size.y * 0.9f);
+
+        // combine the masks that this box cast looks for
+        int combinedMask = foodMask | chandelierMask | tableMask;
+
+        RaycastHit2D sideInfo = Physics2D.BoxCast(position, sliver, 0, lookDirection, 0.2f, combinedMask);
+        
+        // if we hit something, return that object
+        if (sideInfo.collider)
+        {
+            return sideInfo.collider.gameObject;
         }
         
+        // nothing was hit, return null
         return null;
-
-        // make the boxcast a sliver that's the nearly the same height as the player's collider
-        // Vector2 position = new Vector2(coll.bounds.center.x + coll.bounds.size.x * 0.5f, coll.bounds.center.y + 0.2f);
-        // Vector2 sliver = new Vector2(0.2f, coll.bounds.size.y * 0.8f);
-        // int combinedMask = LayerMask.GetMask("foodLayer", "chandelierLayer");
-        // RaycastHit2D sideInfo = Physics2D.BoxCast(position, sliver, 0, Vector2.right, 0.2f, combinedMask);
     }
 
     // reset to original settings for testing
@@ -449,6 +526,16 @@ public class PlayerMovement : MonoBehaviour
         body.freezeRotation = true;
         body.mass = 1f;
     }
+
+    // METHODS FOR ELEVATOR ///////////////////////////////////////////////////////////
+    private void FollowElevator(Vector3 target)
+    {
+        // elevatorPosition = target;
+        // transform.SetParent(elevator.transform);
+        usedElevator = true;
+    }
+
+    // JUMP ///////////////////////////////////////////
 
     private void Jump()
     {
@@ -576,9 +663,9 @@ public class PlayerMovement : MonoBehaviour
 
 
     // METHODS FOR PICKING UP AND PUTTING DOWN FOOD ////////////////////////////////////////////////////////////////////////////////////////
-    private void PickUpFood(RaycastHit2D hitInfo)
+    private void PickUpFood(GameObject obj)
     {
-        foodObject = hitInfo.collider.gameObject;
+        foodObject = obj;
 
         Rigidbody2D foodObjectRb = foodObject.GetComponent<Rigidbody2D>();
         foodObjectRb.isKinematic = true;
@@ -601,6 +688,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    // blink as a visual indicator after falling and dropping food
     private IEnumerator Blink()
     {
         for (int i = 0; i < 4; i++)
@@ -657,22 +745,16 @@ public class PlayerMovement : MonoBehaviour
 
     // ORDER AND TABLE INTERACTION METHODS ///////////////////////////////////////////////////////////////////////////////////
     
-    // is this even necessary????
-    private void ReceiveState(int state)
+    // a version of this would be in table.cs that uses sendmessage to send the state
+    private void GetState(int state)
     {
-
+        tableState = state;
     }
 
     // takes the order from the customer
     private void TakeOrder() // Table table
     {
-        // spawn a ticket in penwing's hand - make a ticket class?
-    }
-
-    // gives the order to the kitchen
-    private void SendOrder()
-    {
-        // kitchen.SendMessage("DeliverOrder");
+        
     }
 
     // give the order to the customer

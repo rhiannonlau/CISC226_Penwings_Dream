@@ -7,13 +7,15 @@ public class UpDownChunk : MonoBehaviour
     private Vector3 targetPosition;
     private Vector3 target;
 
-    [SerializeField] private Transform touch;
-    [SerializeField] private Transform ele;
-    [SerializeField] private LayerMask eleLayer;
-    [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private Rigidbody2D rb;
+    // [SerializeField] private Transform touch;
+    // [SerializeField] private Transform ele;
+    // [SerializeField] private LayerMask eleLayer;
+    // [SerializeField] private LayerMask groundLayer;
+    // [SerializeField] private Rigidbody2D rb;
 
-    [SerializeField] private Transform floor1;
+    private GameObject player;
+
+    [SerializeField] private Transform groundFloor;
     [SerializeField] private Transform floor2;
     [SerializeField] private Transform floor3;
 
@@ -23,59 +25,65 @@ public class UpDownChunk : MonoBehaviour
     private void Start()
     {
         // Set initial target position
-        targetPosition = ele.position;
-        targetPosition = ele.position;
+        targetPosition = transform.position;
+        player = GameObject.Find("Player");
     }
 
-    private bool IsTouching()
-    {
-        return Physics2D.OverlapCircle(touch.position, 0.2f, eleLayer);
-    }
+    // private bool IsTouching()
+    // {
+    //     return Physics2D.OverlapCircle(touch.position, 0.2f, eleLayer);
+    // }
 
-    private bool GroundCheck()
-    {
-        return Physics2D.OverlapCircle(touch.position, 0.2f, groundLayer);
-    }
+    // private bool GroundCheck()
+    // {
+    //     return Physics2D.OverlapCircle(touch.position, 0.2f, groundLayer);
+    // }
 
     void Update()
     {
-        if (IsTouching() && Mathf.Approximately(ele.position.y, targetPosition.y))
-        {
-            if (Input.GetButtonDown("Jump") && level < 2)
-            {
-               
+        // Smoothly move towards the target position
+        transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+        target = new Vector3(transform.position.x, transform.position.y + 10, transform.position.z);
+    }
 
+    private void Up()
+    {
+        if (Mathf.Approximately(transform.position.y, targetPosition.y) && level < 2)
+            {
                 if(level == 0)
                 {
-                    targetPosition = new Vector3(ele.position.x, floor2.position.y , ele.position.z);
-                    
+                    targetPosition = new Vector3(transform.position.x, floor2.position.y , transform.position.z);
                 }
+
                 else if (level == 1)
                 {
-                    targetPosition = new Vector3(ele.position.x, floor3.position.y, ele.position.z);
+                    targetPosition = new Vector3(transform.position.x, floor3.position.y, transform.position.z);
+
                 }
+
+                player.SendMessage("FollowElevator", target);
 
                 level += 1;
-
             }
-            else if ((Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) && !GroundCheck())
+    }
+
+    private void Down()
+    {
+        if (Mathf.Approximately(transform.position.y, targetPosition.y))
+        {
+            if (level == 0)
             {
-                
-                if (level == 0)
-                {
-                    targetPosition = new Vector3(ele.position.x, floor1.position.y, ele.position.z);
-                }
-                else if (level == 1)
-                {
-                    targetPosition = new Vector3(ele.position.x, floor2.position.y, ele.position.z);
-                }
-                level -= 1;
+                targetPosition = new Vector3(transform.position.x, groundFloor.position.y, transform.position.z);
             }
-        }
 
-        // Smoothly move towards the target position
-        ele.position = Vector3.MoveTowards(ele.position, targetPosition, moveSpeed * Time.deltaTime);
-        target = new Vector3(ele.position.x, ele.position.y + 10, ele.position.z);
-        rb.position = Vector2.MoveTowards(rb.position, target, Time.deltaTime * 2);
+            else if (level == 1)
+            {
+                targetPosition = new Vector3(transform.position.x, floor2.position.y, transform.position.z);
+            }
+
+            player.SendMessage("FollowElevator", target);
+
+            level -= 1;
+        }
     }
 }
