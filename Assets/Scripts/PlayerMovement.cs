@@ -13,6 +13,7 @@ using System;
 
 public class PlayerMovement : MonoBehaviour
 {
+    private GameObject self;
     private Rigidbody2D body;
     
     // variables for animation
@@ -88,11 +89,8 @@ public class PlayerMovement : MonoBehaviour
     private LayerMask tableMask;
     private int tableLayer;
     private GameObject table;
-    private int tableState;
-    // later:
-    // private Table table;
+    // private int tableState;
     private int kitchenLayer;
-    // private Kitchen kitchen;
 
 
     private void Start()
@@ -111,6 +109,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Awake()
     {
+        self = transform.gameObject;
         // get references from Player object
         body = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
@@ -237,16 +236,52 @@ public class PlayerMovement : MonoBehaviour
 
                 if (layer == tableLayer)
                 {
-                    table = obj;
-                    table.SendMessage("GetState");
-                    // table calls GetState() and tableState now = the state
-                    // if (tableState == 4)
-                    // {
-                    //     table.SendMessage
-                    // }
-                    // but shouldn't it be on the table to check its own state?
-                    // the player should just be in charge to checking if its interacting
-                    // with the table and if its the table that placed the order they are holding
+                    Table table = obj.GetComponent<Table>();
+                    
+                    switch (table.State)
+                    {
+                        // customer is ready to order
+                        case 1:
+                        {
+                            Debug.Log("took order");
+                            table.SendMessage("TakeOrder");
+                            break;
+                        }
+
+                        // customer is waiting for order
+                        case 2:
+                        {
+                            // attempting to make checking work, tabled for now
+                            // Debug.Log("deliver food state");
+                            // Debug.Log(table.customerFoodSelection);
+                            // Debug.Log(foodObject);
+
+                            // string wantedType = table.customerFoodSelection.GetType().ToString();
+                            // Debug.Log(wantedType);
+
+                            // check if this table's food selection is the one the player is holding
+                            // if (table.customerFoodSelection == foodObject)
+                            // {
+                            //     Debug.Log("check passed");
+                                
+                            // }
+
+                            DeliverOrder(table);
+
+                            break;
+                        }
+
+                        // later: allow re-picking up if it was the wrong table?
+                        // default:
+                        // {
+                        //     if (table.transform.childCount > 0)
+                        //     {
+                                
+                        //     }
+
+                        //     break;
+                        // }
+                    }
                 }
             }         
         }
@@ -272,41 +307,6 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        // taking orders
-        // if (lowerHitInfo.collider != null && lowerHitInfo.collider.gameObject.layer == tableLayer)
-        // {
-        //     if (Input.GetKeyDown(KeyCode.Z))
-        //     {
-        //         // GameObject self = transform.gameObject;
-        //         // table = lowerHitInfo.collider.gameObject;
-
-        //         int state = 0;
-        //         // int state = table.currentState;
-        //         // OR
-        //         // table.SendMessage("GetState", self);
-
-        //         switch (state)
-        //         {
-        //             // customer is ready to order
-        //             case 2:
-        //             {
-        //                 // table.SendMessage("TakeOrder", self);
-        //                 break;
-        //             }
-
-        //             // customer is waiting for order
-        //             case 4:
-        //             {
-        //                 // if (food.id = table.number)
-        //                 // {
-        //                 //      table.SendMessage("DeliverOrder", self);
-        //                 // }
-        //                 break;
-        //             }
-        //         }
-        //     }
-        // }
-
         // penalties //////////////////////////////////////////////////////////////
         
         // issue food drop penalty if they fell to the next floor
@@ -322,6 +322,7 @@ public class PlayerMovement : MonoBehaviour
             StartCoroutine(Blink());
         }
 
+        // set usedElevator back to false once they step onto the floor again
         if (isGrounded() && usedElevator)
         {
             usedElevator = false;
@@ -339,15 +340,15 @@ public class PlayerMovement : MonoBehaviour
             Reset();
         }
 
-        if (hitObject())
-        {
-            Debug.Log(hitObject().name);
-        }
+        // if (hitObject())
+        // {
+        //     Debug.Log(hitObject().name);
+        // }
 
-        else
-        {
-            Debug.Log("null");
-        }
+        // else
+        // {
+        //     Debug.Log("null");
+        // }
 
         // update the information from this frame
         wasGroundedLastUpdate = grounded;
@@ -527,6 +528,7 @@ public class PlayerMovement : MonoBehaviour
         body.mass = 1f;
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////
     // METHODS FOR ELEVATOR ///////////////////////////////////////////////////////////
     private void FollowElevator(Vector3 target)
     {
@@ -543,6 +545,7 @@ public class PlayerMovement : MonoBehaviour
         anim.SetTrigger("jump"); // trigger the jump animation
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////
     // METHODS FOR SLIDING ////////////////////////////////////////////////////////////////////////////////////////
     private void Slide()
     {
@@ -560,6 +563,7 @@ public class PlayerMovement : MonoBehaviour
         // later: re enable direction changing
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////
     // METHODS FOR SWINGING ////////////////////////////////////////////////////////////////////////////////////////
     private void Swing(GameObject chandelier)
     {
@@ -661,11 +665,14 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-
+    ///////////////////////////////////////////////////////////////////////////////////
     // METHODS FOR PICKING UP AND PUTTING DOWN FOOD ////////////////////////////////////////////////////////////////////////////////////////
     private void PickUpFood(GameObject obj)
     {
         foodObject = obj;
+
+        Collider2D foodColl = foodObject.GetComponent<Collider2D>();
+        foodColl.isTrigger = false;
 
         Rigidbody2D foodObjectRb = foodObject.GetComponent<Rigidbody2D>();
         foodObjectRb.isKinematic = true;
@@ -709,6 +716,7 @@ public class PlayerMovement : MonoBehaviour
         rend.enabled = true;
     }        
 
+    ///////////////////////////////////////////////////////////////////////////////////
     // METHODS FOR SLOWS ////////////////////////////////////////////////////////////////////////////////////////
     // player is slowed for x seconds
     private void Slow()
@@ -742,26 +750,24 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-
+    ///////////////////////////////////////////////////////////////////////////////////
     // ORDER AND TABLE INTERACTION METHODS ///////////////////////////////////////////////////////////////////////////////////
     
-    // a version of this would be in table.cs that uses sendmessage to send the state
-    private void GetState(int state)
-    {
-        tableState = state;
-    }
-
     // takes the order from the customer
-    private void TakeOrder() // Table table
+    private void TakeOrder()
     {
         
     }
 
     // give the order to the customer
-    private void DeliverOrder() // Table table
+    private void DeliverOrder(Table table)
     {
-        // table.SendMessage("DeliverOrder");
-        // food.SetParent(table);
-    }
+        table.SendMessage("DeliverOrder");
+        Collider2D foodColl = foodObject.GetComponent<Collider2D>();
 
+        foodObject.transform.SetParent(table.transform);
+        foodColl.isTrigger = true;
+        
+        foodObject = null;
+    }
 }

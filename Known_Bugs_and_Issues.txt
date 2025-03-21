@@ -84,4 +84,25 @@
 	- desired effect: detecting food
 	- actual effect: hitObject() returns null
 
-15. Bug: player gets pushed by food when holding food
+15. FIXED Bug: player gets pushed by food when holding food
+	- precondition: holding food
+	- desired effect: none
+	- actual effect: food has invisible jetpacks that push the player
+
+16. Issue: No floor under elevator
+	- note: can't add the floor to the floor layer otherwise it will conflict with the elevator when the elevator is on the ground floor
+
+17. Issue: Food falling to floor when spawned in kitchen
+
+16. Issue: food can't be passed through by player if they are trying to pick up one of the foods that's further
+	- note: solution might be to make the food a child of the counter object
+
+18. Issue: elevator needs to come to the floor the player is on when they are standing on a certain section in case they've fallen
+	- option 1: plan is to have a small overlapping piece of floor that serves as a 	sensor. if they're standing on this small area and the elevator is not on the floor 	they are on, move it.
+	- option 2: maybe make it an interact? so like there's a small control 	panel, and 	when they interact with it, the elevator comes up to their floor
+		- does this add an element of strategy? like if they know they'll need the 			elevator later and they're nearby, they can click it to save time then go do 		what they need to?
+
+19: Bug: food flies off of table lol
+	- precondition: placed order down on table
+	- desired effect: it stays there
+	- actual effect: red bull gives you wiiiiings

@@ -270,7 +270,6 @@ MonoBehaviour:
   - {fileID: 8672340746451093546, guid: 1f3cc83f6f69449828858ad9d3423fd7, type: 3}
   - {fileID: 6174885096671900691, guid: 23e80ccf327f64f22a38546fa684ee22, type: 3}
   selectedFoodItem: 0
-  customerFoodSelection: {fileID: 0}
   customerOrder: {fileID: 0}
   ponderingMenuRate: 2
   isPondering: 0
@@ -523,7 +522,6 @@ MonoBehaviour:
   - {fileID: 8672340746451093546, guid: 1f3cc83f6f69449828858ad9d3423fd7, type: 3}
   - {fileID: 6174885096671900691, guid: 23e80ccf327f64f22a38546fa684ee22, type: 3}
   selectedFoodItem: 0
-  customerFoodSelection: {fileID: 0}
   customerOrder: {fileID: 0}
   ponderingMenuRate: 2
   isPondering: 1
@@ -2566,7 +2564,6 @@ MonoBehaviour:
   - {fileID: 8672340746451093546, guid: 1f3cc83f6f69449828858ad9d3423fd7, type: 3}
   - {fileID: 6174885096671900691, guid: 23e80ccf327f64f22a38546fa684ee22, type: 3}
   selectedFoodItem: 0
-  customerFoodSelection: {fileID: 0}
   customerOrder: {fileID: 0}
   ponderingMenuRate: 2
   isPondering: 0
@@ -2777,7 +2774,7 @@ Transform:
   m_GameObject: {fileID: 1014771621}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.46, y: -0.35, z: 0}
+  m_LocalPosition: {x: 2.09, y: 0.02, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3898,6 +3895,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Table 3
       objectReference: {fileID: 0}
+    - target: {fileID: 636535415174822031, guid: 357ec1b426ab04843ac1221f86fac56b, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 6254040831656899195, guid: 357ec1b426ab04843ac1221f86fac56b, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.875
@@ -3972,6 +3973,10 @@ PrefabInstance:
     - target: {fileID: 636535415174822031, guid: 357ec1b426ab04843ac1221f86fac56b, type: 3}
       propertyPath: m_Name
       value: Table 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 636535415174822031, guid: 357ec1b426ab04843ac1221f86fac56b, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6254040831656899195, guid: 357ec1b426ab04843ac1221f86fac56b, type: 3}
       propertyPath: m_LocalScale.x
@@ -4484,6 +4489,10 @@ PrefabInstance:
     - target: {fileID: 636535415174822031, guid: 357ec1b426ab04843ac1221f86fac56b, type: 3}
       propertyPath: m_Name
       value: Table 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 636535415174822031, guid: 357ec1b426ab04843ac1221f86fac56b, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 6254040831656899195, guid: 357ec1b426ab04843ac1221f86fac56b, type: 3}
       propertyPath: m_LocalScale.x

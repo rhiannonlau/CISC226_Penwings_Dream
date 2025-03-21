@@ -5,6 +5,12 @@ using UnityEngine;
 
 public class Table : MonoBehaviour
 {
+    public int state;
+    public int State
+    {
+        get { return state; }
+        set { state = value; }
+    }
 
     // Transform for kitchen counters and customer tables
     public Transform counter;
@@ -16,7 +22,7 @@ public class Table : MonoBehaviour
 
     // Variables for ordering
     public int selectedFoodItem = 0;
-    public GameObject customerFoodSelection;
+    public GameObject customerFoodSelection {get; private set;}
     public GameObject customerOrder;
 
     // Time and condition variables for "pondering" (when customer is "thinking" about what to order)
@@ -66,6 +72,9 @@ public class Table : MonoBehaviour
                 {
                     r.enabled = true;
                 }
+                
+                // Set the table's state to show that they are ready to order
+                state = 1;
 
                 isPondering = false;
 
@@ -94,25 +103,30 @@ public class Table : MonoBehaviour
     // Spawns the correct order for a table on top of its corresponding kitchen counter when it's done "cooking"
     void SpawnFoodItem(GameObject foodItem, Transform counter)
     {
-        Instantiate(foodItem, counter.position + Vector3.up, counter.rotation);
+        Instantiate(foodItem, counter.position + Vector3.up, counter.rotation, counter);
     }
 
     // When player meets conditions to take customer order, the customer's selected menu item reference is sent back to player
-    void TakeOrder(GameObject player)
+    void TakeOrder() //GameObject player
     {
         customerFoodSelection = foodOptions[selectedFoodItem];
-        player.SendMessage("", customerFoodSelection);
+        // player.SendMessage("", customerFoodSelection);
         isCooking = true;
+
+        // Set the table's state to show that they are waiting for their order
+        state = 2;
     }
 
     // If order is being delivered to the correct table and other player-based conditions are met, the speech bubble disappears 
-    void DeliverOrder(Renderer[] customerSpeechBubble)
+    void DeliverOrder() // Renderer[] customerSpeechBubble
     {
         // Disable the speech bubble renderers
-        foreach (Renderer r in customerSpeechBubble)
+        foreach (Renderer r in speechBubbleRender)
         {
             r.enabled = false;
         }
+
+        state = 0;
     }
 
 }
