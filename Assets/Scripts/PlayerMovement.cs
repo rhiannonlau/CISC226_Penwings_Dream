@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Dynamic;
 using UnityEditor.UI;
 using System;
+using System.Net.Http;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -30,6 +31,7 @@ public class PlayerMovement : MonoBehaviour
     private GameObject elevator;
     private Vector3 elevatorPosition;
     private Vector2 originalScale = new Vector2(0.5f, 0.5f);
+    private LayerMask sensorMask;
 
 
     // movement variables
@@ -38,6 +40,10 @@ public class PlayerMovement : MonoBehaviour
     private float originalSpeed;
     [SerializeField] private float jumpPower;
     private float originalJumpPower;
+
+
+    // hitObject
+    private float sign;
 
 
     // sliding variables
@@ -85,6 +91,7 @@ public class PlayerMovement : MonoBehaviour
     private int foodLayer;
     private LayerMask foodMask;
 
+
     // Variables for taking and placing orders
     private LayerMask tableMask;
     private int tableLayer;
@@ -97,6 +104,7 @@ public class PlayerMovement : MonoBehaviour
     {
         floorMask = LayerMask.GetMask("Floor");
         elevatorMask = LayerMask.GetMask("Elevator");
+        sensorMask = LayerMask.GetMask("Sensor Plate");
         chandelierMask = LayerMask.GetMask("Chandelier");
         foodMask = LayerMask.GetMask("Food");
         tableMask = LayerMask.GetMask("Table");
@@ -134,30 +142,31 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        grounded = isGrounded();
-        onElevator = isOnElevator();
+        grounded = IsGrounded();
+        onElevator = IsOnElevator();
 
         if (grounded)
         {
             currentFloor = GetFloorNum();
         }
 
-        // for swinging
-        // RaycastHit2D upperHitInfo = Physics2D.Raycast(upperRayPoint.position, transform.right, upperRayDistance);
-
-        // for grabbing
-        // RaycastHit2D lowerHitInfo = Physics2D.Raycast(lowerRayPoint.position, transform.right, lowerRayDistance);
+        if (onElevator)
+        {
+            // make the current floor = 99 so that the falling penalty works properly
+            currentFloor = 99;
+        }
 
         // for moving
         horizontalInput = Input.GetAxis("Horizontal");
         body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
 
         lookDirection = new Vector2(horizontalInput, 0f);
+        
 
         AnimateMove();
 
         // elevator logic /////////////////////////
-        if (isOnElevator()) // && !grounded
+        if (IsOnElevator()) // && !grounded
         {
             // my attempts to get the player to follow the elevator more closely
             // Transform eleTransform = elevator.transform;
@@ -181,6 +190,13 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
+        // if the player is on the sensor plate, call the elevator to their floor
+        if (IsOnSensor())
+        {
+            string name = IsOnSensor().name;
+            elevator.SendMessage("ToSpecificFloor", name);
+        }
+
         // more attempts to get the player to follow the elevator
         // else
         // {
@@ -197,14 +213,21 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // sliding
-        if (Input.GetKeyDown(KeyCode.DownArrow) && isGrounded())
+        if (Input.GetKeyDown(KeyCode.DownArrow) && IsGrounded())
         {
             Slide();
         }
 
-        if (Input.GetKeyUp(KeyCode.DownArrow) || !isGrounded())
+        if (Input.GetKeyUp(KeyCode.DownArrow) || !IsGrounded())
         {
             EndSlide();
+        }
+
+        // drop food if the player is holding any
+        // eliminates error cases where the boxcast can't find the food for any reason
+        if (holdingFood && (IsGrounded() || IsOnElevator()) && Input.GetKeyDown(KeyCode.Z))
+        {
+            Invoke(nameof(DropFood), 0f);
         }
 
         // look for collision with interactable objects, namely:
@@ -216,20 +239,21 @@ public class PlayerMovement : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Z))
             {
-                if (isGrounded() && layer == foodLayer)
+                if ((IsGrounded() || IsOnElevator()) && layer == foodLayer)
                 {
                     if (!foodObject)
                     {
                         PickUpFood(obj);
                     }
                     
-                    else
-                    {
-                        DropFood();
-                    }
+                    // else
+                    // {
+                    //     Debug.Log(hitObject());
+                    //     DropFood();
+                    // }
                 }
 
-                if (layer == chandelierLayer && !isGrounded())
+                if (layer == chandelierLayer && !IsGrounded())
                 {
                     Swing(obj);
                 }
@@ -251,50 +275,30 @@ public class PlayerMovement : MonoBehaviour
                         // customer is waiting for order
                         case 2:
                         {
-                            // attempting to make checking work, tabled for now
-                            // Debug.Log("deliver food state");
-                            // Debug.Log(table.customerFoodSelection);
-                            // Debug.Log(foodObject);
-
-                            // string wantedType = table.customerFoodSelection.GetType().ToString();
-                            // Debug.Log(wantedType);
-
-                            // check if this table's food selection is the one the player is holding
-                            // if (table.customerFoodSelection == foodObject)
-                            // {
-                            //     Debug.Log("check passed");
-                                
-                            // }
-
-                            DeliverOrder(table);
+                            // only trigger delivery if we have food and
+                            // the table does not already have food
+                            if (holdingFood && table.transform.childCount == 0)
+                            {
+                                DeliverOrder(table);
+                            }
 
                             break;
                         }
-
-                        // later: allow re-picking up if it was the wrong table?
-                        // default:
-                        // {
-                        //     if (table.transform.childCount > 0)
-                        //     {
-                                
-                        //     }
-
-                        //     break;
-                        // }
                     }
                 }
             }         
         }
 
-        if (Input.GetKeyUp(KeyCode.Z) || isGrounded())
-        {
-            StopSwinging(chandelierObject);
-        }
+        // if (Input.GetKeyUp(KeyCode.Z) || IsGrounded())
+        // {
+        //     StopSwinging(chandelierObject);
+        // }
 
+        // if the player is swinging
         if (swinging)
         {
             // release z to unswing
-            if (Input.GetKeyUp(KeyCode.Z) || isGrounded())
+            if (Input.GetKeyUp(KeyCode.Z) || IsGrounded())
             {            
                 // store the angular velocity before stopping to use for propulsion
                 float currentAngularVelocity = body.angularVelocity;
@@ -306,6 +310,7 @@ public class PlayerMovement : MonoBehaviour
                 Propel(currentAngularVelocity);
             }
         }
+
 
         // penalties //////////////////////////////////////////////////////////////
         
@@ -323,7 +328,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // set usedElevator back to false once they step onto the floor again
-        if (isGrounded() && usedElevator)
+        if (IsGrounded() && usedElevator)
         {
             usedElevator = false;
         }
@@ -359,13 +364,38 @@ public class PlayerMovement : MonoBehaviour
     // {
     //     if (Application.isPlaying)
     //     {
-    //         Vector2 position = new Vector2(coll.bounds.center.x + coll.bounds.size.x * 0.5f, coll.bounds.center.y + 0.1f);
-    //         Vector2 sliver = new Vector2(0.1f, coll.bounds.size.y * 0.9f);
-    //         int combinedMask = foodMask | chandelierMask;
-    //         float maxDistance = 0.2f; // Adjust as needed
             
-    //         // Perform the actual BoxCast
-    //         RaycastHit2D hit = Physics2D.BoxCast(position, sliver, 0, lookDirection, maxDistance, combinedMask);
+    //         float maxDistance = 0.2f; // Adjust as needed
+
+    //         sign = MathF.Sign(horizontalInput);
+
+    //         // if they are not moving, leave it where it is
+    //         if (sign == 0)
+    //         {
+    //             if (transform.localScale.x > 0)
+    //             {
+    //                 sign = 1;
+    //             }
+
+    //             else if (transform.localScale.x < 0)
+    //             {
+    //                 sign = -1;
+    //             }
+    //         }
+
+    //         // make the boxcast
+    //         // position = the side of the player, multiplied by sign
+    //         float xPos = coll.bounds.center.x + coll.bounds.size.x * sign;
+    //         float yPos = coll.bounds.center.y + 0.1f;
+    //         Vector2 position = new Vector2(xPos, yPos);
+
+    //         // size = a sliver that's the nearly the same height as the player's collider
+    //         Vector2 sliver = new Vector2(0.2f, coll.bounds.size.y * 0.9f);
+
+    //         // combine the masks that this box cast looks for
+    //         int combinedMask = foodMask | chandelierMask | tableMask;
+
+    //         RaycastHit2D hit = Physics2D.BoxCast(position, sliver, 0, lookDirection, 0.2f, combinedMask);
             
     //         // Set color based on hit
     //         Gizmos.color = hit.collider != null ? Color.green : Color.red;
@@ -442,14 +472,14 @@ public class PlayerMovement : MonoBehaviour
                 // horizontalInput = 0 when none of the arrow keys are pressed
                 // i.e. run is true when the player is moving/arrow keys are being pressed
         anim.SetBool("run", horizontalInput != 0);
-        anim.SetBool("grounded", isGrounded());
+        anim.SetBool("grounded", IsGrounded());
         anim.SetBool("sliding", sliding);
         anim.SetBool("holdingObject", holdingFood); // || holdingTicket
         anim.SetBool("swinging", swinging);
     }
 
     // use box cast to check when the player is on the floor
-    private bool isGrounded()
+    private bool IsGrounded()
     {
         // check if the player is grounded or not by using a boxcast to check the space under the player
  
@@ -457,13 +487,13 @@ public class PlayerMovement : MonoBehaviour
         Vector2 position = new Vector2(coll.bounds.center.x, coll.bounds.center.y - coll.bounds.size.y * 0.5f);
         Vector2 sliver = new Vector2(coll.bounds.size.x, 0.2f);
 
-        RaycastHit2D raycastHit = Physics2D.BoxCast(position, sliver, 0, Vector2.down, 0.2f, floorMask);
+        RaycastHit2D groundRayCast = Physics2D.BoxCast(position, sliver, 0, Vector2.down, 0.2f, floorMask);
 
-        return raycastHit.collider != null;
+        return groundRayCast.collider != null;
     }
 
     // use box cast to check when the player is on the elevator
-    private bool isOnElevator()
+    private bool IsOnElevator()
     {
         // check if the player is grounded or not by using a boxcast to check the space under the player
  
@@ -471,9 +501,30 @@ public class PlayerMovement : MonoBehaviour
         Vector2 position = new Vector2(coll.bounds.center.x, coll.bounds.center.y - coll.bounds.size.y * 0.5f);
         Vector2 sliver = new Vector2(coll.bounds.size.x, 0.2f);
 
-        RaycastHit2D raycastHit = Physics2D.BoxCast(position, sliver, 0, Vector2.down, 0.2f, elevatorMask);
+        RaycastHit2D elevatorRayCast = Physics2D.BoxCast(position, sliver, 0, Vector2.down, 0.2f, elevatorMask);
 
-        return raycastHit.collider != null;
+        return elevatorRayCast.collider != null;
+    }
+
+    // use box cast to check when the player is on the sensor to call the elevator
+    private GameObject IsOnSensor()
+    {
+        // check if the player is on the sensor plate or not by using a boxcast to check the space under the player
+ 
+        // make the boxcast a sliver that's the same width as the player's collider
+        Vector2 position = new Vector2(coll.bounds.center.x, coll.bounds.center.y - coll.bounds.size.y * 0.5f);
+        Vector2 sliver = new Vector2(coll.bounds.size.x, 0.2f);
+
+        RaycastHit2D sensorRayCast = Physics2D.BoxCast(position, sliver, 0, Vector2.down, 0.2f, sensorMask);
+
+        // return sensorRayCast.collider != null;
+        if (sensorRayCast.collider)
+        {
+            return sensorRayCast.collider.gameObject;
+        }
+
+        return null;
+        
     }
 
     // use box cast to check if there is an interactable object beside the player
@@ -482,17 +533,26 @@ public class PlayerMovement : MonoBehaviour
         // use sign as a multiplier to move the box cast to
         // the left or right side of the player depending on
         // which way they're moving
-        float sign = MathF.Sign(horizontalInput);
+        
+        sign = MathF.Sign(horizontalInput);
 
         // if they are not moving, leave it where it is
         if (sign == 0)
         {
-            sign = 1;
+            if (transform.localScale.x > 0)
+            {
+                sign = 1;
+            }
+
+            else if (transform.localScale.x < 0)
+            {
+                sign = -1;
+            }
         }
 
         // make the boxcast
         // position = the side of the player, multiplied by sign
-        float xPos = coll.bounds.center.x + coll.bounds.size.x * 0.5f * sign;
+        float xPos = coll.bounds.center.x + coll.bounds.size.x * sign;
         float yPos = coll.bounds.center.y + 0.1f;
         Vector2 position = new Vector2(xPos, yPos);
 
@@ -530,6 +590,8 @@ public class PlayerMovement : MonoBehaviour
 
     ///////////////////////////////////////////////////////////////////////////////////
     // METHODS FOR ELEVATOR ///////////////////////////////////////////////////////////
+    
+    // called in updownchunk.cs
     private void FollowElevator(Vector3 target)
     {
         // elevatorPosition = target;
@@ -674,22 +736,32 @@ public class PlayerMovement : MonoBehaviour
         Collider2D foodColl = foodObject.GetComponent<Collider2D>();
         foodColl.isTrigger = false;
 
-        Rigidbody2D foodObjectRb = foodObject.GetComponent<Rigidbody2D>();
-        foodObjectRb.isKinematic = true;
+        Rigidbody2D foodRb = foodObject.GetComponent<Rigidbody2D>();
+        foodRb.isKinematic = true;
+        foodRb.simulated = false;
+        // foodRb.mass = 0.0001f;
 
-        foodObject.transform.position = grabPoint.position;
-        foodObject.transform.SetParent(transform);
-        foodObjectRb.mass = 0.0001f;
+        Transform foodTr = foodObject.GetComponent<Transform>();
+        foodTr.position = grabPoint.position;
+        foodTr.SetParent(transform);
+        
         holdingFood = true;
     }
 
     // player drops the food if they were holding any
     private void DropFood()
     {
-        if (holdingFood && foodObject != null)
-        {            
-            foodObject.GetComponent<Rigidbody2D>().isKinematic = false;
-            foodObject.transform.SetParent(null);
+        if (holdingFood && foodObject)
+        {
+            Debug.Log("passed second check");
+            Debug.Log(foodObject);
+            Rigidbody2D foodRb = foodObject.GetComponent<Rigidbody2D>();
+            foodRb.simulated = true;
+            foodRb.bodyType = RigidbodyType2D.Dynamic;
+
+            Transform foodTr = foodObject.GetComponent<Transform>();
+            foodTr.SetParent(null);            
+
             foodObject = null;
             holdingFood = false;
         }
@@ -719,6 +791,8 @@ public class PlayerMovement : MonoBehaviour
     ///////////////////////////////////////////////////////////////////////////////////
     // METHODS FOR SLOWS ////////////////////////////////////////////////////////////////////////////////////////
     // player is slowed for x seconds
+
+    // called in WebBehaviour.cs
     private void Slow()
     {
         // if the player is not already slowed
@@ -752,22 +826,17 @@ public class PlayerMovement : MonoBehaviour
 
     ///////////////////////////////////////////////////////////////////////////////////
     // ORDER AND TABLE INTERACTION METHODS ///////////////////////////////////////////////////////////////////////////////////
-    
-    // takes the order from the customer
-    private void TakeOrder()
-    {
-        
-    }
-
     // give the order to the customer
     private void DeliverOrder(Table table)
     {
-        table.SendMessage("DeliverOrder");
         Collider2D foodColl = foodObject.GetComponent<Collider2D>();
+        foodColl.isTrigger = true;
 
         foodObject.transform.SetParent(table.transform);
-        foodColl.isTrigger = true;
+
+        table.SendMessage("DeliverOrder");
         
         foodObject = null;
+        holdingFood = false;
     }
 }

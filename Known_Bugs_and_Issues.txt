@@ -31,7 +31,7 @@
 	- trigger: holding left/right-arrow while beside the edge of a wall
 	- effect: lets you defy gravity for as long as you want
 
-6. Bug: putting down food makes the food become self-driving car
+6. FIXED? Bug: putting down food makes the food become self-driving car
 	- precondition: holding food, maybe more ?
 	- trigger: idk i can't recreate TT it just happens sometimes and i can't figure out 	what the trigger is
 	- effect: the food will fall when put down (intended), then after about one or two 	seconds, the food just starts moving away from penwing
@@ -58,6 +58,7 @@
 	- desired effect: penwing can only jump when he is on the ground
 	- actual effect: he jumps from midair and gets higher and higher
 	- note: only happens when he is on elevator
+	- fix: changing GetKey to GetKeyDown
 
 11. Bug: jumping on elevator leaves penwing stuck in jump animation
 	- precondition: standing on elevator
@@ -74,10 +75,11 @@
 		- when moving down, penwing takes a second before falling to where the 				elevator is
 	- note: setting the player's parent to the elevator works to have the intended 			effect, but has the unintended effect of shrinking the player's scale to match the 		elevator, distorting penwing's size
 
-13. Issue: penwing doesn't get the falling penalty when landing on the elevator
+13. FIXED Issue: penwing doesn't get the falling penalty when landing on the elevator
 	- precondition: falling on to elevator
 	- desired effect: blink and drop food
 	- actual effect: none
+	- fix: make currentFloor = 99 when standing on elevator
 
 14. FIXED Bug: penwing doesn't detect food/chandelier if you're not inputting a direction
 	- precondition: standing beside food
@@ -88,21 +90,33 @@
 	- precondition: holding food
 	- desired effect: none
 	- actual effect: food has invisible jetpacks that push the player
+	- fix: turn simulated off on food's rigidbody
 
 16. Issue: No floor under elevator
 	- note: can't add the floor to the floor layer otherwise it will conflict with the elevator when the elevator is on the ground floor
 
-17. Issue: Food falling to floor when spawned in kitchen
-
-16. Issue: food can't be passed through by player if they are trying to pick up one of the foods that's further
+16. FIXED Issue: food can't be passed through by player if they are trying to pick up one of the foods that's further
 	- note: solution might be to make the food a child of the counter object
+	- note: that was not the solution
+	- fix: made isTrigger = true, and rb type = static to make it pass through able and not moving, respectively
 
 18. Issue: elevator needs to come to the floor the player is on when they are standing on a certain section in case they've fallen
 	- option 1: plan is to have a small overlapping piece of floor that serves as a 	sensor. if they're standing on this small area and the elevator is not on the floor 	they are on, move it.
 	- option 2: maybe make it an interact? so like there's a small control 	panel, and 	when they interact with it, the elevator comes up to their floor
 		- does this add an element of strategy? like if they know they'll need the 			elevator later and they're nearby, they can click it to save time then go do 		what they need to?
 
-19: Bug: food flies off of table lol
+19: FIXED Bug: food flies off of table lol
 	- precondition: placed order down on table
 	- desired effect: it stays there
 	- actual effect: red bull gives you wiiiiings
+	- fix: within the check in Update() that checks if they are holding food (above if (hitObject()), used Invoke(nameof(DropFood), 0f); instead of DropFood(); this forces DropFood() to be activated later in the frame. 
+
+20. FIXED Bug: double clicking on the table when taking the order
+	- precondition: you've taken the table's order
+	- trigger: pressing interact (z) with the table again when you don't have food in your hand
+	- desired effect: none
+	- actual effect: game crashes
+	- fix: if check to ensure you are holding food and that the table has no food/child objects (if (holdingFood && table.transform.childCount == 0))
+
+21. FIXED Issue: unable to pick up/put down food when standing on elevator
+	- fix: added "or if on elevator" clause to pick up and put down

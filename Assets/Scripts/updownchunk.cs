@@ -21,6 +21,8 @@ public class UpDownChunk : MonoBehaviour
 
 
     private float moveSpeed = 15f; // Speed of smooth movement
+    private float sensorSpeed = 8f;
+    private bool callingElevator = false;
 
     private void Start()
     {
@@ -42,15 +44,26 @@ public class UpDownChunk : MonoBehaviour
     void Update()
     {
         // Smoothly move towards the target position
-        transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
-        target = new Vector3(transform.position.x, transform.position.y + 10, transform.position.z);
+        if (callingElevator)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, sensorSpeed * Time.deltaTime);
+            target = new Vector3(transform.position.x, transform.position.y + 10, transform.position.z);
+        }
+
+        else
+        {
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+            target = new Vector3(transform.position.x, transform.position.y + 10, transform.position.z);
+        }
     }
 
     private void Up()
     {
+        callingElevator = false;
+
         if (Mathf.Approximately(transform.position.y, targetPosition.y) && level < 2)
             {
-                if(level == 0)
+                if (level == 0)
                 {
                     targetPosition = new Vector3(transform.position.x, floor2.position.y , transform.position.z);
                 }
@@ -69,6 +82,8 @@ public class UpDownChunk : MonoBehaviour
 
     private void Down()
     {
+        callingElevator = false;
+
         if (Mathf.Approximately(transform.position.y, targetPosition.y))
         {
             if (level == 0)
@@ -84,6 +99,34 @@ public class UpDownChunk : MonoBehaviour
             player.SendMessage("FollowElevator", target);
 
             level -= 1;
+        }
+    }
+
+    // called when the player is using a sensor plate to call the elevator
+    // to a floor that it is not on
+    private void ToSpecificFloor(string name)
+    {
+        callingElevator = true;
+
+        if (Mathf.Approximately(transform.position.y, targetPosition.y))
+        {
+            if (name.Contains("Ground"))
+            {
+                targetPosition = new Vector3(transform.position.x, groundFloor.position.y, transform.position.z);
+                level = 0;
+            }
+
+            else if (name.Contains("2"))
+            {
+                targetPosition = new Vector3(transform.position.x, floor2.position.y, transform.position.z);
+                level = 1;
+            }
+
+            else if (name.Contains("3"))
+            {
+                targetPosition = new Vector3(transform.position.x, floor3.position.y, transform.position.z);
+                level = 2;
+            }
         }
     }
 }

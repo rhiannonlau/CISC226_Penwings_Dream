@@ -103,14 +103,23 @@ public class Table : MonoBehaviour
     // Spawns the correct order for a table on top of its corresponding kitchen counter when it's done "cooking"
     void SpawnFoodItem(GameObject foodItem, Transform counter)
     {
-        Instantiate(foodItem, counter.position + Vector3.up, counter.rotation, counter);
+        GameObject newFood = Instantiate(foodItem, counter.position + Vector3.up, counter.rotation);
+        
+        // make the food sit on the counter and able to be passed through
+        // but still able to be picked up by the player
+        // newFood.transform.SetParent(counter, true); // to not fall through counter
+        newFood.GetComponent<Collider2D>().isTrigger = true; // to let player pass through
+        Rigidbody2D newFoodRb = newFood.GetComponent<Rigidbody2D>();
+        newFoodRb.bodyType = RigidbodyType2D.Static; // to sit on counter
+
+        // make it so the food doesn't slide infinitely on the floor
+        newFoodRb.drag = 2.5f;
     }
 
     // When player meets conditions to take customer order, the customer's selected menu item reference is sent back to player
-    void TakeOrder() //GameObject player
+    void TakeOrder()
     {
         customerFoodSelection = foodOptions[selectedFoodItem];
-        // player.SendMessage("", customerFoodSelection);
         isCooking = true;
 
         // Set the table's state to show that they are waiting for their order
@@ -126,7 +135,39 @@ public class Table : MonoBehaviour
             r.enabled = false;
         }
 
-        state = 0;
+        // the order is correct
+        if (CheckOrder())
+        {
+            state = 0; // neutral state
+            
+            // disable the food's collider so it can no longer be picked up
+            Collider2D foodColl = transform.GetChild(0).GetComponent<Collider2D>();
+            foodColl.enabled = false;
+
+            Rigidbody2D foodRb = transform.GetChild(0).GetComponent<Rigidbody2D>();
+            foodRb.simulated = false;
+        }
+        // otherwise, it stays in the waiting for order state
+        // so that the user can pick up the order again
+
+        Debug.Log(state);
     }
 
+    // code for checking if the order is the right one
+    private bool CheckOrder()
+    {
+        // table should only have one child: the food object
+        // so we get the reference to that object by its index in the child hierarchy
+        Transform foodObject = transform.GetChild(0);
+
+        // get the names of the objects to check equivalence
+        // (the food the player is holding will have the same name,
+        // but have "(clone)" at the end)
+        string wantedType = customerFoodSelection.name;
+        string holdingType = foodObject.name;
+
+        // check if this table's food selection is same as the one the player is holding
+        // return true if it is, false otherwise
+        return holdingType.Contains(wantedType);
+    }
 }
