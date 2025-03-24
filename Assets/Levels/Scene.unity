@@ -241,8 +241,14 @@ MonoBehaviour:
   - {fileID: 6174885096671900691, guid: 23e80ccf327f64f22a38546fa684ee22, type: 3}
   selectedFoodItem: 0
   customerOrder: {fileID: 0}
+  ticket: {fileID: 910310752578053596, guid: f5a42b37df8ed4868a04cb57e8e4defc, type: 3}
+  newTicket: {fileID: 0}
+  stovetop: {fileID: 1610562688}
+  ticketSpeed: 0
+  poof: {fileID: 0}
   ponderingMenuRate: 2
   isPondering: 0
+  isOrderSending: 0
   cookingRate: 5
   isCooking: 0
 --- !u!4 &225269275 stripped
@@ -494,8 +500,14 @@ MonoBehaviour:
   - {fileID: 6174885096671900691, guid: 23e80ccf327f64f22a38546fa684ee22, type: 3}
   selectedFoodItem: 0
   customerOrder: {fileID: 0}
+  ticket: {fileID: 910310752578053596, guid: f5a42b37df8ed4868a04cb57e8e4defc, type: 3}
+  newTicket: {fileID: 0}
+  stovetop: {fileID: 1610562688}
+  ticketSpeed: 0
+  poof: {fileID: 0}
   ponderingMenuRate: 2
-  isPondering: 0
+  isPondering: 1
+  isOrderSending: 0
   cookingRate: 5
   isCooking: 0
 --- !u!61 &296322517
@@ -2537,8 +2549,14 @@ MonoBehaviour:
   - {fileID: 6174885096671900691, guid: 23e80ccf327f64f22a38546fa684ee22, type: 3}
   selectedFoodItem: 0
   customerOrder: {fileID: 0}
+  ticket: {fileID: 910310752578053596, guid: f5a42b37df8ed4868a04cb57e8e4defc, type: 3}
+  newTicket: {fileID: 0}
+  stovetop: {fileID: 1610562688}
+  ticketSpeed: 0
+  poof: {fileID: 5350411221701323185, guid: 7ce279b5eda30439eacb66047724261a, type: 3}
   ponderingMenuRate: 2
-  isPondering: 0
+  isPondering: 1
+  isOrderSending: 0
   cookingRate: 5
   isCooking: 0
 --- !u!4 &920332086 stripped
@@ -3227,6 +3245,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &1610562688 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7188051659764178375, guid: 372487b2b5a864e4f9d6428f86641d3f, type: 3}
+  m_PrefabInstance: {fileID: 4221233061464560522}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1700744107
 GameObject:
   m_ObjectHideFlags: 0

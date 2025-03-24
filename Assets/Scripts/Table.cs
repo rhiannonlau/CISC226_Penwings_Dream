@@ -24,13 +24,19 @@ public class Table : MonoBehaviour
     public int selectedFoodItem = 0;
     public GameObject customerFoodSelection {get; private set;}
     public GameObject customerOrder;
+    public GameObject ticket;
+    public GameObject newTicket;
+    public Transform stovetop;
+    public float ticketSpeed = 5;
 
     // Time and condition variables for "pondering" (when customer is "thinking" about what to order)
     public float ponderingMenuRate = 2;
     private float ponderingTimer = 0;
     public bool isPondering = false;
 
-    // Time and condition variables for "pondering" (when "kitchen" is making the order)
+    public bool isOrderSending = false;
+
+    // Time and condition variables for "cooking" (when "kitchen" is making the order)
     public float cookingRate = 5;
     private float cookingTimer = 0;
     public bool isCooking = false;
@@ -90,6 +96,19 @@ public class Table : MonoBehaviour
             }
         }
 
+        if (isOrderSending == true)
+        {
+            ticketSpeed = 7;
+            newTicket.transform.position = Vector3.MoveTowards(newTicket.transform.position, stovetop.transform.position, ticketSpeed * Time.deltaTime);
+            if (newTicket.transform.position == stovetop.transform.position)
+            {
+                Debug.Log("ticket has been moved");
+                Destroy(newTicket);
+                isOrderSending = false;
+            }
+            
+        }
+          
         if (isCooking == true)
         {
             // After customer order gets taken, the order gets prepared by kitchen for x amount of time
@@ -125,10 +144,17 @@ public class Table : MonoBehaviour
         newFoodRb.drag = 2.5f;
     }
 
+    void SpawnTicket()
+    {
+        newTicket = Instantiate(ticket, customerTable.position + Vector3.up, customerTable.rotation);
+        isOrderSending = true;
+    }
+
     // When player meets conditions to take customer order, the customer's selected menu item reference is sent back to player
     void TakeOrder()
     {
         customerFoodSelection = foodOptions[selectedFoodItem];
+        SpawnTicket();
         isCooking = true;
 
         // When player takes the customer's order, the opacity of the speech bubble changes (50% transparent) to indicate that order has been taken
