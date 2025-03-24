@@ -36,7 +36,7 @@ public class Table : MonoBehaviour
     public bool isCooking = false;
     
     // Array of speech bubble renderer components
-    private Renderer[] speechBubbleRender;
+    private SpriteRenderer[] speechBubbleRender;
 
 
     // Update is called once per frame
@@ -65,12 +65,21 @@ public class Table : MonoBehaviour
                 customerOrder = Instantiate(foodOrders[selectedFoodItem], customerTable.position + offset, customerTable.rotation);
 
                 // Gets all renderer references of game object and its children
-                speechBubbleRender = customerOrder.GetComponentsInChildren<Renderer>();
+                speechBubbleRender = customerOrder.GetComponentsInChildren<SpriteRenderer>();
 
                 // Enable the speech bubble renderers
-                foreach (Renderer r in speechBubbleRender)
+                foreach (SpriteRenderer r in speechBubbleRender)
                 {
-                    r.enabled = true;
+                    if (r == speechBubbleRender[speechBubbleRender.Length - 1])
+                    {
+                        r.enabled = false;
+                    }
+                    
+                    else
+                    {
+                        r.enabled = true;
+                    }
+
                 }
                 
                 // Set the table's state to show that they are ready to order
@@ -122,23 +131,31 @@ public class Table : MonoBehaviour
         customerFoodSelection = foodOptions[selectedFoodItem];
         isCooking = true;
 
+        // When player takes the customer's order, the opacity of the speech bubble changes (50% transparent) to indicate that order has been taken
+        foreach (SpriteRenderer r in speechBubbleRender)
+        {
+            r.color = new Color(1f, 1f, 1f, 0.5f);
+        }
+
         // Set the table's state to show that they are waiting for their order
         state = 2;
     }
 
-    // If order is being delivered to the correct table and other player-based conditions are met, the speech bubble disappears 
+    // Checks and acts in accordance to whether correct or incorrect order was delivered to the table
+    // If correct order was delivered, speech bubble disappears and the food is not able to be picked back up
+    // If incorrect order was delivered, a question mark appears over the speech bubble and the food is still able to be picked up
     void DeliverOrder() // Renderer[] customerSpeechBubble
     {
-        // Disable the speech bubble renderers
-        foreach (Renderer r in speechBubbleRender)
-        {
-            r.enabled = false;
-        }
-
-        // the order is correct
+        // If the order is correct
         if (CheckOrder())
         {
             state = 0; // neutral state
+
+            // Disable the speech bubble renderers
+            foreach (SpriteRenderer r in speechBubbleRender)
+            {
+                r.enabled = false;
+            }
             
             // disable the food's collider so it can no longer be picked up
             Collider2D foodColl = transform.GetChild(0).GetComponent<Collider2D>();
@@ -147,8 +164,30 @@ public class Table : MonoBehaviour
             Rigidbody2D foodRb = transform.GetChild(0).GetComponent<Rigidbody2D>();
             foodRb.simulated = false;
         }
-        // otherwise, it stays in the waiting for order state
-        // so that the user can pick up the order again
+
+        // If the order is wrong
+        else
+        {
+            // Table state indicates that customers are still waiting for their CORRECT order
+            state = 2;
+
+            // Enable the speech bubble renderers
+            foreach (SpriteRenderer r in speechBubbleRender)
+            {
+                if (r == speechBubbleRender[speechBubbleRender.Length - 1])
+                {
+                    r.color = new Color(1f, 0f, 0f, 1f);
+                    r.enabled = true;
+                }
+            }
+
+            // enable the food's collider so it can still be picked up since the order is wrong
+            Collider2D foodColl = transform.GetChild(0).GetComponent<Collider2D>();
+            foodColl.enabled = true;
+
+            Rigidbody2D foodRb = transform.GetChild(0).GetComponent<Rigidbody2D>();
+            foodRb.simulated = true;
+        }
 
         Debug.Log(state);
     }

@@ -495,7 +495,7 @@ MonoBehaviour:
   selectedFoodItem: 0
   customerOrder: {fileID: 0}
   ponderingMenuRate: 2
-  isPondering: 1
+  isPondering: 0
   cookingRate: 5
   isCooking: 0
 --- !u!61 &296322517
