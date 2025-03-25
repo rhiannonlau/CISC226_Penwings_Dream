@@ -157,7 +157,7 @@ public class MainMenu : MonoBehaviour
     public void StartGame()
     {
         Debug.Log("start game");
-        SceneManager.LoadSceneAsync("Scene");
+        SceneManager.LoadSceneAsync("LoadingScreen");
     }
 
     // user presses levels
@@ -172,7 +172,8 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadSceneAsync("Credits");
     }
 
-    // user presses quit game, confirm that this is what they want
+    // user presses quit game, give a quit confirmation popup
+    // to verify that this is what they want
     public void ConfirmQuit()
     {
         showPopUp = true;
