@@ -1,26 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
-using Unity.VisualScripting;
 
-public class MainMenu : MonoBehaviour
+public class Options : MonoBehaviour
 {
     // private int selected;
     private GameObject selected;
     private GameObject lastSelected;
 
-    private GameObject btnStart;
-    private GameObject btnLevels;
+    private GameObject btnResume;
     private GameObject btnControls;
-    private GameObject btnCredits;
     private GameObject btnQuit;
 
-    private GameObject startCloche;
-    private GameObject levelsCloche;
-    private GameObject creditsCloche;
+    private GameObject resumeCloche;
     private GameObject controlsCloche;
     private GameObject quitCloche;
 
@@ -34,30 +27,26 @@ public class MainMenu : MonoBehaviour
 
     public void Start()
     {
-        lastSelected = btnStart;
+        lastSelected = btnResume;
 
         // get the references to the buttons
-        btnStart = transform.GetChild(2).gameObject;
-        btnLevels = transform.GetChild(3).gameObject;
-        btnControls = transform.GetChild(4).gameObject;
-        btnCredits = transform.GetChild(5).gameObject;
-        btnQuit = transform.GetChild(6).gameObject;
+        btnResume = transform.GetChild(2).gameObject;
+        btnControls = transform.GetChild(3).gameObject;
+        btnQuit = transform.GetChild(4).gameObject;
 
         // get the references to their cloches
-        startCloche = btnStart.transform.GetChild(0).gameObject;
-        levelsCloche = btnLevels.transform.GetChild(0).gameObject;
+        resumeCloche = btnResume.transform.GetChild(0).gameObject;
         controlsCloche = btnControls.transform.GetChild(0).gameObject;
-        creditsCloche = btnCredits.transform.GetChild(0).gameObject;
         quitCloche = btnQuit.transform.GetChild(0).gameObject;
 
         // start with Start Game selected
         AllSelectionsFalse();
-        startCloche.SetActive(true);
+        resumeCloche.SetActive(true);
 
         showingControls = false;
 
         // quit pop up hidden
-        quitPopUp = transform.GetChild(8).gameObject;
+        quitPopUp = transform.GetChild(6).gameObject;
         showingQuitConf = false;
 
         // get the yes and no options for the quit confirmation
@@ -79,28 +68,16 @@ public class MainMenu : MonoBehaviour
         quitPopUp.SetActive(showingQuitConf);
 
         // depending on which option is selected, show the cloche
-        if (selected == btnStart)
+        if (selected == btnResume)
         {
             AllSelectionsFalse();
-            startCloche.SetActive(true);
-        }
-
-        else if(selected == btnLevels)
-        {
-            AllSelectionsFalse();
-            levelsCloche.SetActive(true);
+            resumeCloche.SetActive(true);
         }
 
         else if(selected == btnControls)
         {
             AllSelectionsFalse();
             controlsCloche.SetActive(true);
-        }
-
-        else if (selected == btnCredits)
-        {
-            AllSelectionsFalse();
-            creditsCloche.SetActive(true);
         }
 
         else if (selected == btnQuit)
@@ -121,7 +98,7 @@ public class MainMenu : MonoBehaviour
             {
                 if (selected == yesQuit)
                 {
-                    QuitGame();
+                    MainMenu();
                 }
 
                 else if (selected == noQuit)
@@ -140,14 +117,9 @@ public class MainMenu : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.X))
             {
-                if (selected == btnStart)
+                if (selected == btnResume)
                 {
-                    StartGame();
-                }
-
-                else if(selected == btnLevels)
-                {
-                    Levels();
+                    ResumeGame();
                 }
 
                 else if(selected == btnControls)
@@ -155,20 +127,10 @@ public class MainMenu : MonoBehaviour
                     ShowControls();
                 }
 
-                else if (selected == btnCredits)
-                {
-                    Credits();
-                }
-
                 else if (selected == btnQuit)
                 {
                     ConfirmQuit();
                 }
-            }
-
-            if (Input.GetKeyDown(KeyCode.Z))
-            {
-                ConfirmQuit();
             }
         }
 
@@ -180,17 +142,11 @@ public class MainMenu : MonoBehaviour
         lastSelected = selected;
     }
 
-    // user presses start game
-    public void StartGame()
+    // user presses resume game
+    private void ResumeGame()
     {
-        Debug.Log("start game");
-        SceneManager.LoadSceneAsync("LoadingScreen");
-    }
-
-    // user presses levels
-    public void Levels()
-    {
-        
+        Debug.Log("Resume game");
+        // SceneManager.LoadSceneAsync("LoadingScreen");
     }
 
     private void ShowControls()
@@ -211,38 +167,30 @@ public class MainMenu : MonoBehaviour
         showingControls = false;
     }
 
-    // user presses credits
-    public void Credits()
-    {
-        SceneManager.LoadSceneAsync("Credits");
-    }
-
     // user presses quit game, give a quit confirmation popup
     // to verify that this is what they want
-    public void ConfirmQuit()
+    private void ConfirmQuit()
     {
         showingQuitConf = true;
         EventSystem.current.SetSelectedGameObject(noQuit);
     }
 
-    public void QuitGame()
+    private void MainMenu()
     {
-        Application.Quit();
+        SceneManager.LoadSceneAsync("StartMenu");
     }
 
-    public void Back()
+    private void Back()
     {
         showingQuitConf = false;
-        EventSystem.current.SetSelectedGameObject(btnStart);
+        EventSystem.current.SetSelectedGameObject(btnResume);
     }
 
     // helper function to turn off all cloches
-    public void AllSelectionsFalse()
+    private void AllSelectionsFalse()
     {
-        startCloche.SetActive(false);
-        levelsCloche.SetActive(false);
+        resumeCloche.SetActive(false);
         controlsCloche.SetActive(false);
-        creditsCloche.SetActive(false);
         quitCloche.SetActive(false);
     }
 }
