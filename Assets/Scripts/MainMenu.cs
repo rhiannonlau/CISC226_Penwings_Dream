@@ -1,10 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
-using Unity.VisualScripting;
 
 public class MainMenu : MonoBehaviour
 {
@@ -12,17 +8,9 @@ public class MainMenu : MonoBehaviour
     private GameObject selected;
     private GameObject lastSelected;
 
-    private GameObject btnStart;
-    private GameObject btnLevels;
-    private GameObject btnControls;
-    private GameObject btnCredits;
-    private GameObject btnQuit;
+    private GameObject btnStart, btnLevels, btnControls, btnCredits, btnQuit;
 
-    private GameObject startCloche;
-    private GameObject levelsCloche;
-    private GameObject creditsCloche;
-    private GameObject controlsCloche;
-    private GameObject quitCloche;
+    private GameObject startCloche, levelsCloche, creditsCloche, controlsCloche, quitCloche;
 
     private bool showingControls;
 
@@ -181,16 +169,16 @@ public class MainMenu : MonoBehaviour
     }
 
     // user presses start game
-    public void StartGame()
+    private void StartGame()
     {
         Debug.Log("start game");
         SceneManager.LoadSceneAsync("LoadingScreen");
     }
 
     // user presses levels
-    public void Levels()
+    private void Levels()
     {
-        
+        SceneManager.LoadSceneAsync("Levels");
     }
 
     private void ShowControls()
@@ -199,7 +187,7 @@ public class MainMenu : MonoBehaviour
         showingControls = true;
     }
 
-    public void HideControls()
+    private void HideControls()
     {
         int n = SceneManager.sceneCount;
 
@@ -212,32 +200,32 @@ public class MainMenu : MonoBehaviour
     }
 
     // user presses credits
-    public void Credits()
+    private void Credits()
     {
         SceneManager.LoadSceneAsync("Credits");
     }
 
     // user presses quit game, give a quit confirmation popup
     // to verify that this is what they want
-    public void ConfirmQuit()
+    private void ConfirmQuit()
     {
         showingQuitConf = true;
         EventSystem.current.SetSelectedGameObject(noQuit);
     }
 
-    public void QuitGame()
+    private void QuitGame()
     {
         Application.Quit();
     }
 
-    public void Back()
+    private void Back()
     {
         showingQuitConf = false;
         EventSystem.current.SetSelectedGameObject(btnStart);
     }
 
     // helper function to turn off all cloches
-    public void AllSelectionsFalse()
+    private void AllSelectionsFalse()
     {
         startCloche.SetActive(false);
         levelsCloche.SetActive(false);
