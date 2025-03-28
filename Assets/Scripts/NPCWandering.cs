@@ -23,12 +23,23 @@ public class NPCWandering : MonoBehaviour
     private bool isflip;
     private bool wander = true;
 
+    [SerializeField] private bool isHungry = false;
+    [SerializeField] private bool isSitting = false;
+    [SerializeField] private bool isEating = false;
+    [SerializeField] private float timeUntilHungry;
+    [SerializeField] private float hungerMin = 5;
+    [SerializeField] private float hungerMax = 20;
+    [SerializeField] private float timeUntilDoneEating;
+    public Table tableInteractions;
+    [SerializeField] private Transform chair;
+
     // Start is called before the first frame update
     void Start()
     {
-        
         randomtime = Random.Range(minwalk, maxwalk); // randomized walking time
-        ani.SetBool("iswalk", iswalk ? true : false); // animation swithcing
+        ani.SetBool("iswalk", iswalk ? true : false); // animation switching
+        SetHungerTime();
+
     }
 
     // Update is called once per frame
@@ -36,7 +47,7 @@ public class NPCWandering : MonoBehaviour
     {
         timer += Time.deltaTime;
 
-        if (wander)
+        if (wander && isSitting == false)
         {
             if (timer >= randomtime) // idle
             {
@@ -50,6 +61,35 @@ public class NPCWandering : MonoBehaviour
                 rb.velocity = Vector2.right * facingDirection * speed;
         }
 
+        if (timeUntilHungry > 0)
+        {
+            timeUntilHungry -= Time.deltaTime;
+        }
+
+        else if (isHungry == false)
+        {
+            isHungry = true;
+        }
+
+        if (timeUntilDoneEating > 0)
+        {
+            timeUntilDoneEating -= Time.deltaTime;
+        }
+        
+        else if (isEating == true)
+        {
+            isEating = false;
+            isSitting = false;
+            ani.SetBool("iswalk", true);
+            ani.SetBool("isSitting", false);
+            ani.SetBool("isEating", false);
+            SetHungerTime();
+            tableInteractions.isPondering = false;
+            // call destroy plate function from Table.cs after I make that
+            Vector3 sitPosition = transform.position;
+            sitPosition.y -= 0.4f;
+            transform.position = sitPosition;
+        }
 
     }
 
@@ -65,7 +105,6 @@ public class NPCWandering : MonoBehaviour
         wander = true;
         // Resume wandering logic
     }
-
 
     // moves in opposite direction
     IEnumerator Flip()
@@ -84,4 +123,49 @@ public class NPCWandering : MonoBehaviour
         randomtime = iswalk ? Random.Range(minwalk, maxwalk) : Random.Range(minpause, maxpause);
         timer = 0;
     }
+
+    void SetHungerTime()
+    {
+        timeUntilHungry = Random.Range(hungerMin, hungerMax);
+        isHungry = false;
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        // Debug.Log(other.gameObject.name);
+        if (other.gameObject.CompareTag("Chair"))
+        {
+            // Debug.Log("has collided with chair");
+
+            if (isHungry == true)
+            {
+                if (isSitting == false)
+                {
+                    isSitting = true;
+                    ani.SetBool("isSitting", true);
+
+                    Vector3 sitPosition = transform.position;
+                    sitPosition.x = chair.position.x;
+                    sitPosition.y += 0.4f;
+                    transform.position = sitPosition;
+                    rb.velocity = new Vector3(0, 0, 0);
+                    
+                    if (facingDirection < 0)
+                    {
+                        StartCoroutine(Flip());
+                    }
+
+                    tableInteractions.isPondering = true;
+                }
+            }
+        }
+    }
+
+    public void FoodDelivered()
+    {
+        isEating = true;
+        ani.SetBool("isEating", true);
+        timeUntilDoneEating = 5f;
+    }
+
 }

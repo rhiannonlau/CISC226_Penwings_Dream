@@ -44,6 +44,8 @@ public class Table : MonoBehaviour
     // Array of speech bubble renderer components
     private SpriteRenderer[] speechBubbleRender;
 
+    public NPCWandering npc;
+
 
     // Update is called once per frame
     void Update()
@@ -117,7 +119,7 @@ public class Table : MonoBehaviour
                 cookingTimer += Time.deltaTime;
             }
 
-            // If timer has met or exceeded the spawn rate, then spawn customer's order on the kitchen counter and reset timer
+            // If timer has met or exceeded the cooking rate, then spawn customer's order on the kitchen counter and reset timer
             else
             {
                 SpawnFoodItem(foodOptions[selectedFoodItem], counter);
@@ -131,7 +133,9 @@ public class Table : MonoBehaviour
     // Spawns the correct order for a table on top of its corresponding kitchen counter when it's done "cooking"
     void SpawnFoodItem(GameObject foodItem, Transform counter)
     {
-        GameObject newFood = Instantiate(foodItem, counter.position + Vector3.up, counter.rotation);
+        Vector3 offset = new Vector3(0, 0.9f, 0);
+
+        GameObject newFood = Instantiate(foodItem, counter.position + offset, counter.rotation);
         
         // make the food sit on the counter and able to be passed through
         // but still able to be picked up by the player
@@ -189,6 +193,8 @@ public class Table : MonoBehaviour
 
             Rigidbody2D foodRb = transform.GetChild(0).GetComponent<Rigidbody2D>();
             foodRb.simulated = false;
+
+            npc.FoodDelivered();
         }
 
         // If the order is wrong
