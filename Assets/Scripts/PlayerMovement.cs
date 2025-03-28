@@ -445,6 +445,16 @@ public class PlayerMovement : MonoBehaviour
             num = 3;
         }
 
+        else if (name.Contains("4"))
+        {
+            num = 4;
+        }
+
+        else if (name.Contains("5"))
+        {
+            num = 5;
+        }
+
         return num;
     }
 

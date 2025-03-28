@@ -18,11 +18,15 @@ public class UpDownChunk : MonoBehaviour
     [SerializeField] private Transform groundFloor;
     [SerializeField] private Transform floor2;
     [SerializeField] private Transform floor3;
+    [SerializeField] private Transform floor4;
+    [SerializeField] private Transform floor5;
 
 
     private float moveSpeed = 15f; // Speed of smooth movement
     private float sensorSpeed = 8f;
     private bool callingElevator = false;
+
+    [SerializeField] private BoxCollider2D elevatorColl;
 
     private void Start()
     {
@@ -61,16 +65,28 @@ public class UpDownChunk : MonoBehaviour
     {
         callingElevator = false;
 
-        if (Mathf.Approximately(transform.position.y, targetPosition.y) && level < 2)
+        if (Mathf.Approximately(transform.position.y, targetPosition.y) && level < 4)
             {
                 if (level == 0)
                 {
-                    targetPosition = new Vector3(transform.position.x, floor2.position.y , transform.position.z);
+                    targetPosition = new Vector3(transform.position.x, floor2.position.y + (floor2.transform.localScale.y / 2) - (elevatorColl.size.y / 2) + 0.03f, transform.position.z);
                 }
 
                 else if (level == 1)
                 {
-                    targetPosition = new Vector3(transform.position.x, floor3.position.y, transform.position.z);
+                    targetPosition = new Vector3(transform.position.x, floor3.position.y + (floor3.transform.localScale.y / 2) - (elevatorColl.size.y / 2) + 0.03f, transform.position.z);
+
+                }
+
+                else if (level == 2)
+                {
+                    targetPosition = new Vector3(transform.position.x, floor4.position.y + (floor4.transform.localScale.y / 2) - (elevatorColl.size.y / 2) + 0.03f, transform.position.z);
+
+                }
+
+                else if (level == 3)
+                {
+                    targetPosition = new Vector3(transform.position.x, floor5.position.y + (floor5.transform.localScale.y / 2) - (elevatorColl.size.y / 2) + 0.03f, transform.position.z);
 
                 }
 
@@ -88,12 +104,22 @@ public class UpDownChunk : MonoBehaviour
         {
             if (level == 0)
             {
-                targetPosition = new Vector3(transform.position.x, groundFloor.position.y, transform.position.z);
+                targetPosition = new Vector3(transform.position.x, groundFloor.position.y + (groundFloor.transform.localScale.y / 2) - (elevatorColl.size.y / 2) + 0.04f, transform.position.z);
             }
 
             else if (level == 1)
             {
-                targetPosition = new Vector3(transform.position.x, floor2.position.y, transform.position.z);
+                targetPosition = new Vector3(transform.position.x, floor2.position.y + (floor2.transform.localScale.y / 2) - (elevatorColl.size.y / 2) + 0.03f, transform.position.z);
+            }
+
+            else if (level == 2)
+            {
+                targetPosition = new Vector3(transform.position.x, floor3.position.y + (floor3.transform.localScale.y / 2) - (elevatorColl.size.y / 2) + 0.03f, transform.position.z);
+            }
+
+            else if (level == 3)
+            {
+                targetPosition = new Vector3(transform.position.x, floor4.position.y + (floor4.transform.localScale.y / 2) - (elevatorColl.size.y / 2) + 0.03f, transform.position.z);
             }
 
             player.SendMessage("FollowElevator", target);
@@ -112,20 +138,32 @@ public class UpDownChunk : MonoBehaviour
         {
             if (name.Contains("Ground"))
             {
-                targetPosition = new Vector3(transform.position.x, groundFloor.position.y, transform.position.z);
+                targetPosition = new Vector3(transform.position.x, groundFloor.position.y + (groundFloor.transform.localScale.y / 2) - (elevatorColl.size.y / 2) + 0.04f, transform.position.z);
                 level = 0;
             }
 
             else if (name.Contains("2"))
             {
-                targetPosition = new Vector3(transform.position.x, floor2.position.y, transform.position.z);
+                targetPosition = new Vector3(transform.position.x, floor2.position.y  + (floor2.transform.localScale.y / 2) - (elevatorColl.size.y / 2) + 0.03f, transform.position.z);
                 level = 1;
             }
 
             else if (name.Contains("3"))
             {
-                targetPosition = new Vector3(transform.position.x, floor3.position.y, transform.position.z);
+                targetPosition = new Vector3(transform.position.x, floor3.position.y + (floor3.transform.localScale.y / 2) - (elevatorColl.size.y / 2) + 0.03f, transform.position.z);
                 level = 2;
+            }
+
+            else if (name.Contains("4"))
+            {
+                targetPosition = new Vector3(transform.position.x, floor4.position.y + (floor4.transform.localScale.y / 2) - (elevatorColl.size.y / 2) + 0.03f, transform.position.z);
+                level = 3;
+            }
+
+            else if (name.Contains("5"))
+            {
+                targetPosition = new Vector3(transform.position.x, floor5.position.y + (floor5.transform.localScale.y / 2) - (elevatorColl.size.y / 2) + 0.03f, transform.position.z);
+                level = 4;
             }
         }
     }

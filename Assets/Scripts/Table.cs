@@ -65,7 +65,7 @@ public class Table : MonoBehaviour
                 selectedFoodItem = Random.Range(0, foodOptions.Length);
 
                 // Position offset from table for spawning of speech bubble
-                Vector3 offset = new Vector3(0, 1.26f, 0);
+                Vector3 offset = new Vector3(0, 0.9f, 0);
 
                 // Spawns speech bubble of customer's order above the table
                 customerOrder = Instantiate(foodOrders[selectedFoodItem], customerTable.position + offset, customerTable.rotation);
