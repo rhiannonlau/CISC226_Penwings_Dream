@@ -1784,6 +1784,56 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &582247116
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 582247118}
+  - component: {fileID: 582247117}
+  m_Layer: 0
+  m_Name: Game Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &582247117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 582247116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73f7f74661c114a9a8daab87f898c759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isLevelOver: 0
+  timeUntilLevelOver: 120
+  dailyTotal: 0
+  numTablesServed: 0
+  highestSatisfaction: 0
+  timeOfDay: 0
+--- !u!4 &582247118
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 582247116}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &624860649
 GameObject:
   m_ObjectHideFlags: 0
@@ -2249,6 +2299,7 @@ MonoBehaviour:
   patienceCountdown: 0
   uiBarContainer: {fileID: 1946027974}
   uiBarFill: {fileID: 624860651}
+  gameManager: {fileID: 582247117}
 --- !u!61 &747757968
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3251,6 +3302,7 @@ MonoBehaviour:
   patienceCountdown: 0
   uiBarContainer: {fileID: 464329538}
   uiBarFill: {fileID: 817836307}
+  gameManager: {fileID: 582247117}
 --- !u!61 &868024668
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4403,6 +4455,7 @@ MonoBehaviour:
   patienceCountdown: 0
   uiBarContainer: {fileID: 2055011479}
   uiBarFill: {fileID: 1484153451}
+  gameManager: {fileID: 582247117}
 --- !u!4 &920332086 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7832295009012461655, guid: 357ec1b426ab04843ac1221f86fac56b, type: 3}
@@ -5287,6 +5340,7 @@ MonoBehaviour:
   patienceCountdown: 0
   uiBarContainer: {fileID: 195825266}
   uiBarFill: {fileID: 1112709266}
+  gameManager: {fileID: 582247117}
 --- !u!61 &1240673645
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -8774,3 +8828,4 @@ SceneRoots:
   - {fileID: 1624276417}
   - {fileID: 1961355999}
   - {fileID: 295756987}
+  - {fileID: 582247118}

@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int numTablesServed = 0;
     [SerializeField] private float highestSatisfaction = 0f;
     [SerializeField] private int timeOfDay = 0;
+    [SerializeField] private bool isAM = true;
 
     // Start is called before the first frame update
     void Start()
@@ -69,46 +70,47 @@ public class GameManager : MonoBehaviour
 
     void displayTime()
     {
-        if (timeUntilLevelOver == 120f)
+        if (timeUntilLevelOver >= 105f)
         {
             timeOfDay = 9;
         }
 
-        else if (timeUntilLevelOver >= 105f)
+        else if (timeUntilLevelOver >= 90f)
         {
             timeOfDay = 10;
         }
 
-        else if (timeUntilLevelOver >= 90f)
+        else if (timeUntilLevelOver >= 75f)
         {
             timeOfDay = 11;
         }
 
-        else if (timeUntilLevelOver >= 75f)
-        {
-            timeOfDay = 12;
-        }
-
         else if (timeUntilLevelOver >= 60f)
         {
-            timeOfDay = 1;
+            timeOfDay = 12;
+            isAM = false;
         }
 
         else if (timeUntilLevelOver >= 45f)
         {
-            timeOfDay = 2;
+            timeOfDay = 1;
         }
 
         else if (timeUntilLevelOver >= 30f)
         {
-            timeOfDay = 3;
+            timeOfDay = 2;
         }
 
         else if (timeUntilLevelOver >= 15f)
         {
-            timeOfDay = 4;
+            timeOfDay = 3;
         }
 
+        else if (timeUntilLevelOver >= 0f)
+        {
+            timeOfDay = 4;
+        }
+        
         else
         {
             timeOfDay = 5;
