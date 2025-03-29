@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class Table : MonoBehaviour
@@ -46,10 +47,38 @@ public class Table : MonoBehaviour
 
     public NPCWandering npc;
 
+    [SerializeField] private const float PATIENCE_TIME = 50;
+    [SerializeField] private float patienceCountdown = 0;
+    [SerializeField] private GameObject uiBarContainer;
+    [SerializeField] private SpriteRenderer uiBarFill;
+
+    // Run at startup
+    void Start() {
+        // Ensure patience bar is hidden
+        uiBarContainer.SetActive(false);
+    }
+
+    float getPatience() {
+        float patience = patienceCountdown/(float)PATIENCE_TIME;
+        if (patience < 0) {
+            patience = 0;
+        }
+        return patience;
+    }
 
     // Update is called once per frame
     void Update()
     {
+
+        // update patience counter + bar
+        if (state == 1 || state == 2) {
+            patienceCountdown -= Time.deltaTime;
+            
+            float patience = getPatience();
+            // TODO: Fix scaling
+            uiBarFill.size = new Vector2(patience * 1.8f, uiBarFill.size.y);
+        }
+
         if (isPondering == true)
         {
             // Customers sit at the table, pondering the menu for set amount of time before ordering
@@ -94,6 +123,10 @@ public class Table : MonoBehaviour
                 state = 1;
 
                 isPondering = false;
+
+                // Make patience bar visible
+                uiBarContainer.SetActive(true);
+                patienceCountdown = PATIENCE_TIME;
 
             }
         }
@@ -195,6 +228,11 @@ public class Table : MonoBehaviour
             foodRb.simulated = false;
 
             npc.FoodDelivered();
+
+            // hide patience bar
+            uiBarContainer.SetActive(false);
+
+            Debug.Log($"NPC Patience at delivery: {getPatience()*100:F1}%");
         }
 
         // If the order is wrong

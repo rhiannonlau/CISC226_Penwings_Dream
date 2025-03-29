@@ -89,6 +89,9 @@ public class NPCWandering : MonoBehaviour
             Vector3 sitPosition = transform.position;
             sitPosition.y -= 0.4f;
             transform.position = sitPosition;
+
+            GetComponent<Collider2D>().enabled = true;
+
         }
 
     }
@@ -156,6 +159,8 @@ public class NPCWandering : MonoBehaviour
                     }
 
                     tableInteractions.isPondering = true;
+
+                    GetComponent<Collider2D>().enabled = false;
                 }
             }
         }
