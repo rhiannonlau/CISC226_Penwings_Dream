@@ -92,6 +92,7 @@ public class NPCWandering : MonoBehaviour
 
             GetComponent<Collider2D>().enabled = true;
 
+            tableInteractions.FinishedEating();
         }
 
     }

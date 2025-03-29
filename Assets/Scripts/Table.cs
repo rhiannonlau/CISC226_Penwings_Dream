@@ -279,4 +279,9 @@ public class Table : MonoBehaviour
         // return true if it is, false otherwise
         return holdingType.Contains(wantedType);
     }
+
+    public void FinishedEating()
+    {
+        Destroy(transform.GetChild(0).gameObject);
+    }
 }
