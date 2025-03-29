@@ -52,6 +52,8 @@ public class Table : MonoBehaviour
     [SerializeField] private GameObject uiBarContainer;
     [SerializeField] private SpriteRenderer uiBarFill;
 
+    public GameManager gameManager;
+
     // Run at startup
     void Start() {
         // Ensure patience bar is hidden
@@ -233,6 +235,8 @@ public class Table : MonoBehaviour
             uiBarContainer.SetActive(false);
 
             Debug.Log($"NPC Patience at delivery: {getPatience()*100:F1}%");
+
+            gameManager.AddTableTip(getPatience());
         }
 
         // If the order is wrong
