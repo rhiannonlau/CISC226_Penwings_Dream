@@ -66,6 +66,11 @@ public class Options : MonoBehaviour
             EventSystem.current.SetSelectedGameObject(lastSelected);
         }
 
+        // else if (!(selected == btnLvl1 || selected == btnLvl2 || selected == btnLvl3 || selected == btnLvl4 || selected == btnLvl5 || selected == btnMainMenu) || !lastSelected)
+        // {
+        //     EventSystem.current.SetSelectedGameObject(btnLvl1);
+        // }
+
         quitPopUp.SetActive(showingQuitConf);
 
         // depending on which option is selected, show the cloche

@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -16,10 +17,8 @@ public class Levels : MonoBehaviour
     // references to the cloches for indicating which button is being selected
     private GameObject lvl1Cloche, lvl2Cloche, lvl3Cloche, lvl4Cloche, lvl5Cloche, mainMenuCloche;
 
-    void Start()
+    void Awake()
     {
-        lastSelected = btnLvl1;
-
         // get the references to the buttons
         btnLvl1 = transform.GetChild(1).gameObject;
         btnLvl2 = transform.GetChild(2).gameObject;
@@ -36,10 +35,20 @@ public class Levels : MonoBehaviour
         lvl5Cloche = btnLvl5.transform.GetChild(0).gameObject;
         mainMenuCloche = btnMainMenu.transform.GetChild(0).gameObject;
 
-        // start with level 1 selected
+        lastSelected = btnLvl1;
+        // Debug.Log(lastSelected);
+    }
+
+    // reset everything when enabled again
+    void OnEnable()
+    {
         AllSelectionsFalse();
-        lvl1Cloche.SetActive(true);
-        EventSystem.current.SetSelectedGameObject(btnLvl1);
+
+        // start with the last option that was selected
+        EventSystem.current.SetSelectedGameObject(lastSelected);
+
+        print(lastSelected);
+        print(selected);
     }
 
     void Update()
@@ -49,15 +58,15 @@ public class Levels : MonoBehaviour
 
         // to catch edge cases where mouse deselects all options
         // reset the selected option to be the last known selection
-
-        if (!lastSelected)
-        {
-            lastSelected = btnLvl1;
-        }
-
         if (!selected)
         {
             EventSystem.current.SetSelectedGameObject(lastSelected);
+        }
+
+        // if selected is not = to a button in this panel and lastSelected is null, reset to btnLvl1
+        else if (!(selected == btnLvl1 || selected == btnLvl2 || selected == btnLvl3 || selected == btnLvl4 || selected == btnLvl5 || selected == btnMainMenu) && !lastSelected)
+        {
+            EventSystem.current.SetSelectedGameObject(btnLvl1);
         }
 
         // depending on which option is selected, show the cloche
@@ -65,42 +74,36 @@ public class Levels : MonoBehaviour
         {
             AllSelectionsFalse();
             lvl1Cloche.SetActive(true);
-            Debug.Log("Lvl1");
         }
 
         else if(selected == btnLvl2)
         {
             AllSelectionsFalse();
             lvl2Cloche.SetActive(true);
-            Debug.Log("Lvl2");
         }
 
         else if(selected == btnLvl3)
         {
             AllSelectionsFalse();
             lvl3Cloche.SetActive(true);
-            Debug.Log("Lvl3");
         }
 
         else if (selected == btnLvl4)
         {
             AllSelectionsFalse();
             lvl4Cloche.SetActive(true);
-            Debug.Log("Lvl4");
         }
 
         else if (selected == btnLvl5)
         {
             AllSelectionsFalse();
             lvl5Cloche.SetActive(true);
-            Debug.Log("Lvl5");
         }
 
         else if (selected == btnMainMenu)
         {
             AllSelectionsFalse();
             mainMenuCloche.SetActive(true);
-            Debug.Log("MM");
         }
 
         else

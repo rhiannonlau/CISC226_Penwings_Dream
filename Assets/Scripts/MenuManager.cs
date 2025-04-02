@@ -7,74 +7,125 @@ using UnityEngine.Video;
 
 public class MenuManager : MonoBehaviour
 {
-    [SerializeField] GameObject mainMenu, levels, credits, loadingScreen;
+    private RectTransform tr;
 
-    [SerializeField] VideoPlayer intro, outro;
+    private GameObject pnlMainMenu, pnlLevels, pnlCredits, pnlLoadingScreen;
+
+    private VideoPlayer vpIntro, vpOutro;
+
+    void Awake()
+    {
+        tr = GetComponent<RectTransform>();
+        vpIntro = tr.GetChild(0).GetComponent<VideoPlayer>();  
+    }
 
     void Start()
     {
-        ToMainMenu(); 
+        pnlMainMenu = tr.GetChild(2).gameObject;
+        pnlLevels = tr.GetChild(3).gameObject;
+        pnlCredits = tr.GetChild(4).gameObject;
+        pnlLoadingScreen = tr.GetChild(1).gameObject;
+        // vpOutro = tr.GetChild(2).gameObject;
+
+
+        ToMainMenu();
+        vpIntro.enabled = false;
     }
 
     public void ToMainMenu()
     {
         allInactive();
-        mainMenu.SetActive(true);
+        pnlMainMenu.SetActive(true);
     }
 
     public void ToLevels()
     {
         allInactive();
-        levels.SetActive(true);
+        pnlLevels.SetActive(true);
     }
 
     public void ToCredits()
     {
         allInactive();
-        credits.SetActive(true);
+        pnlCredits.SetActive(true);
     }
 
     public void ToLoadingScreen()
     {
         allInactive();
-        loadingScreen.SetActive(true);
+        pnlLoadingScreen.SetActive(true);
     }
+
+    // public void DisableLoadingScreen(string scene)
+    // {
+    //     loadingScreen.SetActive(false);
+
+    //     if (scene != "")
+    //     {
+
+    //     }
+    // }
 
     public void StartGame()
     {
         ToLoadingScreen();
         // rn the problem is the video is playing while the loading screen is going
-        intro.enabled = true;
-        intro.Play();
-        intro.loopPointReached += EndReached;
+        pnlLoadingScreen.GetComponent<LoadingBar>().ToVideo("intro");
     }
 
     public void EndReached(VideoPlayer vp)
     {
-        if (vp == intro)
+        if (vp == vpIntro)
         {
-            intro.enabled = false;
+            vpIntro.enabled = false;
             ToLevel("Level 1");
         }
 
-        else if (vp == outro)
+        else if (vp == vpIntro)
         {
-            ToMainMenu();
             // credits
+
+            ToMainMenu();
+            // outro.enabled = false;
         }
     }
 
     public void ToLevel(string level)
     {
         ToLoadingScreen();
-        loadingScreen.GetComponent<LoadingBar>().ToScene(level);
+        pnlLoadingScreen.GetComponent<LoadingBar>().ToScene(level);
+    }
+
+    // called from loading to notify the manager that the loading screen has finished
+    public void FromLoadingToLevel(string level)
+    {
+        SceneManager.LoadSceneAsync(level);
+    }
+
+    // called from loading to notify the manager that the loading screen has finished
+    public void ToVideo(string video)
+    {
+        if (video == "intro")
+        {
+            // Debug.Log(vpIntro);
+            vpIntro.enabled = true;
+            vpIntro.Play();
+            vpIntro.loopPointReached += EndReached;
+        }
+
+        // else if (video == "outro")
+        // {
+        //     outro.enabled = true;
+        //     outro.Play();
+        //     outro.loopPointReached += EndReached;
+        // }
     }
 
     void allInactive()
     {
-        mainMenu.SetActive(false);
-        levels.SetActive(false);
-        credits.SetActive(false);
-        loadingScreen.SetActive(false);
+        pnlMainMenu.SetActive(false);
+        pnlLevels.SetActive(false);
+        pnlCredits.SetActive(false);
+        pnlLoadingScreen.SetActive(false);
     }
 }

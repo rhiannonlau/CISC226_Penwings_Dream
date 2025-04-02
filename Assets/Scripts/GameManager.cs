@@ -31,6 +31,12 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         goal.text = "Goal: $" + dailyGoal;
+
+        // add to the main manager to keep track of across scenes
+        if (MainManager.Instance)
+        {
+            MainManager.Instance.Goal = dailyGoal;
+        }
     }
 
     // Update is called once per frame
@@ -54,6 +60,9 @@ public class GameManager : MonoBehaviour
 
             // Should freeze most things in the game
             Time.timeScale = 0f;
+
+            // add to the main manager to keep track of across scenes
+            MainManager.Instance.Score = dailyTotal;
         }
     }
 

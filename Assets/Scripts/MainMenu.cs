@@ -28,13 +28,6 @@ public class MainMenu : MonoBehaviour
 
     void Awake() 
     {
-        uiSoundManager = GameObject.FindGameObjectWithTag("Sound").GetComponent<UISoundManager>();
-    }
-    
-    public void Start()
-    {
-        lastSelected = btnStart;
-
         // get the references to the buttons
         btnStart = transform.GetChild(1).gameObject;
         btnLevels = transform.GetChild(2).gameObject;
@@ -49,20 +42,29 @@ public class MainMenu : MonoBehaviour
         creditsCloche = btnCredits.transform.GetChild(0).gameObject;
         quitCloche = btnQuit.transform.GetChild(0).gameObject;
 
-        // start with Start Game selected
-        AllSelectionsFalse();
-        startCloche.SetActive(true);
-        EventSystem.current.SetSelectedGameObject(btnStart);
-
-        showingControls = false;
-
-        // quit pop up hidden
+        // get the reference to the quit confirmation pop up
         quitPopUp = transform.GetChild(7).gameObject;
-        showingQuitConf = false;
-
-        // get the yes and no options for the quit confirmation
         yesQuit = quitPopUp.transform.GetChild(1).gameObject;
         noQuit = quitPopUp.transform.GetChild(2).gameObject;
+
+        // set the first selection on awake
+        lastSelected = btnStart;
+        // EventSystem.current.SetSelectedGameObject(btnStart);
+
+        // uiSoundManager = GameObject.FindGameObjectWithTag("Sound").GetComponent<UISoundManager>();
+    }
+
+    
+    public void OnEnable()
+    {
+        AllSelectionsFalse();
+
+        // make sure other pop ups are hidden
+        showingControls = false;
+        showingQuitConf = false;
+
+        // start with the last option that was selected
+        EventSystem.current.SetSelectedGameObject(lastSelected);
     }
 
     public void Update()
@@ -75,6 +77,12 @@ public class MainMenu : MonoBehaviour
         if (!selected)
         {
             EventSystem.current.SetSelectedGameObject(lastSelected);
+        }
+
+        // if selected is not = to a button in this panel and lastSelected is null, reset to btnStart
+        else if (!(selected == btnStart || selected == btnLevels || selected == btnControls || selected == btnCredits || selected == btnQuit) && !lastSelected)
+        {
+            EventSystem.current.SetSelectedGameObject(btnStart);
         }
 
         quitPopUp.SetActive(showingQuitConf);

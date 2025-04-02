@@ -444,6 +444,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canvas: {fileID: 1400301845}
+  uiSoundManager: {fileID: 0}
 --- !u!1 &198697136
 GameObject:
   m_ObjectHideFlags: 0
@@ -1502,7 +1503,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &415591785
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3181,12 +3182,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 1
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
+    m_SelectOnUp: {fileID: 299336240}
+    m_SelectOnDown: {fileID: 423484404}
+    m_SelectOnLeft: {fileID: 299336240}
+    m_SelectOnRight: {fileID: 423484404}
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -4184,12 +4185,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ada8bfb599938404c8198f277cb85f32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainMenu: {fileID: 188652909}
-  levels: {fileID: 2138419945}
-  credits: {fileID: 1809831289}
-  loadingScreen: {fileID: 1485771409}
-  intro: {fileID: 415591786}
-  outro: {fileID: 0}
 --- !u!1 &1473499869
 GameObject:
   m_ObjectHideFlags: 0

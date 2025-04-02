@@ -24,13 +24,20 @@ public class LoadingBar : MonoBehaviour
     private float xPos = 0; // the sprite's x position
 
     private string nextScene;
+    private string video;
 
-    public void Start()
+    public void Awake()
+    {
+        // calculate distance as diff between start and end point
+        distance = Mathf.Abs(rightXBoundary) - Mathf.Abs(leftXBoundary);
+    }
+
+    public void OnEnable()
     {
         progressBar.value = 0; // reset progress bar
 
-        // calculate distance as diff between start and end point
-        distance = Mathf.Abs(rightXBoundary) - Mathf.Abs(leftXBoundary);
+        nextScene = "";
+        video = "";
     }
 
     public void Update()
@@ -43,7 +50,15 @@ public class LoadingBar : MonoBehaviour
 
         else
         {
-            SceneManager.LoadSceneAsync(nextScene);
+            if (nextScene != "")
+            {
+                canvas.AddComponent<MenuManager>().FromLoadingToLevel(nextScene);
+            }
+
+            else if (video != "")
+            {
+                canvas.AddComponent<MenuManager>().ToVideo(video);
+            }
         }
     }
 
@@ -70,6 +85,11 @@ public class LoadingBar : MonoBehaviour
     public void ToScene(string sceneName)
     {
         nextScene = sceneName;
+    }
+
+    public void ToVideo(string video)
+    {
+        this.video = video;
     }
 
     // if needed in the future: code for the loading bar that actually follows
