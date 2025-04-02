@@ -22,15 +22,16 @@ public class PlayerMovement : MonoBehaviour
     private SpriteRenderer rend;
     private bool sliding;
     private LayerMask floorMask;
-
     private Vector2 lookDirection;
+
+    // variables for player
+    private float playerXSize, playerYSize;
+    [SerializeField] private float waitRespawn;
 
     // elevator vars
     private LayerMask elevatorMask;
     private bool onElevator;
     private GameObject elevator;
-    private Vector3 elevatorPosition;
-    private Vector2 originalScale = new Vector2(0.5f, 0.5f);
     private LayerMask sensorMask;
 
 
@@ -72,15 +73,6 @@ public class PlayerMovement : MonoBehaviour
     private bool grounded;
     private bool wasGroundedLastUpdate = false;
 
-    // ice variables
-    private SpriteRenderer iceRenderer;
-    [SerializeField] private GameObject ice;
-
-
-    // snail variables
-    private SpriteRenderer snailRenderer;
-    [SerializeField] private GameObject snail;
-
 
     // Variables for grabbing
     private bool holdingFood = false;
@@ -113,6 +105,9 @@ public class PlayerMovement : MonoBehaviour
         chandelierLayer = LayerMask.NameToLayer("Chandelier");
         tableLayer = LayerMask.NameToLayer("Table");
         kitchenLayer = LayerMask.NameToLayer("Kitchen");
+
+        playerXSize = transform.localScale.x;
+        playerYSize = transform.localScale.y;
     }
 
     private void Awake()
@@ -128,17 +123,16 @@ public class PlayerMovement : MonoBehaviour
         // elevator
         elevator = GameObject.Find("Elevator");
 
-        // get the renderers for the special effects
-        iceRenderer = ice.GetComponent<SpriteRenderer>();
-        snailRenderer = snail.GetComponent<SpriteRenderer>();
-
-        iceRenderer.enabled = false; // ice animation off
-        snailRenderer.enabled = false; // snail animation off
-
         // to be able to return to original speed and jumpPower after penalty effects
         originalSpeed = speed;
         originalJumpPower = jumpPower;
     }
+
+    // private void FixedUpdate()
+    // {
+    //     grounded = IsGrounded()
+        
+    // }
 
     private void Update()
     {
@@ -164,6 +158,11 @@ public class PlayerMovement : MonoBehaviour
         
 
         AnimateMove();
+
+        if (transform.position.y <= -6f)
+        {
+            Reset();
+        }
 
         // elevator logic /////////////////////////
         if (IsOnElevator()) // && !grounded
@@ -261,28 +260,35 @@ public class PlayerMovement : MonoBehaviour
                 if (layer == tableLayer)
                 {
                     Table table = obj.GetComponent<Table>();
-                    
-                    switch (table.State)
+                    if (table)
                     {
-                        // customer is ready to order
-                        case 1:
+                        switch (table.State)
                         {
-                            Debug.Log("took order");
-                            table.SendMessage("TakeOrder");
-                            break;
-                        }
-
-                        // customer is waiting for order
-                        case 2:
-                        {
-                            // only trigger delivery if we have food and
-                            // the table does not already have food
-                            if (holdingFood && table.transform.childCount == 0)
+                            // customer is ready to order
+                            case 1:
                             {
-                                DeliverOrder(table);
+                                Debug.Log("took order");
+                                table.SendMessage("TakeOrder");
+                                break;
                             }
 
-                            break;
+                            // customer is waiting for order
+                            case 2:
+                            {
+                                // only trigger delivery if we have food and
+                                // the table does not already have food
+                                if (holdingFood && table.transform.childCount == 0)
+                                {
+                                    DeliverOrder(table);
+                                }
+
+                                break;
+                            }
+
+                            default:
+                            {
+                                break;
+                            }
                         }
                     }
                 }
@@ -464,14 +470,14 @@ public class PlayerMovement : MonoBehaviour
         if (horizontalInput > 0.01f) // the player is moving right
         {
             // changing the x value of the player's scale to a positive value makes them face right
-            transform.localScale = new Vector3(0.5f, 0.5f, 0.5f); 
+            transform.localScale = new Vector3(playerXSize, playerYSize, 0.5f); 
 
         }
 
         else if (horizontalInput < -0.01f) // the player is moving left
         {
             // changing the x value of the player's scale to a negative value makes them face left
-            transform.localScale = new Vector3(-0.5f, 0.5f, 0.5f);
+            transform.localScale = new Vector3(-playerXSize, playerYSize, 0.5f);
         }
 
         // Set animator parameters
@@ -587,8 +593,14 @@ public class PlayerMovement : MonoBehaviour
     // reset to original settings for testing
     private void Reset()
     {
-        body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
-        transform.position = new Vector2(-8, 4);
+        StartCoroutine(WaitBeforeReset());
+    }
+
+    IEnumerator WaitBeforeReset()
+    {
+        yield return new WaitForSeconds(waitRespawn);
+        body.velocity = Vector2.zero;
+        transform.position = new Vector2(-0, -4);
         speed = originalSpeed;
         jumpPower = originalJumpPower;
         slowed = false;
@@ -615,6 +627,7 @@ public class PlayerMovement : MonoBehaviour
     {
         body.velocity = new Vector2(body.velocity.x, jumpPower);
         anim.SetTrigger("jump"); // trigger the jump animation
+        body.velocity = new Vector2(body.velocity.x, body.velocity.y);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////
