@@ -25,6 +25,13 @@ public class Options : MonoBehaviour
     private GameObject yesQuit;
     private GameObject noQuit;
 
+    public UISoundManager uiSoundManager;
+
+    void Awake() 
+    {
+        uiSoundManager = GameObject.FindGameObjectWithTag("Sound").GetComponent<UISoundManager>();
+    }
+
     public void Start()
     {
         lastSelected = btnResume;
@@ -97,6 +104,8 @@ public class Options : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.X))
             {
+                uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
+
                 if (selected == yesQuit)
                 {
                     MainMenu();
@@ -110,6 +119,8 @@ public class Options : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Z))
             {
+                uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
+
                 Back();
             }
         }
@@ -118,6 +129,8 @@ public class Options : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.X))
             {
+                uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
+
                 if (selected == btnResume)
                 {
                     ResumeGame();
@@ -137,6 +150,8 @@ public class Options : MonoBehaviour
 
         if (showingControls && Input.GetKeyDown(KeyCode.Z))
         {
+            uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
+            
             HideControls();
         }
 

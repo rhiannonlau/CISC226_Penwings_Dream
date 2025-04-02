@@ -120,6 +120,8 @@ public class MainMenu : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.X))
             {
+                uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
+
                 if (selected == yesQuit)
                 {
                     QuitGame();
@@ -133,6 +135,7 @@ public class MainMenu : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Z))
             {
+                uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
                 Back();
             }
         }
@@ -141,6 +144,8 @@ public class MainMenu : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.X))
             {
+                uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
+
                 if (selected == btnStart)
                 {
                     StartGame();
@@ -169,12 +174,15 @@ public class MainMenu : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Z))
             {
+                uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
+
                 ConfirmQuit();
             }
         }
 
         if (showingControls && Input.GetKeyDown(KeyCode.Z))
         {
+            uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
             HideControls();
         }
 
