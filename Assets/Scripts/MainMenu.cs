@@ -24,6 +24,13 @@ public class MainMenu : MonoBehaviour
     private bool showingQuitConf;
     private GameObject yesQuit, noQuit;
 
+    public UISoundManager uiSoundManager;
+
+    void Awake() 
+    {
+        uiSoundManager = GameObject.FindGameObjectWithTag("Sound").GetComponent<UISoundManager>();
+    }
+    
     public void Start()
     {
         lastSelected = btnStart;
