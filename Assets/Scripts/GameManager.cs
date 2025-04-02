@@ -30,15 +30,16 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        goal.text = "Goal: $70";
+        goal.text = "Goal: $" + dailyGoal;
     }
 
     // Update is called once per frame
     void Update()
     {
-        displayTime();
+        DisplayTime();
 
-        money.text = "Money: $" + (Mathf.Round(dailyTotal * 100)) / 100.0;
+        // money.text = "Money: $" + (Mathf.Round(dailyTotal * 100)) / 100.0;
+        money.text = "Money: $" + GetMoneyFormat(dailyTotal);
         
         if (timeUntilLevelOver > 0)
         {
@@ -85,61 +86,66 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void displayTime()
+    public string GetMoneyFormat(float moneyAmount)
+    {
+        return moneyAmount.ToString("F2");
+    }
+
+    void DisplayTime()
     {
         if (timeUntilLevelOver >= 105f)
         {
             timeOfDay = 9;
-            time.text = "Time: 9 AM";
+            time.text = "Time: 9AM";
         }
 
         else if (timeUntilLevelOver >= 90f)
         {
             timeOfDay = 10;
-            time.text = "Time: 10 AM";
+            time.text = "Time: 10AM";
         }
 
         else if (timeUntilLevelOver >= 75f)
         {
             timeOfDay = 11;
-            time.text = "Time: 11 AM";
+            time.text = "Time: 11AM";
         }
 
         else if (timeUntilLevelOver >= 60f)
         {
             timeOfDay = 12;
             // isAM = false;
-            time.text = "Time: 12 PM";
+            time.text = "Time: 12PM";
         }
 
         else if (timeUntilLevelOver >= 45f)
         {
             timeOfDay = 1;
-            time.text = "Time: 1 PM";
+            time.text = "Time: 1PM";
         }
 
         else if (timeUntilLevelOver >= 30f)
         {
             timeOfDay = 2;
-            time.text = "Time: 2 PM";
+            time.text = "Time: 2PM";
         }
 
         else if (timeUntilLevelOver >= 15f)
         {
             timeOfDay = 3;
-            time.text = "Time: 3 PM";
+            time.text = "Time: 3PM";
         }
 
         else if (timeUntilLevelOver >= 0f)
         {
             timeOfDay = 4;
-            time.text = "Time: 4 PM";
+            time.text = "Time: 4PM";
         }
         
         else
         {
             timeOfDay = 5;
-            time.text = "Time: 5 PM";
+            time.text = "Time: 5PM";
         }
 
 
