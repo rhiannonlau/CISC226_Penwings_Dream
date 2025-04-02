@@ -14,17 +14,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int timeOfDay = 0;
     [SerializeField] private bool isAM = true;
 
-    public SoundManager soundManager;
-
-    void Awake() 
-    {
-        soundManager = GameObject.FindGameObjectWithTag("Sound").GetComponent<SoundManager>();
-    }
-
     // Start is called before the first frame update
     void Start()
     {
-
+        
     }
 
     // Update is called once per frame
@@ -40,8 +33,6 @@ public class GameManager : MonoBehaviour
         else if (isLevelOver == false)
         {
             isLevelOver = true;
-
-            soundManager.PlaySoundEffect(soundManager.endOfDaySound);
 
             // Should freeze most things in the game
             Time.timeScale = 0f;

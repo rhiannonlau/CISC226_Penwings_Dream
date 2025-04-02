@@ -53,29 +53,31 @@ public class Table : MonoBehaviour
     [SerializeField] private SpriteRenderer uiBarFill;
 
     public GameManager gameManager;
-    public SoundManager soundManager;
 
-    void Awake() 
-    {
-        soundManager = GameObject.FindGameObjectWithTag("Sound").GetComponent<SoundManager>();
-    }
-    
     // Run at startup
-    void Start() 
-    {
+    void Start() {
         // Ensure patience bar is hidden
         uiBarContainer.SetActive(false);
+    }
+
+    float getPatience() {
+        float patience = patienceCountdown/(float)PATIENCE_TIME;
+        if (patience < 0) {
+            patience = 0;
+        }
+        return patience;
     }
 
     // Update is called once per frame
     void Update()
     {
-        // Update patience counter + bar
+
+        // update patience counter + bar
         if (state == 1 || state == 2) {
             patienceCountdown -= Time.deltaTime;
             
             float patience = getPatience();
-            
+            // TODO: Fix scaling
             uiBarFill.size = new Vector2(patience * 1.8f, uiBarFill.size.y);
         }
 
@@ -128,8 +130,6 @@ public class Table : MonoBehaviour
                 uiBarContainer.SetActive(true);
                 patienceCountdown = PATIENCE_TIME;
 
-                soundManager.PlaySoundEffect(soundManager.readyToOrderSound);
-
             }
         }
 
@@ -159,7 +159,6 @@ public class Table : MonoBehaviour
             {
                 SpawnFoodItem(foodOptions[selectedFoodItem], counter);
                 cookingTimer = 0;
-                soundManager.PlaySoundEffect(soundManager.orderReadySound);
                 isCooking = false;
             }
         }
@@ -238,8 +237,6 @@ public class Table : MonoBehaviour
             Debug.Log($"NPC Patience at delivery: {getPatience()*100:F1}%");
 
             gameManager.AddTableTip(getPatience());
-
-            soundManager.PlaySoundEffect(soundManager.eatingSound);
         }
 
         // If the order is wrong
@@ -269,14 +266,6 @@ public class Table : MonoBehaviour
         Debug.Log(state);
     }
 
-    public float getPatience() {
-        float patience = patienceCountdown/(float)PATIENCE_TIME;
-        if (patience < 0) {
-            patience = 0;
-        }
-        return patience;
-    }
-
     // code for checking if the order is the right one
     private bool CheckOrder()
     {
@@ -297,8 +286,6 @@ public class Table : MonoBehaviour
 
     public void FinishedEating()
     {
-        soundManager.PlaySoundEffect(soundManager.moneySound);
-        
         Destroy(transform.GetChild(0).gameObject);
     }
 }

@@ -9,7 +9,6 @@ TagManager:
   - Floor
   - Spider Web
   - Chair
-  - Sound
   layers:
   - Default
   - TransparentFX
