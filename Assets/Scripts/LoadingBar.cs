@@ -23,8 +23,7 @@ public class LoadingBar : MonoBehaviour
     private float distance; // calculate the distance the sprite has to travel
     private float xPos = 0; // the sprite's x position
 
-    private string nextScene;
-    private string video;
+    private string nextScene, video, justPlayed;
 
     public void Awake()
     {
@@ -38,6 +37,7 @@ public class LoadingBar : MonoBehaviour
 
         nextScene = "";
         video = "";
+        justPlayed = "";
     }
 
     public void Update()
@@ -55,7 +55,12 @@ public class LoadingBar : MonoBehaviour
                 canvas.AddComponent<MenuManager>().FromLoadingToLevel(nextScene);
             }
 
-            else if (video != "")
+            if (justPlayed != "")
+            {
+                canvas.AddComponent<MenuManager>().FromLoadingToPostGame();
+            }
+
+            if (video != "")
             {
                 canvas.AddComponent<MenuManager>().ToVideo(video);
             }
@@ -85,6 +90,11 @@ public class LoadingBar : MonoBehaviour
     public void ToScene(string sceneName)
     {
         nextScene = sceneName;
+    }
+
+    public void ToPostGame(string level)
+    {
+        justPlayed = level;
     }
 
     public void ToVideo(string video)

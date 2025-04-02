@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -25,6 +26,9 @@ public class GameManager : MonoBehaviour
     public Transform hour;
     public Transform minute;
 
+    // prevent the menus scene from loading twice
+    private bool loaded;
+
     void Awake() 
     {
         soundManager = GameObject.FindGameObjectWithTag("Sound").GetComponent<SoundManager>();
@@ -33,14 +37,18 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        loaded = false;
+
         goal.text = "Goal: $" + dailyGoal;
         // hour.localRotation = Quaternion.Euler(0, 0, 0);
 
         // add to the main manager to keep track of across scenes
-        if (MainManager.Instance)
-        {
-            MainManager.Instance.Goal = dailyGoal;
-        }
+        // if (MainManager.Instance)
+        // {
+        //     MainManager.Instance.Goal = dailyGoal;
+        // }
+        StaticData.goal = dailyGoal;
+        StaticData.justPlayed = SceneManager.GetActiveScene().name;
     }
 
     // Update is called once per frame
@@ -67,7 +75,23 @@ public class GameManager : MonoBehaviour
             Time.timeScale = 0f;
 
             // add to the main manager to keep track of across scenes
-            MainManager.Instance.Score = dailyTotal;
+            // MainManager.Instance.Score = dailyTotal;
+            StaticData.score = dailyTotal;
+            StaticData.highestSatisfaction = highestSatisfaction;
+            StaticData.toPostGame = true;
+
+            print("loaded: " + loaded);
+            if (!loaded)
+            {
+                loaded = true;
+                StartCoroutine(WaitTransition());
+            }
+        }
+
+        // cheat for testing to skip to end of time
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            timeUntilLevelOver = 1;
         }
     }
 
@@ -170,6 +194,16 @@ public class GameManager : MonoBehaviour
 
         hour.localRotation = Quaternion.Euler(0, 0, -hourPosition);
         minute.localRotation = Quaternion.Euler(0, 0, 0);
+    }
+
+    private IEnumerator WaitTransition()
+    {
+        yield return new WaitForSecondsRealtime(3);
+
+        loaded = true;
+
+        Debug.Log("Loading scene");
+        SceneManager.LoadSceneAsync("Menus");
     }
 
 }

@@ -10,7 +10,7 @@ public class PostGame : MonoBehaviour
 
     // reference to the text
     private TMP_Text txtStats;
-    private float goal, score;
+    private float goal, score, highestSatisfaction;
     private string result;
 
     // references to the selected button
@@ -55,6 +55,8 @@ public class PostGame : MonoBehaviour
         btnNext.SetActive(false);
         btnRetry.SetActive(false);
 
+        completedLevel = CompletedLevel();
+
         if (completedLevel)
         {
             btnActive = btnNext;
@@ -70,25 +72,42 @@ public class PostGame : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(btnActive);
 
         // setting the text
-        if (GetStats())
+        // if (GetStats())
+        // {
+        //     if (completedLevel)
+        //     {
+        //         result = "Level Completed!";
+        //     }
+
+        //     else
+        //     {
+        //         result = "Level Failed";
+        //     }
+
+        //     txtStats.text = "Today's Goal: " + goal.ToString() + "/nYour Score: " + score.ToString() + "/nResult: " + result;
+        // }
+
+        // else
+        // {
+        //     txtStats.text = "Error";
+        // }
+
+        if (completedLevel)
         {
-            if (completedLevel)
-            {
-                result = "Level Completed!";
-            }
-
-            else
-            {
-                result = "Level Failed";
-            }
-
-            txtStats.text = "Today's Goal: " + goal.ToString() + "/nYour Score: " + score.ToString() + "/nResult: " + result;
+            result = "Level Completed!";
         }
 
         else
         {
-            txtStats.text = "Error";
+            result = "Level Failed";
         }
+
+        txtStats.text = "Today's Goal: " + goal.ToString() + "/nYour Score: " + score.ToString() + "/nResult: " + result;
+
+        // else
+        // {
+        //     txtStats.text = "Error";
+        // }
     }
 
     void Update()
@@ -169,22 +188,32 @@ public class PostGame : MonoBehaviour
 
     void MainMenu()
     {
-        SceneManager.LoadSceneAsync("Menus");
+        // SceneManager.LoadSceneAsync("Menus");
     }
 
     public bool GetStats()
     {
-        if (MainManager.Instance)
-        {
-            goal = MainManager.Instance.Goal;
-            score = MainManager.Instance.Score;
+        // if (MainManager.Instance)
+        // {
+        //     goal = MainManager.Instance.Goal;
+        //     score = MainManager.Instance.Score;
 
-            completedLevel = score >= goal;
+        //     completedLevel = score >= goal;
 
-            return true;
-        }
+        //     return true;
+        // }
 
         return false;
+        
+    }
+
+    public bool CompletedLevel()
+    {
+        goal = StaticData.goal;
+        score = StaticData.score;
+        highestSatisfaction = StaticData.highestSatisfaction;
+
+        return score >= goal;
     }
 
     // helper function to turn off all cloches

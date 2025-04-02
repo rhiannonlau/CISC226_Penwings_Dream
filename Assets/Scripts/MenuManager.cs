@@ -9,27 +9,43 @@ public class MenuManager : MonoBehaviour
 {
     private RectTransform tr;
 
-    private GameObject pnlMainMenu, pnlLevels, pnlCredits, pnlLoadingScreen;
+    private GameObject pnlMainMenu, pnlLevels, pnlCredits, pnlLoadingScreen, pnlPostGame;
 
     private VideoPlayer vpIntro, vpOutro;
+
+    private bool loaded;
 
     void Awake()
     {
         tr = GetComponent<RectTransform>();
         vpIntro = tr.GetChild(0).GetComponent<VideoPlayer>();  
+        pnlLoadingScreen = tr.GetChild(1).gameObject;
+        pnlMainMenu = tr.GetChild(2).gameObject;
+        pnlLevels = tr.GetChild(3).gameObject;
+        pnlCredits = tr.GetChild(4).gameObject;
+        pnlPostGame = tr.GetChild(5).gameObject;
     }
 
     void Start()
     {
-        pnlMainMenu = tr.GetChild(2).gameObject;
-        pnlLevels = tr.GetChild(3).gameObject;
-        pnlCredits = tr.GetChild(4).gameObject;
-        pnlLoadingScreen = tr.GetChild(1).gameObject;
+        Debug.Log("started!");
+        vpIntro.enabled = false;
+
+        Debug.Log("Start() called from: " + gameObject.name);
         // vpOutro = tr.GetChild(2).gameObject;
 
+        // Debug.Log(StaticData.toPostGame);
+        if (StaticData.toPostGame)
+        {
+            ToPostGame();
+        }
 
-        ToMainMenu();
-        vpIntro.enabled = false;
+        else
+        {
+            Debug.Log("main menu in start triggered, toPostGame = " + StaticData.toPostGame);
+            ToMainMenu();
+        }
+        
     }
 
     public void ToMainMenu()
@@ -68,9 +84,10 @@ public class MenuManager : MonoBehaviour
 
     public void StartGame()
     {
-        ToLoadingScreen();
+        // ToLoadingScreen();
         // rn the problem is the video is playing while the loading screen is going
-        pnlLoadingScreen.GetComponent<LoadingBar>().ToVideo("intro");
+        // pnlLoadingScreen.GetComponent<LoadingBar>().ToVideo("intro");
+        SceneManager.LoadSceneAsync("Level 1");
     }
 
     public void EndReached(VideoPlayer vp)
@@ -121,11 +138,26 @@ public class MenuManager : MonoBehaviour
         // }
     }
 
+    public void ToPostGame()
+    {
+        ToLoadingScreen();
+        string levelName = StaticData.justPlayed;
+        pnlLoadingScreen.GetComponent<LoadingBar>().ToPostGame(levelName);
+    }
+
+    public void FromLoadingToPostGame()
+    {
+        allInactive();
+        pnlPostGame.SetActive(true);
+        StaticData.toPostGame = false;
+    }
+
     void allInactive()
     {
         pnlMainMenu.SetActive(false);
         pnlLevels.SetActive(false);
         pnlCredits.SetActive(false);
         pnlLoadingScreen.SetActive(false);
+        pnlPostGame.SetActive(false);
     }
 }

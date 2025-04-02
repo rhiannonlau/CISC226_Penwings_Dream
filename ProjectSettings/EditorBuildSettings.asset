@@ -17,7 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Levels/Controls.unity
     guid: 0f94aa65265959c4ba52e8f4f66d235d
-  - enabled: 1
+  - enabled: 0
     path: Assets/Levels/PostGame.unity
     guid: 60a3f73ebd3ea2a41acb79cda91cbe38
   m_configObjects: {}

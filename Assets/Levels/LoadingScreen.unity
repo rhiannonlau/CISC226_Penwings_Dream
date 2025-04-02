@@ -638,8 +638,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fdd0d951b7c371447bf4096771627b06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loadingScreen: {fileID: 1909907453}
-  slider: {fileID: 930725283}
+  canvas: {fileID: 0}
+  progressBar: {fileID: 0}
   sprite: {fileID: 2096413456}
 --- !u!1 &1652825402
 GameObject:
@@ -687,6 +687,7 @@ GameObject:
   - component: {fileID: 1909907454}
   - component: {fileID: 1909907456}
   - component: {fileID: 1909907455}
+  - component: {fileID: 1909907457}
   m_Layer: 5
   m_Name: LoadingPanel
   m_TagString: Untagged
@@ -752,6 +753,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1909907453}
   m_CullTransparentMesh: 1
+--- !u!114 &1909907457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1909907453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdd0d951b7c371447bf4096771627b06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canvas: {fileID: 0}
+  progressBar: {fileID: 0}
+  sprite: {fileID: 0}
 --- !u!1 &1976964076
 GameObject:
   m_ObjectHideFlags: 0
