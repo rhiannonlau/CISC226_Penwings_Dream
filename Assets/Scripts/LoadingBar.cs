@@ -1,6 +1,5 @@
 using System.Collections;
 using Unity.VisualScripting;
-using UnityEditor;
 using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,96 +7,60 @@ using UnityEngine.UI;
 
 public class LoadingBar : MonoBehaviour
 {
-    // reference canvas to access MenuManager.cs to change panels
-    [SerializeField] private Canvas canvas;
+    [SerializeField] private GameObject loadingScreen;
+    [SerializeField] private Slider slider;
+    // [SerializeField] private Scene nextScene;
 
-    // progress bar
-    [SerializeField] private Slider progressBar;
-
-    // used to move penwing's sprite and follow bar
     [SerializeField] private RectTransform sprite;
-
-
-    // where the sprite starts and ends
-    private float leftXBoundary = 105f, rightXBoundary = 840f;
-    private float distance; // calculate the distance the sprite has to travel
-    private float xPos = 0; // the sprite's x position
-
-    private string nextScene;
 
     public void Start()
     {
-        progressBar.value = 0; // reset progress bar
-
-        // calculate distance as diff between start and end point
-        distance = Mathf.Abs(rightXBoundary) - Mathf.Abs(leftXBoundary);
+        // LoadLevel(nextScene.name);
+        // LoadLevel("Scene");
     }
 
-    public void Update()
+    public void LoadLevel(string sceneName)
     {
-        // if the progress bar hasn't been filled (value = 1 means it's full)
-        if (progressBar.value != 1)
-        {
-            StartCoroutine(fillBar());
-        }
-
-        else
-        {
-            SceneManager.LoadSceneAsync(nextScene);
-        }
+        StartCoroutine(LoadAsync(sceneName));
     }
 
-    private IEnumerator fillBar()
+    private IEnumerator LoadAsync(string sceneName)
     {
-        // do a coinflip to add some occasional delay to the
-        // filling of the bar so it isn't linear every time
-        if (Random.Range(0, 2) < 1)
-        {
-            yield return new WaitForSeconds(2f);
-        }
-        
-        else
-        {
-            // progress the bar
-            progressBar.value += 0.01f;
+        AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
 
-            // move the sprite proportionally to the amount the bar has been filled
-            xPos = leftXBoundary + progressBar.value * distance;
-            sprite.position = new Vector2(xPos, sprite.position.y);
+        loadingScreen.SetActive(true);
+
+        while (!operation.isDone)
+        {
+            float progress = Mathf.Clamp01(operation.progress / 0.9f);
+
+            slider.value = progress;
+
+            yield return null;
         }
     }
 
-    public void ToScene(string sceneName)
-    {
-        nextScene = sceneName;
-    }
+    // private float delay = 2f;
+    // private bool firstDelay;
+    // private bool secondDelay;
+    // private float random;
 
-    // if needed in the future: code for the loading bar that actually follows
-    // the loading process of the next scene
+    // private float speed = 1;
+    // float pos = 0;
+
     // public void Start()
     // {
-    //     // LoadLevel(nextScene.name);
-    //     // LoadLevel("Scene");
+        
     // }
 
-    // public void LoadLevel(string sceneName)
+    // public void Update()
     // {
-    //     StartCoroutine(LoadAsync(sceneName));
+    //     pos += speed * Time.deltaTime;
+    //     slider.value = Mathf.Lerp(Time.time, slider.maxValue);
     // }
 
-    // private IEnumerator LoadAsync(string sceneName)
+    // private IEnumerator fillBar(string x)
     // {
-    //     AsyncOperation operation = SceneManager.LoadSceneAsync(sceneName);
-
-    //     loadingScreen.SetActive(true);
-
-    //     while (!operation.isDone)
-    //     {
-    //         float progress = Mathf.Clamp01(operation.progress / 0.9f);
-
-    //         progressBar.value = progress;
-
-    //         yield return null;
-    //     }
+    //     yield return new WaitForSeconds(0.5f);
     // }
 }

@@ -42,7 +42,6 @@ public class Options : MonoBehaviour
         // start with Start Game selected
         AllSelectionsFalse();
         resumeCloche.SetActive(true);
-        EventSystem.current.SetSelectedGameObject(btnResume);
 
         showingControls = false;
 
