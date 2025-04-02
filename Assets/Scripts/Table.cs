@@ -27,7 +27,7 @@ public class Table : MonoBehaviour
     public GameObject customerOrder;
     public GameObject ticket;
     public GameObject newTicket;
-    public Transform stovetop;
+    public Transform oven;
     public float ticketSpeed = 5;
 
     // Time and condition variables for "pondering" (when customer is "thinking" about what to order)
@@ -136,8 +136,8 @@ public class Table : MonoBehaviour
         if (isOrderSending == true)
         {
             ticketSpeed = 7;
-            newTicket.transform.position = Vector3.MoveTowards(newTicket.transform.position, stovetop.transform.position, ticketSpeed * Time.deltaTime);
-            if (newTicket.transform.position == stovetop.transform.position)
+            newTicket.transform.position = Vector3.MoveTowards(newTicket.transform.position, oven.transform.position, ticketSpeed * Time.deltaTime);
+            if (newTicket.transform.position == oven.transform.position)
             {
                 Debug.Log("ticket has been moved");
                 Destroy(newTicket);
@@ -186,7 +186,7 @@ public class Table : MonoBehaviour
 
     void SpawnTicket()
     {
-        newTicket = Instantiate(ticket, customerTable.position + Vector3.up, customerTable.rotation);
+        newTicket = Instantiate(ticket, customerTable.position, customerTable.rotation);
         isOrderSending = true;
     }
 

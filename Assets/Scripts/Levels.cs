@@ -17,8 +17,12 @@ public class Levels : MonoBehaviour
     // references to the cloches for indicating which button is being selected
     private GameObject lvl1Cloche, lvl2Cloche, lvl3Cloche, lvl4Cloche, lvl5Cloche, mainMenuCloche;
 
-    void Awake()
+    public UISoundManager uiSoundManager;
+
+    void Awake() 
     {
+        uiSoundManager = GameObject.FindGameObjectWithTag("Sound").GetComponent<UISoundManager>();
+    
         // get the references to the buttons
         btnLvl1 = transform.GetChild(1).gameObject;
         btnLvl2 = transform.GetChild(2).gameObject;
@@ -114,6 +118,8 @@ public class Levels : MonoBehaviour
         // user presses select
         if (Input.GetKeyDown(KeyCode.X))
         {
+            uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
+
             if (selected == btnLvl1)
             {
                 Level1();
@@ -148,6 +154,8 @@ public class Levels : MonoBehaviour
         // user presses back
         if (Input.GetKeyDown(KeyCode.Z))
         {
+            uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
+            
             MainMenu();
         }
     }
