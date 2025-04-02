@@ -22,6 +22,9 @@ public class GameManager : MonoBehaviour
     public TMP_Text goal;
     public TMP_Text money;
 
+    public Transform hour;
+    public Transform minute;
+
     void Awake() 
     {
         soundManager = GameObject.FindGameObjectWithTag("Sound").GetComponent<SoundManager>();
@@ -31,12 +34,14 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         goal.text = "Goal: $" + dailyGoal;
+        // hour.localRotation = Quaternion.Euler(0, 0, 0);
     }
 
     // Update is called once per frame
     void Update()
     {
         DisplayTime();
+        ClockDisplay(timeOfDay);
 
         // money.text = "Money: $" + (Mathf.Round(dailyTotal * 100)) / 100.0;
         money.text = "Money: $" + GetMoneyFormat(dailyTotal);
@@ -91,7 +96,7 @@ public class GameManager : MonoBehaviour
         return moneyAmount.ToString("F2");
     }
 
-    void DisplayTime()
+    public void DisplayTime()
     {
         if (timeUntilLevelOver >= 105f)
         {
@@ -148,6 +153,14 @@ public class GameManager : MonoBehaviour
             time.text = "Time: 5PM";
         }
 
-
     }
+
+    public void ClockDisplay(int dayTime)
+    {
+        float hourPosition = dayTime * 30f;
+
+        hour.localRotation = Quaternion.Euler(0, 0, -hourPosition);
+        minute.localRotation = Quaternion.Euler(0, 0, 0);
+    }
+
 }
