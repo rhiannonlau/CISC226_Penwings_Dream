@@ -2629,9 +2629,9 @@ MonoBehaviour:
   - {fileID: 6174885096671900691, guid: 23e80ccf327f64f22a38546fa684ee22, type: 3}
   selectedFoodItem: 0
   customerOrder: {fileID: 0}
-  ticket: {fileID: 2263241614423163902, guid: 8dc5b7e81ba9c463fa7b3ff229490f1d, type: 3}
+  ticket: {fileID: 1318259774178175625, guid: f6ec80bc9f8a36543b97507da3312f89, type: 3}
   newTicket: {fileID: 0}
-  stovetop: {fileID: 1610562688}
+  oven: {fileID: 1530216800}
   ticketSpeed: 0
   ponderingMenuRate: 2
   isPondering: 0
@@ -3649,9 +3649,9 @@ MonoBehaviour:
   - {fileID: 6174885096671900691, guid: 23e80ccf327f64f22a38546fa684ee22, type: 3}
   selectedFoodItem: 0
   customerOrder: {fileID: 0}
-  ticket: {fileID: 2263241614423163902, guid: 8dc5b7e81ba9c463fa7b3ff229490f1d, type: 3}
+  ticket: {fileID: 1318259774178175625, guid: f6ec80bc9f8a36543b97507da3312f89, type: 3}
   newTicket: {fileID: 0}
-  stovetop: {fileID: 1610562688}
+  oven: {fileID: 1530216800}
   ticketSpeed: 0
   ponderingMenuRate: 2
   isPondering: 0
@@ -4624,9 +4624,9 @@ MonoBehaviour:
   - {fileID: 6174885096671900691, guid: 23e80ccf327f64f22a38546fa684ee22, type: 3}
   selectedFoodItem: 0
   customerOrder: {fileID: 0}
-  ticket: {fileID: 2263241614423163902, guid: 8dc5b7e81ba9c463fa7b3ff229490f1d, type: 3}
+  ticket: {fileID: 1318259774178175625, guid: f6ec80bc9f8a36543b97507da3312f89, type: 3}
   newTicket: {fileID: 0}
-  stovetop: {fileID: 1610562688}
+  oven: {fileID: 1530216800}
   ticketSpeed: 0
   ponderingMenuRate: 2
   isPondering: 0
@@ -5938,9 +5938,9 @@ MonoBehaviour:
   - {fileID: 6174885096671900691, guid: 23e80ccf327f64f22a38546fa684ee22, type: 3}
   selectedFoodItem: 0
   customerOrder: {fileID: 0}
-  ticket: {fileID: 2263241614423163902, guid: 8dc5b7e81ba9c463fa7b3ff229490f1d, type: 3}
+  ticket: {fileID: 1318259774178175625, guid: f6ec80bc9f8a36543b97507da3312f89, type: 3}
   newTicket: {fileID: 0}
-  stovetop: {fileID: 1610562688}
+  oven: {fileID: 1530216800}
   ticketSpeed: 0
   ponderingMenuRate: 2
   isPondering: 0
@@ -6549,9 +6549,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &1610562688 stripped
+--- !u!4 &1530216800 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 7188051659764178375, guid: 372487b2b5a864e4f9d6428f86641d3f, type: 3}
+  m_CorrespondingSourceObject: {fileID: 8054199379525899624, guid: 372487b2b5a864e4f9d6428f86641d3f, type: 3}
   m_PrefabInstance: {fileID: 4221233061464560522}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1624276414
@@ -7863,7 +7863,7 @@ GameObject:
   - component: {fileID: 1919225384}
   - component: {fileID: 1919225383}
   m_Layer: 0
-  m_Name: Sign Off
+  m_Name: Sign On
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7910,7 +7910,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 4d493e6edb286b24388cd073f1e9fc5b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3fc0c9e6ca26c4c42847e32d530d5326, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -7929,13 +7929,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1919225382}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.03, y: 0.04, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: 0.0018269379, w: 0.99999833}
+  m_LocalPosition: {x: -0.009999641, y: 0.030000124, z: 0}
   m_LocalScale: {x: 1.0713332, y: 0.9629969, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 295756987}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0.209}
 --- !u!1 &1931683323
 GameObject:
   m_ObjectHideFlags: 0
