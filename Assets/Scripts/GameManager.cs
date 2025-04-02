@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,9 +13,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int numTablesServed = 0;
     [SerializeField] private float highestSatisfaction = 0f;
     [SerializeField] private int timeOfDay = 0;
-    [SerializeField] private bool isAM = true;
+    // [SerializeField] private bool isAM = true;
+    [SerializeField] private float dailyGoal = 70f;
 
     public SoundManager soundManager;
+
+    public TMP_Text time;
+    public TMP_Text goal;
+    public TMP_Text money;
 
     void Awake() 
     {
@@ -24,13 +30,15 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        goal.text = "Goal: $70";
     }
 
     // Update is called once per frame
     void Update()
     {
         displayTime();
+
+        money.text = "Money: $" + (Mathf.Round(dailyTotal * 100)) / 100.0;
         
         if (timeUntilLevelOver > 0)
         {
@@ -82,47 +90,56 @@ public class GameManager : MonoBehaviour
         if (timeUntilLevelOver >= 105f)
         {
             timeOfDay = 9;
+            time.text = "Time: 9 AM";
         }
 
         else if (timeUntilLevelOver >= 90f)
         {
             timeOfDay = 10;
+            time.text = "Time: 10 AM";
         }
 
         else if (timeUntilLevelOver >= 75f)
         {
             timeOfDay = 11;
+            time.text = "Time: 11 AM";
         }
 
         else if (timeUntilLevelOver >= 60f)
         {
             timeOfDay = 12;
-            isAM = false;
+            // isAM = false;
+            time.text = "Time: 12 PM";
         }
 
         else if (timeUntilLevelOver >= 45f)
         {
             timeOfDay = 1;
+            time.text = "Time: 1 PM";
         }
 
         else if (timeUntilLevelOver >= 30f)
         {
             timeOfDay = 2;
+            time.text = "Time: 2 PM";
         }
 
         else if (timeUntilLevelOver >= 15f)
         {
             timeOfDay = 3;
+            time.text = "Time: 3 PM";
         }
 
         else if (timeUntilLevelOver >= 0f)
         {
             timeOfDay = 4;
+            time.text = "Time: 4 PM";
         }
         
         else
         {
             timeOfDay = 5;
+            time.text = "Time: 5 PM";
         }
 
 
