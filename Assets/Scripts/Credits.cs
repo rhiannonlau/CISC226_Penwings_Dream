@@ -3,6 +3,9 @@ using UnityEngine.SceneManagement;
 
 public class Credits : MonoBehaviour
 {
+    // reference canvas to access MenuManager.cs to change panels
+    [SerializeField] private Canvas canvas;
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Z))
@@ -13,6 +16,6 @@ public class Credits : MonoBehaviour
 
     public void Back()
     {
-        SceneManager.LoadSceneAsync("StartMenu");
+        SceneManager.LoadSceneAsync("MainMenu");
     }
 }
