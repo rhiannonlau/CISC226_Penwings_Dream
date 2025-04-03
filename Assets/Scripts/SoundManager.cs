@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Profiling;
 using UnityEngine;
 
 public class SoundManager : MonoBehaviour
@@ -16,6 +17,8 @@ public class SoundManager : MonoBehaviour
     public AudioClip endOfDaySound;
     public AudioClip moneySound;
 
+    public AudioClip menuSelect;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -28,4 +31,8 @@ public class SoundManager : MonoBehaviour
         soundEffectsSource.PlayOneShot(soundEffect); 
     }
 
+    public void StopMusic()
+    {
+        musicSource.Pause();
+    }
 }

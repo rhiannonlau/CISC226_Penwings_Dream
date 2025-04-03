@@ -234,6 +234,7 @@ public class PostGame : MonoBehaviour
     // helper function to turn off all cloches
     private void AllSelectionsFalse()
     {
+        nextCloche.SetActive(false);
         retryCloche.SetActive(false);
         mainMenuCloche.SetActive(false);
         nextLevelCloche.SetActive(false);

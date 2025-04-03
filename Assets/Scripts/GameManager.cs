@@ -32,6 +32,8 @@ public class GameManager : MonoBehaviour
     // for pausing the game
     private bool paused;
 
+    private GameObject hotelSign;
+
     void Awake() 
     {
         Time.timeScale = 1f;
@@ -39,6 +41,8 @@ public class GameManager : MonoBehaviour
         soundManager = GameObject.FindGameObjectWithTag("Sound").GetComponent<SoundManager>();
         
         sceneName = SceneManager.GetActiveScene().name;
+
+        hotelSign = GameObject.Find("Sign");
     }
 
     // Start is called before the first frame update
@@ -70,6 +74,10 @@ public class GameManager : MonoBehaviour
             isLevelOver = true;
 
             soundManager.PlaySoundEffect(soundManager.endOfDaySound);
+
+            soundManager.StopMusic();
+
+            hotelSign.GetComponent<HotelSignController>().TurnOff();
 
             // Should freeze most things in the game
             Time.timeScale = 0f;
@@ -234,7 +242,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator WaitTransition()
     {
-        yield return new WaitForSecondsRealtime(5);
+        yield return new WaitForSecondsRealtime(4);
 
         SceneManager.LoadSceneAsync("Menus");
     }
