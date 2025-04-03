@@ -178,6 +178,7 @@ public class Table : MonoBehaviour
         Vector3 offset = new Vector3(0, 0.9f, 0);
 
         GameObject newFood = Instantiate(foodItem, counter.position + offset, counter.rotation);
+        newFood.AddComponent<FoodBounds>();
         
         // make the food sit on the counter and able to be passed through
         // but still able to be picked up by the player
