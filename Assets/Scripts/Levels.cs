@@ -122,13 +122,13 @@ public class Levels : MonoBehaviour
 
             if (selected == btnLvl1)
             {
-                Level1();
+                canvas.GetComponent<MenuManager>().ToLevel("Level 1");
             }
 
-            // else if(selected == btnLvl2)
-            // {
-            //     Level2();
-            // }
+            else if(selected == btnLvl2)
+            {
+                canvas.GetComponent<MenuManager>().ToLevel("Level 2");
+            }
 
             // else if(selected == btnLvl3)
             // {
@@ -160,35 +160,8 @@ public class Levels : MonoBehaviour
         }
     }
 
-    private void Level1()
-    {
-        // SceneManager.LoadSceneAsync("Level 1");
-        canvas.GetComponent<MenuManager>().ToLevel("Level 1");
-    }
-
-    // private void Level2()
-    // {
-    //     SceneManager.LoadSceneAsync("Level2");
-    // }
-
-    // private void Level3()
-    // {
-    //     SceneManager.LoadSceneAsync("Level3");
-    // }
-
-    // private void Level4()
-    // {
-    //     SceneManager.LoadSceneAsync("Level4");
-    // }
-
-    // private void Level5()
-    // {
-    //     SceneManager.LoadSceneAsync("Level5");
-    // }
-
     private void MainMenu()
     {
-        // SceneManager.LoadSceneAsync("MainMenu");
         canvas.GetComponent<MenuManager>().ToMainMenu();
     }
 

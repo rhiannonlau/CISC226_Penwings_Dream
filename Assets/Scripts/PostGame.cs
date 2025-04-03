@@ -1,10 +1,15 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PostGame : MonoBehaviour
 {
+    // reference canvas to access MenuManager.cs to change panels
+    [SerializeField] private Canvas canvas;
+
     // reference to the transform
     private RectTransform tr;
 
@@ -13,11 +18,16 @@ public class PostGame : MonoBehaviour
     private float goal, score, highestSatisfaction;
     private string result;
 
+    // the name of the level that was just played
+    private string justPlayed;
+
     // references to the selected button
     private GameObject selected, lastSelected;
 
     // references to the buttons
     private GameObject btnNext, btnRetry, btnMainMenu;
+    private Button mM, act;
+    private Navigation nav;
     
     private GameObject btnActive;
 
@@ -69,45 +79,31 @@ public class PostGame : MonoBehaviour
             activeCloche = retryCloche;
         }
 
+        // setting the mode of the main menu button explicitly
+        // so that it can properly navigate depending on which button is active
+        mM = btnMainMenu.GetComponent<Button>();
+        act = btnActive.GetComponent<Button>();
+        nav.mode = Navigation.Mode.Explicit;
+        nav.selectOnUp = act;
+        nav.selectOnLeft = act;
+        nav.selectOnDown = act;
+        nav.selectOnRight = act;
+        mM.navigation = nav;
+
         EventSystem.current.SetSelectedGameObject(btnActive);
-
-        // setting the text
-        // if (GetStats())
-        // {
-        //     if (completedLevel)
-        //     {
-        //         result = "Level Completed!";
-        //     }
-
-        //     else
-        //     {
-        //         result = "Level Failed";
-        //     }
-
-        //     txtStats.text = "Today's Goal: " + goal.ToString() + "/nYour Score: " + score.ToString() + "/nResult: " + result;
-        // }
-
-        // else
-        // {
-        //     txtStats.text = "Error";
-        // }
+        btnActive.SetActive(true);
 
         if (completedLevel)
         {
-            result = "Level Completed!";
+            result = justPlayed + " Completed!";
         }
 
         else
         {
-            result = "Level Failed";
+            result = justPlayed + " Failed";
         }
 
-        txtStats.text = "Today's Goal: " + goal.ToString() + "/nYour Score: " + score.ToString() + "/nResult: " + result;
-
-        // else
-        // {
-        //     txtStats.text = "Error";
-        // }
+        txtStats.text = "Today's Goal: $" + goal.ToString() + "\nYour Score: $" + score.ToString() + "\nHighest Satisfaction: " + (highestSatisfaction * 100).ToString()+ "%\n\nResult: " + result;
     }
 
     void Update()
@@ -178,33 +174,24 @@ public class PostGame : MonoBehaviour
 
     void NextLevel()
     {
+        // get the level's number as a char
+        char justPlayedNum = justPlayed[6];
 
+        // convert to int and increment by one
+        int nextLevelNum = justPlayedNum - '0';
+        nextLevelNum++;
+
+        canvas.GetComponent<MenuManager>().ToLevel("Level " + nextLevelNum.ToString());
     }
 
     void RetryLevel()
     {
-
+        canvas.GetComponent<MenuManager>().ToLevel("Level 2");
     }
 
     void MainMenu()
     {
-        // SceneManager.LoadSceneAsync("Menus");
-    }
-
-    public bool GetStats()
-    {
-        // if (MainManager.Instance)
-        // {
-        //     goal = MainManager.Instance.Goal;
-        //     score = MainManager.Instance.Score;
-
-        //     completedLevel = score >= goal;
-
-        //     return true;
-        // }
-
-        return false;
-        
+        canvas.GetComponent<MenuManager>().ToMainMenu();
     }
 
     public bool CompletedLevel()
@@ -212,6 +199,7 @@ public class PostGame : MonoBehaviour
         goal = StaticData.goal;
         score = StaticData.score;
         highestSatisfaction = StaticData.highestSatisfaction;
+        justPlayed = StaticData.justPlayed;
 
         return score >= goal;
     }

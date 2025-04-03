@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System;
 
 public class GameManager : MonoBehaviour
 {
@@ -26,29 +27,28 @@ public class GameManager : MonoBehaviour
     public Transform hour;
     public Transform minute;
 
-    // prevent the menus scene from loading twice
-    private bool loaded;
+    private string sceneName;
+
+    private bool paused;
 
     void Awake() 
     {
+        Time.timeScale = 1f;
+
         soundManager = GameObject.FindGameObjectWithTag("Sound").GetComponent<SoundManager>();
+        
+        sceneName = SceneManager.GetActiveScene().name;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        loaded = false;
-
         goal.text = "Goal: $" + dailyGoal;
         // hour.localRotation = Quaternion.Euler(0, 0, 0);
 
-        // add to the main manager to keep track of across scenes
-        // if (MainManager.Instance)
-        // {
-        //     MainManager.Instance.Goal = dailyGoal;
-        // }
+        // StaticData.goals[sceneName] = dailyGoal;
         StaticData.goal = dailyGoal;
-        StaticData.justPlayed = SceneManager.GetActiveScene().name;
+        StaticData.justPlayed = sceneName;
     }
 
     // Update is called once per frame
@@ -74,17 +74,47 @@ public class GameManager : MonoBehaviour
             // Should freeze most things in the game
             Time.timeScale = 0f;
 
-            // add to the main manager to keep track of across scenes
-            // MainManager.Instance.Score = dailyTotal;
+
+            // add to static data to keep track of data across scenes
             StaticData.score = dailyTotal;
             StaticData.highestSatisfaction = highestSatisfaction;
+
+            // keep track of the high scores for each level (if we have time)
+            // if (StaticData.highscores[sceneName] < dailyTotal)
+            // {
+            //     try
+            //     {
+            //         StaticData.highscores[sceneName] = dailyTotal;
+            //     }
+
+            //     catch (ArgumentException)
+            //     {
+            //         StaticData.highscores.Add("sceneName", dailyTotal);
+            //     }
+                
+            // }
+            
+            // if (StaticData.highestSatisfactions[sceneName] < highestSatisfaction)
+            // {
+            //     StaticData.highestSatisfactions[sceneName] = highestSatisfaction;
+            // }
+            
             StaticData.toPostGame = true;
 
-            print("loaded: " + loaded);
-            if (!loaded)
+            
+            StartCoroutine(WaitTransition());
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (!paused)
             {
-                loaded = true;
-                StartCoroutine(WaitTransition());
+                Pause();
+            }
+            
+            else
+            {
+                Unpause();
             }
         }
 
@@ -92,6 +122,12 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.T))
         {
             timeUntilLevelOver = 1;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Y))
+        {
+            timeUntilLevelOver = 1;
+            dailyTotal = dailyGoal;
         }
     }
 
@@ -198,12 +234,31 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator WaitTransition()
     {
-        yield return new WaitForSecondsRealtime(3);
+        yield return new WaitForSecondsRealtime(5);
 
-        loaded = true;
-
-        Debug.Log("Loading scene");
         SceneManager.LoadSceneAsync("Menus");
     }
 
+    private void Pause()
+    {
+        paused = true;
+        Time.timeScale = 0f;
+
+        // load the pause screen 
+        SceneManager.LoadScene("Options", LoadSceneMode.Additive);
+    }
+
+    private void Unpause()
+    {
+        // unload the pause screen
+        int n = SceneManager.sceneCount;
+
+        if (n > 1)
+        {
+            SceneManager.UnloadSceneAsync("Options");
+        }
+        
+        paused = false;
+        Time.timeScale = 1f;
+    }
 }

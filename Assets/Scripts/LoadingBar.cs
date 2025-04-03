@@ -19,7 +19,7 @@ public class LoadingBar : MonoBehaviour
 
 
     // where the sprite starts and ends
-    private float leftXBoundary = 105f, rightXBoundary = 840f;
+    private float leftXBoundary = 125f, rightXBoundary = 840f;
     private float distance; // calculate the distance the sprite has to travel
     private float xPos = 0; // the sprite's x position
 
@@ -38,6 +38,9 @@ public class LoadingBar : MonoBehaviour
         nextScene = "";
         video = "";
         justPlayed = "";
+
+        Debug.Log("Is this GameObject active? " + gameObject.activeInHierarchy);
+        StartCoroutine(FillBar());
     }
 
     public void Update()
@@ -45,37 +48,47 @@ public class LoadingBar : MonoBehaviour
         // if the progress bar hasn't been filled (value = 1 means it's full)
         if (progressBar.value != 1)
         {
-            StartCoroutine(fillBar());
+            // StartCoroutine(FillBar());
+
+            if (Random.Range(0, 10) < 1)
+            {
+                // progress the bar
+                progressBar.value += 0.005f;
+
+                // move the sprite proportionally to the amount the bar has been filled
+                xPos = leftXBoundary + progressBar.value * distance;
+                sprite.position = new Vector2(xPos, sprite.position.y);
+            }
         }
 
-        else
+        if (progressBar.value == 1)
         {
             if (nextScene != "")
             {
-                canvas.AddComponent<MenuManager>().FromLoadingToLevel(nextScene);
+                canvas.GetComponent<MenuManager>().FromLoadingToLevel(nextScene);
             }
 
             if (justPlayed != "")
             {
-                canvas.AddComponent<MenuManager>().FromLoadingToPostGame();
+                canvas.GetComponent<MenuManager>().FromLoadingToPostGame();
             }
 
             if (video != "")
             {
-                canvas.AddComponent<MenuManager>().ToVideo(video);
+                canvas.GetComponent<MenuManager>().ToVideo(video);
             }
         }
     }
 
-    private IEnumerator fillBar()
+    private IEnumerator FillBar()
     {
         // do a coinflip to add some occasional delay to the
         // filling of the bar so it isn't linear every time
         if (Random.Range(0, 2) < 1)
         {
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(0.5f);
         }
-        
+
         else
         {
             // progress the bar

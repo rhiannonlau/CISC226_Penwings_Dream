@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -12,8 +10,6 @@ public class MenuManager : MonoBehaviour
     private GameObject pnlMainMenu, pnlLevels, pnlCredits, pnlLoadingScreen, pnlPostGame;
 
     private VideoPlayer vpIntro, vpOutro;
-
-    private bool loaded;
 
     void Awake()
     {
@@ -28,13 +24,8 @@ public class MenuManager : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("started!");
         vpIntro.enabled = false;
 
-        Debug.Log("Start() called from: " + gameObject.name);
-        // vpOutro = tr.GetChild(2).gameObject;
-
-        // Debug.Log(StaticData.toPostGame);
         if (StaticData.toPostGame)
         {
             ToPostGame();
@@ -42,7 +33,6 @@ public class MenuManager : MonoBehaviour
 
         else
         {
-            Debug.Log("main menu in start triggered, toPostGame = " + StaticData.toPostGame);
             ToMainMenu();
         }
         
