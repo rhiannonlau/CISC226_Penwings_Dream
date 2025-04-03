@@ -103,7 +103,7 @@ public class PostGame : MonoBehaviour
             result = justPlayed + " Failed";
         }
 
-        txtStats.text = "Today's Goal: $" + goal.ToString() + "\nYour Score: $" + score.ToString() + "\nHighest Satisfaction: " + (highestSatisfaction * 100).ToString()+ "%\n\nResult: " + result;
+        txtStats.text = "Today's Goal: $" + goal.ToString() + "\nYour Score: $" + score.ToString("F2") + "\nHighest Satisfaction: " + (highestSatisfaction * 100).ToString("F2")+ "%\n\nResult: " + result;
     }
 
     void Update()

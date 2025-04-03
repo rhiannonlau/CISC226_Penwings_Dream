@@ -44,7 +44,6 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         goal.text = "Goal: $" + dailyGoal;
-        // hour.localRotation = Quaternion.Euler(0, 0, 0);
 
         // StaticData.goals[sceneName] = dailyGoal;
         StaticData.goal = dailyGoal;
