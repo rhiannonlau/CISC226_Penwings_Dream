@@ -25,16 +25,16 @@ public class PostGame : MonoBehaviour
     private GameObject selected, lastSelected;
 
     // references to the buttons
-    private GameObject btnNext, btnRetry, btnMainMenu;
+    private GameObject btnNextLevel, btnNext, btnRetry, btnMainMenu;
     private Button mM, act;
     private Navigation nav;
     
     private GameObject btnActive;
 
     // references to the cloches for indicating which button is being selected
-    private GameObject nextCloche, retryCloche, mainMenuCloche;
+    private GameObject nextLevelCloche, nextCloche, retryCloche, mainMenuCloche;
     // this serves as a reference to the cloche of whichever button out of
-    // btnNext and btnRetry is active
+    // btnNextLevel and btnRetry is active
     private GameObject activeCloche;
 
     // store whether the player completed the level or not
@@ -46,11 +46,13 @@ public class PostGame : MonoBehaviour
         txtStats = tr.GetChild(1).GetComponent<TMP_Text>();
 
         // get the references to the buttons
-        btnNext = transform.GetChild(2).gameObject;
-        btnRetry = transform.GetChild(3).gameObject;
-        btnMainMenu = transform.GetChild(4).gameObject;
+        btnNextLevel = transform.GetChild(2).gameObject;
+        btnNext = transform.GetChild(3).gameObject;
+        btnRetry = transform.GetChild(4).gameObject;
+        btnMainMenu = transform.GetChild(5).gameObject;
         
         // get the references to their cloches
+        nextLevelCloche = btnNextLevel.transform.GetChild(0).gameObject;
         nextCloche = btnNext.transform.GetChild(0).gameObject;
         retryCloche = btnRetry.transform.GetChild(0).gameObject;
         mainMenuCloche = btnMainMenu.transform.GetChild(0).gameObject;
@@ -62,12 +64,19 @@ public class PostGame : MonoBehaviour
     void OnEnable()
     {
         AllSelectionsFalse();
+        btnNextLevel.SetActive(false);
         btnNext.SetActive(false);
         btnRetry.SetActive(false);
 
         completedLevel = CompletedLevel();
 
-        if (completedLevel)
+        if (completedLevel && justPlayed != "Level 5")
+        {
+            btnActive = btnNextLevel;
+            activeCloche = nextLevelCloche;
+        }
+
+        else if (completedLevel && justPlayed == "Level 5")
         {
             btnActive = btnNext;
             activeCloche = nextCloche;
@@ -119,7 +128,7 @@ public class PostGame : MonoBehaviour
         }
 
         // if selected is not = to a button in this panel and lastSelected is null, reset to btnStart
-        else if (!(selected == btnNext || selected == btnRetry || selected == btnMainMenu) && !lastSelected)
+        else if (!(selected == btnNextLevel || selected == btnRetry || selected == btnMainMenu) && !lastSelected)
         {
             EventSystem.current.SetSelectedGameObject(btnActive);
         }
@@ -146,9 +155,14 @@ public class PostGame : MonoBehaviour
         {
             if (selected == btnActive)
             {
-                if (completedLevel)
+                if (completedLevel && justPlayed != "Level 5")
                 {
                     NextLevel();
+                }
+
+                else if (completedLevel && justPlayed == "Level 5")
+                {
+                    Next();
                 }
 
                 else
@@ -184,6 +198,11 @@ public class PostGame : MonoBehaviour
         canvas.GetComponent<MenuManager>().ToLevel("Level " + nextLevelNum.ToString());
     }
 
+    void Next()
+    {
+        canvas.GetComponent<MenuManager>().ToVideo("outro");
+    }
+
     void RetryLevel()
     {
         canvas.GetComponent<MenuManager>().ToLevel("Level 2");
@@ -209,6 +228,6 @@ public class PostGame : MonoBehaviour
     {
         retryCloche.SetActive(false);
         mainMenuCloche.SetActive(false);
-        nextCloche.SetActive(false);
+        nextLevelCloche.SetActive(false);
     }
 }

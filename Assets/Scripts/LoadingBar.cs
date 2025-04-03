@@ -39,7 +39,6 @@ public class LoadingBar : MonoBehaviour
         video = "";
         justPlayed = "";
 
-        Debug.Log("Is this GameObject active? " + gameObject.activeInHierarchy);
         StartCoroutine(FillBar());
     }
 
@@ -75,7 +74,7 @@ public class LoadingBar : MonoBehaviour
 
             if (video != "")
             {
-                canvas.GetComponent<MenuManager>().ToVideo(video);
+                canvas.GetComponent<MenuManager>().FromLoadingToVideo(video);
             }
         }
     }
