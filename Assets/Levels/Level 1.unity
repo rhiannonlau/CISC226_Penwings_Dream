@@ -1125,7 +1125,7 @@ MonoBehaviour:
   orderReadySound: {fileID: 8300000, guid: 91cca99d165f642eca3683a49a67b252, type: 3}
   eatingSound: {fileID: 8300000, guid: b0ba18aa074e94b018cb2ccda58d564b, type: 3}
   lowPatienceSound: {fileID: 8300000, guid: 4d52e9c3cb58c4b19abdc18a53a66f99, type: 3}
-  endOfDaySound: {fileID: 8300000, guid: c88f543e477e647d1b5105b3a98d48f2, type: 3}
+  endOfDaySound: {fileID: 8300000, guid: d9f2ca7915db14efa9f91b7d0b52d991, type: 3}
   moneySound: {fileID: 8300000, guid: d8f86a8bc00f04b55ba3c79d1de17c6d, type: 3}
 --- !u!1 &333386134
 GameObject:
