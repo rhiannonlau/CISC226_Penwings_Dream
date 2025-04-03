@@ -53,6 +53,7 @@ public class Table : MonoBehaviour
     [SerializeField] private SpriteRenderer uiBarFill;
 
     public GameManager gameManager;
+    public Tutorial tutorial;
     public SoundManager soundManager;
 
     void Awake() 
@@ -161,6 +162,11 @@ public class Table : MonoBehaviour
                 cookingTimer = 0;
                 soundManager.PlaySoundEffect(soundManager.orderReadySound);
                 isCooking = false;
+
+                if (tutorial)
+                {
+                    tutorial.OrderReady();
+                }
             }
         }
 
@@ -205,6 +211,11 @@ public class Table : MonoBehaviour
 
         // Set the table's state to show that they are waiting for their order
         state = 2;
+
+        if (tutorial)
+        {
+            tutorial.OrderTaken();
+        }
     }
 
     // Checks and acts in accordance to whether correct or incorrect order was delivered to the table
@@ -237,7 +248,16 @@ public class Table : MonoBehaviour
 
             Debug.Log($"NPC Patience at delivery: {getPatience()*100:F1}%");
 
-            gameManager.AddTableTip(getPatience());
+            if (gameManager)
+            {
+                gameManager.AddTableTip(getPatience());
+            }
+
+            else if (tutorial)
+            {
+                tutorial.AddTableTip(getPatience());
+            }
+            
 
             soundManager.PlaySoundEffect(soundManager.eatingSound);
         }

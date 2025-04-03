@@ -188,14 +188,22 @@ public class PostGame : MonoBehaviour
 
     void NextLevel()
     {
-        // get the level's number as a char
-        char justPlayedNum = justPlayed[6];
+        if (justPlayed != "Tutorial")
+        {
+            // get the level's number as a char
+            char justPlayedNum = justPlayed[6];
 
-        // convert to int and increment by one
-        int nextLevelNum = justPlayedNum - '0';
-        nextLevelNum++;
+            // convert to int and increment by one
+            int nextLevelNum = justPlayedNum - '0';
+            nextLevelNum++;
 
-        canvas.GetComponent<MenuManager>().ToLevel("Level " + nextLevelNum.ToString());
+            canvas.GetComponent<MenuManager>().ToLevel("Level " + nextLevelNum.ToString());
+        }
+        
+        else
+        {
+            canvas.GetComponent<MenuManager>().ToLevel("Level 1");
+        }
     }
 
     void Next()

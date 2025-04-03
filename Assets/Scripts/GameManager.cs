@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
 
     private string sceneName;
 
+    // for pausing the game
     private bool paused;
 
     void Awake() 

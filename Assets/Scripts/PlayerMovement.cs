@@ -92,6 +92,9 @@ public class PlayerMovement : MonoBehaviour
     private int kitchenLayer;
 
 
+    public Tutorial tutorial;
+
+
     private void Start()
     {
         floorMask = LayerMask.GetMask("Floor");
@@ -769,6 +772,11 @@ public class PlayerMovement : MonoBehaviour
         foodTr.SetParent(transform);
         
         holdingFood = true;
+
+        if (tutorial)
+        {
+            tutorial.OrderPickedUp();
+        }
     }
 
     // player drops the food if they were holding any

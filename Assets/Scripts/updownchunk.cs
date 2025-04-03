@@ -130,7 +130,7 @@ public class UpDownChunk : MonoBehaviour
 
     // called when the player is using a sensor plate to call the elevator
     // to a floor that it is not on
-    private void ToSpecificFloor(string name)
+    public void ToSpecificFloor(string name)
     {
         callingElevator = true;
 

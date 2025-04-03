@@ -29,7 +29,7 @@ TagManager:
   - 
   - 
   - 
-  - 
+  - Tooltip
   - 
   - 
   - 
@@ -46,4 +46,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Tooltip
+    uniqueID: 297496069
     locked: 0
