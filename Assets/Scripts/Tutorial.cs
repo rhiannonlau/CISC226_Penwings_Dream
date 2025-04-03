@@ -335,10 +335,10 @@ public class Tutorial : MonoBehaviour
             dailyTotal = dailyGoal;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            state = 16;
-        }
+        // if (Input.GetKeyDown(KeyCode.Space))
+        // {
+        //     state = 16;
+        // }
     }
 
     public void AddTableTip(float satisfaction)
