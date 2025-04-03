@@ -130,15 +130,15 @@ public class Levels : MonoBehaviour
                 canvas.GetComponent<MenuManager>().ToLevel("Level 2");
             }
 
-            // else if(selected == btnLvl3)
-            // {
-            //     Level3();
-            // }
+            else if(selected == btnLvl3)
+            {
+                canvas.GetComponent<MenuManager>().ToLevel("Level 3");
+            }
 
-            // else if (selected == btnLvl4)
-            // {
-            //     Level4();
-            // }
+            else if (selected == btnLvl4)
+            {
+                canvas.GetComponent<MenuManager>().ToLevel("Level 4");
+            }
 
             // else if (selected == btnLvl5)
             // {

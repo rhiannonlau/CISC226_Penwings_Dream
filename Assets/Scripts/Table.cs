@@ -47,7 +47,7 @@ public class Table : MonoBehaviour
 
     public NPCWandering npc;
 
-    [SerializeField] private const float PATIENCE_TIME = 50;
+    [SerializeField] private const float PATIENCE_TIME = 80;
     [SerializeField] private float patienceCountdown = 0;
     [SerializeField] private GameObject uiBarContainer;
     [SerializeField] private SpriteRenderer uiBarFill;
