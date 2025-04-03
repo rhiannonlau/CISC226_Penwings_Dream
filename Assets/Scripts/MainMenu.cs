@@ -11,10 +11,10 @@ public class MainMenu : MonoBehaviour
     private GameObject selected, lastSelected;
 
     // references to the buttons
-    private GameObject btnStart, btnLevels, btnControls, btnCredits, btnQuit;
+    private GameObject btnStart, btnLevels, btnTutorial, btnControls, btnCredits, btnQuit;
 
     // references to the cloches for indicating which button is being selected
-    private GameObject startCloche, levelsCloche, creditsCloche, controlsCloche, quitCloche;
+    private GameObject startCloche, levelsCloche, tutorialCloche, creditsCloche, controlsCloche, quitCloche;
 
     // true when the controls panel is showing
     private bool showingControls;
@@ -31,13 +31,15 @@ public class MainMenu : MonoBehaviour
         // get the references to the buttons
         btnStart = transform.GetChild(1).gameObject;
         btnLevels = transform.GetChild(2).gameObject;
-        btnControls = transform.GetChild(3).gameObject;
-        btnCredits = transform.GetChild(4).gameObject;
-        btnQuit = transform.GetChild(5).gameObject;
+        btnTutorial = transform.GetChild(3).gameObject;
+        btnControls = transform.GetChild(4).gameObject;
+        btnCredits = transform.GetChild(5).gameObject;
+        btnQuit = transform.GetChild(6).gameObject;
 
         // get the references to their cloches
         startCloche = btnStart.transform.GetChild(0).gameObject;
         levelsCloche = btnLevels.transform.GetChild(0).gameObject;
+        tutorialCloche = btnTutorial.transform.GetChild(0).gameObject;
         controlsCloche = btnControls.transform.GetChild(0).gameObject;
         creditsCloche = btnCredits.transform.GetChild(0).gameObject;
         quitCloche = btnQuit.transform.GetChild(0).gameObject;
@@ -98,6 +100,12 @@ public class MainMenu : MonoBehaviour
         {
             AllSelectionsFalse();
             levelsCloche.SetActive(true);
+        }
+
+        else if(selected == btnTutorial)
+        {
+            AllSelectionsFalse();
+            tutorialCloche.SetActive(true);
         }
 
         else if(selected == btnControls)
@@ -162,6 +170,11 @@ public class MainMenu : MonoBehaviour
                 else if(selected == btnLevels)
                 {
                     Levels();
+                }
+
+                else if(selected == btnTutorial)
+                {
+                    canvas.GetComponent<MenuManager>().ToLevel("Tutorial");
                 }
 
                 else if(selected == btnControls)
@@ -258,6 +271,7 @@ public class MainMenu : MonoBehaviour
     {
         startCloche.SetActive(false);
         levelsCloche.SetActive(false);
+        tutorialCloche.SetActive(false);
         controlsCloche.SetActive(false);
         creditsCloche.SetActive(false);
         quitCloche.SetActive(false);
