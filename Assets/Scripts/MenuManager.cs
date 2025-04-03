@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -11,10 +13,18 @@ public class MenuManager : MonoBehaviour
 
     private VideoPlayer vpIntro, vpOutro;
 
+    public UISoundManager uiSoundManager;
+
     void Awake()
     {
+        uiSoundManager = GameObject.FindGameObjectWithTag("Sound").GetComponent<UISoundManager>();
+
+        vpIntro = GameObject.Find("vpIntro").GetComponent<VideoPlayer>();
+        vpOutro = GameObject.Find("vpOutro").GetComponent<VideoPlayer>();
+
         tr = GetComponent<RectTransform>();
-        vpIntro = tr.GetChild(0).GetComponent<VideoPlayer>();  
+        // vpIntro = tr.GetChild(0).GetComponent<VideoPlayer>();
+        // vpOutro = tr.GetChild(1).GetComponent<VideoPlayer>();
         pnlLoadingScreen = tr.GetChild(1).gameObject;
         pnlMainMenu = tr.GetChild(2).gameObject;
         pnlLevels = tr.GetChild(3).gameObject;
@@ -24,8 +34,6 @@ public class MenuManager : MonoBehaviour
 
     void Start()
     {
-        vpIntro.enabled = false;
-
         if (StaticData.toPostGame)
         {
             ToPostGame();
@@ -35,65 +43,45 @@ public class MenuManager : MonoBehaviour
         {
             ToMainMenu();
         }
-        
     }
 
     public void ToMainMenu()
     {
-        allInactive();
+        AllInactive();
         pnlMainMenu.SetActive(true);
     }
 
     public void ToLevels()
     {
-        allInactive();
+        AllInactive();
         pnlLevels.SetActive(true);
     }
 
     public void ToCredits()
     {
-        allInactive();
+        AllInactive();
         pnlCredits.SetActive(true);
     }
 
     public void ToLoadingScreen()
     {
-        allInactive();
+        AllInactive();
         pnlLoadingScreen.SetActive(true);
-    }
-
-    // public void DisableLoadingScreen(string scene)
-    // {
-    //     loadingScreen.SetActive(false);
-
-    //     if (scene != "")
-    //     {
-
-    //     }
-    // }
-
-    public void StartGame()
-    {
-        // ToLoadingScreen();
-        // rn the problem is the video is playing while the loading screen is going
-        // pnlLoadingScreen.GetComponent<LoadingBar>().ToVideo("intro");
-        SceneManager.LoadSceneAsync("Level 1");
     }
 
     public void EndReached(VideoPlayer vp)
     {
+        // StartCoroutine(PauseAfterPlay(vp));
         if (vp == vpIntro)
         {
             vpIntro.enabled = false;
             ToLevel("Level 1");
         }
 
-        else if (vp == vpIntro)
+        else if (vp == vpOutro)
         {
-            // credits
-
-            ToMainMenu();
-            // outro.enabled = false;
+            vpOutro.enabled = false;
+            ToCredits();
         }
     }
 
@@ -109,23 +97,34 @@ public class MenuManager : MonoBehaviour
         SceneManager.LoadSceneAsync(level);
     }
 
-    // called from loading to notify the manager that the loading screen has finished
     public void ToVideo(string video)
     {
+        ToLoadingScreen();
+        pnlLoadingScreen.GetComponent<LoadingBar>().ToVideo(video);
+    }
+
+    // called from loading to notify the manager that the loading screen has finished
+    public void FromLoadingToVideo(string video)
+    {
+        AllInactive();
+
+        uiSoundManager.StopMusic();
+        
         if (video == "intro")
         {
-            // Debug.Log(vpIntro);
-            vpIntro.enabled = true;
+            // StartCoroutine(PauseBeforePlay(vpIntro));
             vpIntro.Play();
             vpIntro.loopPointReached += EndReached;
         }
 
-        // else if (video == "outro")
-        // {
-        //     outro.enabled = true;
-        //     outro.Play();
-        //     outro.loopPointReached += EndReached;
-        // }
+        else if (video == "outro")
+        {
+            // StartCoroutine(PauseBeforePlay(vpOutro));
+            vpOutro.Play();
+            vpOutro.loopPointReached += EndReached;
+            uiSoundManager.PlayMusic();
+        }
+
     }
 
     public void ToPostGame()
@@ -137,17 +136,44 @@ public class MenuManager : MonoBehaviour
 
     public void FromLoadingToPostGame()
     {
-        allInactive();
+        AllInactive();
         pnlPostGame.SetActive(true);
         StaticData.toPostGame = false;
     }
 
-    void allInactive()
+    void AllInactive()
     {
         pnlMainMenu.SetActive(false);
         pnlLevels.SetActive(false);
         pnlCredits.SetActive(false);
         pnlLoadingScreen.SetActive(false);
         pnlPostGame.SetActive(false);
+    }
+
+    // IEnumerator PauseBeforePlay(VideoPlayer vp)
+    // {
+    //     vp.Play();
+    //     vp.Pause();
+
+    //     yield return new WaitForSeconds(2);
+
+    //     vp.Play();
+    // }
+
+    IEnumerator PauseAfterPlay(VideoPlayer vp)
+    {
+        yield return new WaitForSeconds(2);
+
+        if (vp == vpIntro)
+        {
+            vpIntro.enabled = false;
+            ToLevel("Level 1");
+        }
+
+        else if (vp == vpOutro)
+        {
+            vpOutro.enabled = false;
+            ToCredits();
+        }
     }
 }

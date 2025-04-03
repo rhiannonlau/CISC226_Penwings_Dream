@@ -22,4 +22,14 @@ public class UISoundManager : MonoBehaviour
         soundEffectsSource.PlayOneShot(soundEffect); 
     }
 
+    // to pause and play the music when the videos are playing
+    public void PlayMusic()
+    {
+        musicSource.Play();
+    }
+
+    public void StopMusic()
+    {
+        musicSource.Pause();
+    }
 }

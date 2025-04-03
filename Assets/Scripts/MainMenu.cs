@@ -200,14 +200,12 @@ public class MainMenu : MonoBehaviour
     // user presses start game
     private void StartGame()
     {
-        // SceneManager.LoadSceneAsync("LoadingScreen");
-        canvas.GetComponent<MenuManager>().StartGame();
+        canvas.GetComponent<MenuManager>().ToVideo("intro");
     }
 
     // user presses levels
     private void Levels()
     {
-        // SceneManager.LoadSceneAsync("Levels");
         canvas.GetComponent<MenuManager>().ToLevels();
     }
 
