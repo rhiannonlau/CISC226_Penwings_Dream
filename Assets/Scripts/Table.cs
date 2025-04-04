@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -175,7 +176,7 @@ public class Table : MonoBehaviour
     // Spawns the correct order for a table on top of its corresponding kitchen counter when it's done "cooking"
     void SpawnFoodItem(GameObject foodItem, Transform counter)
     {
-        Vector3 offset = new Vector3(0, 0.9f, 0);
+        Vector3 offset = new Vector3(0, 0.7f, 0);
 
         GameObject newFood = Instantiate(foodItem, counter.position + offset, counter.rotation);
         // newFood.AddComponent<FoodBounds>();
@@ -198,7 +199,7 @@ public class Table : MonoBehaviour
     }
 
     // When player meets conditions to take customer order, the customer's selected menu item reference is sent back to player
-    void TakeOrder()
+    public void TakeOrder()
     {
         customerFoodSelection = foodOptions[selectedFoodItem];
         SpawnTicket();
@@ -222,7 +223,7 @@ public class Table : MonoBehaviour
     // Checks and acts in accordance to whether correct or incorrect order was delivered to the table
     // If correct order was delivered, speech bubble disappears and the food is not able to be picked back up
     // If incorrect order was delivered, a question mark appears over the speech bubble and the food is still able to be picked up
-    void DeliverOrder() // Renderer[] customerSpeechBubble
+    public void DeliverOrder() // Renderer[] customerSpeechBubble
     {
         // If the order is correct
         if (CheckOrder())
@@ -236,11 +237,23 @@ public class Table : MonoBehaviour
             }
             
             // disable the food's collider so it can no longer be picked up
-            Collider2D foodColl = transform.GetChild(0).GetComponent<Collider2D>();
+            GameObject food = transform.GetChild(0).gameObject;
+            Collider2D foodColl = food.GetComponent<Collider2D>();
             foodColl.enabled = false;
 
-            Rigidbody2D foodRb = transform.GetChild(0).GetComponent<Rigidbody2D>();
+            Rigidbody2D foodRb = food.GetComponent<Rigidbody2D>();
             foodRb.simulated = false;
+
+            // get the table's collider to get the coordinates for the middle of the table
+            Collider2D tableColl = transform.GetComponent<Collider2D>();
+
+            // get the coordinates for the middle of the table
+            float x = tableColl.bounds.center.x;
+            float y = tableColl.bounds.center.y;
+
+            // set the food in the center of the table
+            Transform foodTr = food.GetComponent<Transform>();
+            foodTr.position = new Vector2(x, y);
 
             npc.FoodDelivered();
 

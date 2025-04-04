@@ -32,12 +32,12 @@ public class Levels : MonoBehaviour
         btnMainMenu = transform.GetChild(6).gameObject;
 
         // get the references to their cloches
-        lvl1Cloche = btnLvl1.transform.GetChild(0).gameObject;
-        lvl2Cloche = btnLvl2.transform.GetChild(0).gameObject;
-        lvl3Cloche = btnLvl3.transform.GetChild(0).gameObject;
-        lvl4Cloche = btnLvl4.transform.GetChild(0).gameObject;
-        lvl5Cloche = btnLvl5.transform.GetChild(0).gameObject;
-        mainMenuCloche = btnMainMenu.transform.GetChild(0).gameObject;
+        lvl1Cloche = btnLvl1.transform.GetChild(1).gameObject;
+        lvl2Cloche = btnLvl2.transform.GetChild(1).gameObject;
+        lvl3Cloche = btnLvl3.transform.GetChild(1).gameObject;
+        lvl4Cloche = btnLvl4.transform.GetChild(1).gameObject;
+        lvl5Cloche = btnLvl5.transform.GetChild(1).gameObject;
+        mainMenuCloche = btnMainMenu.transform.GetChild(1).gameObject;
 
         lastSelected = btnLvl1;
         // Debug.Log(lastSelected);

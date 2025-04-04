@@ -110,7 +110,7 @@ public class GameManager : MonoBehaviour
             StaticData.toPostGame = true;
 
             
-            StartCoroutine(WaitTransition());
+            StartCoroutine(WaitExitGame());
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -240,7 +240,7 @@ public class GameManager : MonoBehaviour
         minute.localRotation = Quaternion.Euler(0, 0, 0);
     }
 
-    private IEnumerator WaitTransition()
+    private IEnumerator WaitExitGame()
     {
         yield return new WaitForSecondsRealtime(4);
 
@@ -253,7 +253,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0f;
 
         // load the pause screen 
-        SceneManager.LoadScene("Options", LoadSceneMode.Additive);
+        SceneManager.LoadScene("PauseScreen", LoadSceneMode.Additive);
     }
 
     private void Unpause()
@@ -263,7 +263,7 @@ public class GameManager : MonoBehaviour
 
         if (n > 1)
         {
-            SceneManager.UnloadSceneAsync("Options");
+            SceneManager.UnloadSceneAsync("PauseScreen");
         }
         
         paused = false;

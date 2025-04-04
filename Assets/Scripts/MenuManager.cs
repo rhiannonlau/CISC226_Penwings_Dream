@@ -13,6 +13,8 @@ public class MenuManager : MonoBehaviour
 
     private VideoPlayer vpIntro, vpOutro;
 
+    private bool watchingVideo; // in the future, add a hasWatchedVideo? to force watch on first viewing?
+
     public UISoundManager uiSoundManager;
 
     void Awake()
@@ -30,6 +32,8 @@ public class MenuManager : MonoBehaviour
         pnlLevels = tr.GetChild(3).gameObject;
         pnlCredits = tr.GetChild(4).gameObject;
         pnlPostGame = tr.GetChild(5).gameObject;
+
+        watchingVideo = false;
     }
 
     void Start()
@@ -42,6 +46,14 @@ public class MenuManager : MonoBehaviour
         else
         {
             ToMainMenu();
+        }
+    }
+
+    void Update()
+    {
+        if (watchingVideo && Input.GetKeyDown(KeyCode.X))
+        {
+            // skip video - not sure if possible
         }
     }
 
@@ -75,12 +87,16 @@ public class MenuManager : MonoBehaviour
         if (vp == vpIntro)
         {
             vpIntro.enabled = false;
+            watchingVideo = false;
+
             ToLevel("Level 1");
         }
 
         else if (vp == vpOutro)
         {
             vpOutro.enabled = false;
+            watchingVideo = false;
+
             ToCredits();
         }
     }
@@ -112,16 +128,21 @@ public class MenuManager : MonoBehaviour
         
         if (video == "intro")
         {
-            // StartCoroutine(PauseBeforePlay(vpIntro));
             vpIntro.Play();
+
+            watchingVideo = true;
+
             vpIntro.loopPointReached += EndReached;
         }
 
         else if (video == "outro")
         {
-            // StartCoroutine(PauseBeforePlay(vpOutro));
             vpOutro.Play();
+
+            watchingVideo = true;
+
             vpOutro.loopPointReached += EndReached;
+
             uiSoundManager.PlayMusic();
         }
 
@@ -149,16 +170,6 @@ public class MenuManager : MonoBehaviour
         pnlLoadingScreen.SetActive(false);
         pnlPostGame.SetActive(false);
     }
-
-    // IEnumerator PauseBeforePlay(VideoPlayer vp)
-    // {
-    //     vp.Play();
-    //     vp.Pause();
-
-    //     yield return new WaitForSeconds(2);
-
-    //     vp.Play();
-    // }
 
     IEnumerator PauseAfterPlay(VideoPlayer vp)
     {

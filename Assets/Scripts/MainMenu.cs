@@ -11,10 +11,10 @@ public class MainMenu : MonoBehaviour
     private GameObject selected, lastSelected;
 
     // references to the buttons
-    private GameObject btnStart, btnLevels, btnTutorial, btnControls, btnCredits, btnQuit;
+    private GameObject btnStart, btnLevels, btnTutorial, btnOptions, btnCredits, btnQuit;
 
     // references to the cloches for indicating which button is being selected
-    private GameObject startCloche, levelsCloche, tutorialCloche, creditsCloche, controlsCloche, quitCloche;
+    private GameObject startCloche, levelsCloche, tutorialCloche, creditsCloche, optionsCloche, quitCloche;
 
     // true when the controls panel is showing
     private bool showingControls;
@@ -32,17 +32,17 @@ public class MainMenu : MonoBehaviour
         btnStart = transform.GetChild(1).gameObject;
         btnLevels = transform.GetChild(2).gameObject;
         btnTutorial = transform.GetChild(3).gameObject;
-        btnControls = transform.GetChild(4).gameObject;
+        btnOptions = transform.GetChild(4).gameObject;
         btnCredits = transform.GetChild(5).gameObject;
         btnQuit = transform.GetChild(6).gameObject;
 
         // get the references to their cloches
-        startCloche = btnStart.transform.GetChild(0).gameObject;
-        levelsCloche = btnLevels.transform.GetChild(0).gameObject;
-        tutorialCloche = btnTutorial.transform.GetChild(0).gameObject;
-        controlsCloche = btnControls.transform.GetChild(0).gameObject;
-        creditsCloche = btnCredits.transform.GetChild(0).gameObject;
-        quitCloche = btnQuit.transform.GetChild(0).gameObject;
+        startCloche = btnStart.transform.GetChild(1).gameObject;
+        levelsCloche = btnLevels.transform.GetChild(1).gameObject;
+        tutorialCloche = btnTutorial.transform.GetChild(1).gameObject;
+        optionsCloche = btnOptions.transform.GetChild(1).gameObject;
+        creditsCloche = btnCredits.transform.GetChild(1).gameObject;
+        quitCloche = btnQuit.transform.GetChild(1).gameObject;
 
         // get the reference to the quit confirmation pop up
         quitPopUp = transform.GetChild(7).gameObject;
@@ -82,7 +82,7 @@ public class MainMenu : MonoBehaviour
         }
 
         // if selected is not = to a button in this panel and lastSelected is null, reset to btnStart
-        else if (!(selected == btnStart || selected == btnLevels || selected == btnControls || selected == btnCredits || selected == btnQuit) && !lastSelected)
+        else if (!(selected == btnStart || selected == btnLevels || selected == btnOptions || selected == btnCredits || selected == btnQuit) && !lastSelected)
         {
             EventSystem.current.SetSelectedGameObject(btnStart);
         }
@@ -108,10 +108,10 @@ public class MainMenu : MonoBehaviour
             tutorialCloche.SetActive(true);
         }
 
-        else if(selected == btnControls)
+        else if(selected == btnOptions)
         {
             AllSelectionsFalse();
-            controlsCloche.SetActive(true);
+            optionsCloche.SetActive(true);
         }
 
         else if (selected == btnCredits)
@@ -177,7 +177,7 @@ public class MainMenu : MonoBehaviour
                     canvas.GetComponent<MenuManager>().ToLevel("Tutorial");
                 }
 
-                else if(selected == btnControls)
+                else if(selected == btnOptions)
                 {
                     ShowControls();
                 }
@@ -272,7 +272,7 @@ public class MainMenu : MonoBehaviour
         startCloche.SetActive(false);
         levelsCloche.SetActive(false);
         tutorialCloche.SetActive(false);
-        controlsCloche.SetActive(false);
+        optionsCloche.SetActive(false);
         creditsCloche.SetActive(false);
         quitCloche.SetActive(false);
     }

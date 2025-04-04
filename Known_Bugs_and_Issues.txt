@@ -94,16 +94,18 @@
 
 16. Issue: No floor under elevator
 	- note: can't add the floor to the floor layer otherwise it will conflict with the elevator when the elevator is on the ground floor
+	- if we add a floor, what happens when penwing is standing under the elevator and it's called to his floor?
 
 16. FIXED Issue: food can't be passed through by player if they are trying to pick up one of the foods that's further
 	- note: solution might be to make the food a child of the counter object
 	- note: that was not the solution
 	- fix: made isTrigger = true, and rb type = static to make it pass through able and not moving, respectively
 
-18. Issue: elevator needs to come to the floor the player is on when they are standing on a certain section in case they've fallen
-	- option 1: plan is to have a small overlapping piece of floor that serves as a 	sensor. if they're standing on this small area and the elevator is not on the floor 	they are on, move it.
-	- option 2: maybe make it an interact? so like there's a small control 	panel, and 	when they interact with it, the elevator comes up to their floor
-		- does this add an element of strategy? like if they know they'll need the 			elevator later and they're nearby, they can click it to save time then go do 		what they need to?
+18. FIXED Issue: elevator needs to come to the floor the player is on when they are standing on a certain section in case they've fallen
+	- option 1: plan is to have a small overlapping piece of floor that serves as a sensor. if they're standing on this small area and the elevator is not on the floor they are on, move it.
+	- option 2: maybe make it an interact? so like there's a small control 	panel, and when they interact with it, the elevator comes up to their floor
+		- does this add an element of strategy? like if they know they'll need the elevator later and they're nearby, they can click it to save time then go do what they need to?
+	- fix: added sensor plates
 
 19: FIXED Bug: food flies off of table lol
 	- precondition: placed order down on table
@@ -120,3 +122,18 @@
 
 21. FIXED Issue: unable to pick up/put down food when standing on elevator
 	- fix: added "or if on elevator" clause to pick up and put down
+
+22. Issue: loading bar sprite not following bar
+	- note: need to set position to local position rather than position
+
+23. Issue: tutorial floor sizes mismatched with elevator causing awkward lips that can't be traversed
+	- note: possible fixes include either making the floors a standard size
+	- OR we could write code to let penwing get over lips that are less than a certain size
+		- would this affect cases where penwing is jumping and barely misses, making him not miss?
+
+24. Issue: switch garbage to box colliders
+
+25. Issue: food placement
+	- note: want to set the x and y of the food to a set local position so that it's always set to the middle of the table
+
+26. Issue: 

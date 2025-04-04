@@ -52,10 +52,10 @@ public class PostGame : MonoBehaviour
         btnMainMenu = transform.GetChild(5).gameObject;
         
         // get the references to their cloches
-        nextLevelCloche = btnNextLevel.transform.GetChild(0).gameObject;
-        nextCloche = btnNext.transform.GetChild(0).gameObject;
-        retryCloche = btnRetry.transform.GetChild(0).gameObject;
-        mainMenuCloche = btnMainMenu.transform.GetChild(0).gameObject;
+        nextLevelCloche = btnNextLevel.transform.GetChild(1).gameObject;
+        nextCloche = btnNext.transform.GetChild(1).gameObject;
+        retryCloche = btnRetry.transform.GetChild(1).gameObject;
+        mainMenuCloche = btnMainMenu.transform.GetChild(1).gameObject;
 
         lastSelected = btnMainMenu;
     }

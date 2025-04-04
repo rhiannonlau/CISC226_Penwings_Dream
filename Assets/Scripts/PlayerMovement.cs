@@ -93,6 +93,23 @@ public class PlayerMovement : MonoBehaviour
 
     public Tutorial tutorial;
 
+    private void Awake()
+    {
+        self = transform.gameObject;
+        // get references from Player object
+        body = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
+        rend = GetComponent<SpriteRenderer>();
+        coll = GetComponent<BoxCollider2D>();
+        hinge = GetComponent<HingeJoint2D>();
+
+        // elevator
+        elevator = GameObject.Find("Elevator");
+
+        // to be able to return to original speed and jumpPower after penalty effects
+        originalSpeed = speed;
+        originalJumpPower = jumpPower;
+    }
 
     private void Start()
     {
@@ -112,30 +129,13 @@ public class PlayerMovement : MonoBehaviour
         playerYSize = transform.localScale.y;
     }
 
-    private void Awake()
-    {
-        self = transform.gameObject;
-        // get references from Player object
-        body = GetComponent<Rigidbody2D>();
-        anim = GetComponent<Animator>();
-        rend = GetComponent<SpriteRenderer>();
-        coll = GetComponent<BoxCollider2D>();
-        hinge = GetComponent<HingeJoint2D>();
-
-        // elevator
-        elevator = GameObject.Find("Elevator");
-
-        // to be able to return to original speed and jumpPower after penalty effects
-        originalSpeed = speed;
-        originalJumpPower = jumpPower;
-    }
-
     // private void FixedUpdate()
     // {
     //     grounded = IsGrounded()
         
     // }
 
+    
     private void Update()
     {
         grounded = IsGrounded();
@@ -269,8 +269,7 @@ public class PlayerMovement : MonoBehaviour
                             // customer is ready to order
                             case 1:
                             {
-                                Debug.Log("took order");
-                                table.SendMessage("TakeOrder");
+                                table.TakeOrder();
                                 break;
                             }
 
@@ -420,10 +419,32 @@ public class PlayerMovement : MonoBehaviour
     //     }
     // }
 
-    void OnCollisionEnter2D(Collision2D collision)
+    void OnDrawGizmos()
     {
+        if (!Application.isPlaying) return;
         
+        // Draw ground check
+        Gizmos.color = IsGrounded() ? Color.green : Color.red;
+        Vector2 position = new Vector2(coll.bounds.center.x, coll.bounds.center.y - coll.bounds.size.y * 0.5f);
+        Vector2 sliver = new Vector2(coll.bounds.size.x, 0.2f);
+        Gizmos.DrawWireCube(position, sliver);
+        Gizmos.DrawLine(position, position + Vector2.down * 0.2f);
     }
+
+    // REDUCES THE PHASING THROUGH FLOOR GLITCH BY A LOT WITH THE TRADE OFF
+    // THAT YOU FALL BETWEEN THE FLOOR AND ELEVATOR ON GROUND FLOOR AND FLOOR 5
+    // private void OnCollisionEnter2D(Collision2D collision)
+    // {
+    //     if (floorMask == (floorMask | (1 << collision.gameObject.layer)))
+    //     {
+    //         Debug.Log("Floor collision detected");
+            
+    //         // force position adjustment
+    //         Vector2 contactPoint = collision.GetContact(0).point;
+    //         float newY = contactPoint.y + coll.bounds.extents.y + 0.01f;
+    //         transform.position = new Vector3(transform.position.x, newY, transform.position.z);
+    //     }
+    // }
 
  
     private int GetFloorNum()
@@ -629,7 +650,7 @@ public class PlayerMovement : MonoBehaviour
     {
         body.velocity = new Vector2(body.velocity.x, jumpPower);
         anim.SetTrigger("jump"); // trigger the jump animation
-        body.velocity = new Vector2(body.velocity.x, body.velocity.y);
+        // body.velocity = new Vector2(body.velocity.x, body.velocity.y);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////
@@ -783,8 +804,6 @@ public class PlayerMovement : MonoBehaviour
     {
         if (holdingFood && foodObject)
         {
-            Debug.Log("passed second check");
-            Debug.Log(foodObject);
             Rigidbody2D foodRb = foodObject.GetComponent<Rigidbody2D>();
             foodRb.simulated = true;
             foodRb.bodyType = RigidbodyType2D.Dynamic;
@@ -834,7 +853,9 @@ public class PlayerMovement : MonoBehaviour
 
             // speed = 2f;
             // jumpPower = 2f;
-            body.drag = 100f;
+            // body.drag = 100f;
+            speed /= 2;
+            jumpPower /= 2;
 
             // snailRenderer.enabled = true; // turn on snail animation
         }
@@ -849,7 +870,9 @@ public class PlayerMovement : MonoBehaviour
             slowed = false;
             // speed = originalSpeed;
             // jumpPower = originalJumpPower;
-            body.drag = 0f;
+            // body.drag = 0f;
+            speed *= 2;
+            jumpPower *= 2;
             // snailRenderer.enabled = false; // snail animation off
         }
     }
@@ -864,7 +887,7 @@ public class PlayerMovement : MonoBehaviour
 
         foodObject.transform.SetParent(table.transform);
 
-        table.SendMessage("DeliverOrder");
+        table.DeliverOrder();
         
         foodObject = null;
         holdingFood = false;

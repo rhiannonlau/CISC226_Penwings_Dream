@@ -16,7 +16,8 @@ public class LoadingBar : MonoBehaviour
 
 
     // where the sprite starts and ends
-    private float leftXBoundary = 125f, rightXBoundary = 840f;
+    private float leftXBoundary = -370f, rightXBoundary = 370f;
+    private float y = 65f;
     private float distance; // calculate the distance the sprite has to travel
     private float xPos = 0; // the sprite's x position
 
@@ -25,7 +26,7 @@ public class LoadingBar : MonoBehaviour
     public void Awake()
     {
         // calculate distance as diff between start and end point
-        distance = Mathf.Abs(rightXBoundary) - Mathf.Abs(leftXBoundary);
+        distance = Mathf.Abs(rightXBoundary) + Mathf.Abs(leftXBoundary);
     }
 
     public void OnEnable()
@@ -53,7 +54,9 @@ public class LoadingBar : MonoBehaviour
 
                 // move the sprite proportionally to the amount the bar has been filled
                 xPos = leftXBoundary + progressBar.value * distance;
-                sprite.position = new Vector2(xPos, sprite.position.y);
+                Debug.Log(xPos);
+                Debug.Log(distance);
+                sprite.localPosition = new Vector2(xPos, y);
             }
         }
 

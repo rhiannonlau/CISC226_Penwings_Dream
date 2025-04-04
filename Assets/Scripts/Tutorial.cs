@@ -77,6 +77,8 @@ public class Tutorial : MonoBehaviour
         StaticData.justPlayed = sceneName;
 
         elevator.GetComponent<UpDownChunk>().ToSpecificFloor("Floor 2");
+
+        // TutorialController();
     }
 
     // Update is called once per frame
@@ -326,19 +328,19 @@ public class Tutorial : MonoBehaviour
         // cheat for testing to skip to end of time
         if (Input.GetKeyDown(KeyCode.T))
         {
-            timeUntilLevelOver = 1;
+            isLevelOver = true;
         }
 
         if (Input.GetKeyDown(KeyCode.Y))
         {
-            timeUntilLevelOver = 1;
+            isLevelOver = true;
             dailyTotal = dailyGoal;
         }
 
-        // if (Input.GetKeyDown(KeyCode.Space))
-        // {
-        //     state = 16;
-        // }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            state = 16;
+        }
     }
 
     public void AddTableTip(float satisfaction)
@@ -509,5 +511,206 @@ public class Tutorial : MonoBehaviour
     public void OrderPickedUp()
     {
         orderPickedUp = true;
+    }
+
+    private void TutorialController()
+    {
+        while (!isLevelOver)
+        {
+            // disable the old tooltip
+            if (currentTooltip != null)
+            {
+                currentTooltip.SetActive(false);
+            }
+
+            switch (state)
+            {
+                case 0:
+                    currentTooltip = moveTooltip;
+
+                    if (!tooltipComplete && (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow)))
+                    {
+                        StartCoroutine(WaitBetweenToolTips());
+                    }
+
+                    break;
+
+                case 1:
+                    currentTooltip = jumpTooltip;
+
+                    if (!tooltipComplete && Input.GetKeyDown(KeyCode.X))
+                    {
+                        StartCoroutine(WaitBetweenToolTips());
+                    }
+
+                    break;
+
+                case 2:
+                    currentTooltip = slideTooltip;
+
+                    if (!tooltipComplete && Input.GetKeyDown(KeyCode.DownArrow))
+                    {
+                        StartCoroutine(WaitBetweenToolTips());
+                    }
+
+                    break;
+
+                case 3:
+                    currentTooltip = sensorTooltip;
+
+                    if (!tooltipComplete && playerX >= 6f)
+                    {
+                        StartCoroutine(WaitBetweenToolTips());
+                    }
+
+                    break;
+
+                case 4:
+                    currentTooltip = elevatorTooltip;
+
+                    if (!tooltipComplete && Input.GetKeyDown(KeyCode.UpArrow))
+                    {
+                        StartCoroutine(WaitBetweenToolTips());
+                    }
+
+                    break;
+
+                case 5:
+                    currentTooltip = webTooltip;
+
+                    if (!tooltipComplete && playerX <= 3.5f)
+                    {
+                        StartCoroutine(WaitBetweenToolTips());
+                    }
+
+                    break;
+
+                case 6:
+                    currentTooltip = fallTooltip;
+
+                    if (!tooltipComplete && playerX <= -2f)
+                    {
+                        StartCoroutine(WaitBetweenToolTips());
+                    }
+
+                    break;
+
+                case 7:
+                    currentTooltip = takeOrderTooltip;
+
+                    print(orderTaken);
+                    if (!tooltipComplete && orderTaken)
+                    {
+                        StartCoroutine(WaitBetweenToolTips());
+                    }
+
+                    break;
+
+                case 8:
+                    currentTooltip = waitOrderTooltip;
+
+                    
+                    if (!tooltipComplete)
+                    {
+                        StartCoroutine(Wait5Seconds());
+                    }
+
+                    break;
+
+                case 9:
+                    currentTooltip = watchPatienceTooltip;
+
+                    if (!tooltipComplete)
+                    {
+                        StartCoroutine(Wait5Seconds());
+                    }
+
+                    break;
+
+                case 10:
+                    currentTooltip = patiencePenaltyTooltip;
+                    
+                    if (!tooltipComplete && orderReady)
+                    {
+                        StartCoroutine(WaitBetweenToolTips());
+                    }
+
+                    break;
+
+                case 11:
+                    currentTooltip = foodReadyTooltip;
+
+                    if (!tooltipComplete && orderPickedUp)
+                    {
+                        StartCoroutine(WaitBetweenToolTips());
+                    }
+
+                    break;
+
+                case 12:
+                    currentTooltip = deliverTooltip;
+
+                    if (!tooltipComplete && orderDelivered)
+                    {
+                        StartCoroutine(WaitBetweenToolTips());
+                    }
+
+                    break;
+
+                case 13:
+                    currentTooltip = moneyTooltip;
+
+                    if (!tooltipComplete)
+                    {
+                        StartCoroutine(Wait5Seconds());
+                    }
+
+                    break;
+
+                case 14:
+                    currentTooltip = timeTooltip;
+
+                    if (!tooltipComplete)
+                    {
+                        StartCoroutine(Wait5Seconds());
+                    }
+
+                    break;
+
+                case 15:
+                    currentTooltip = timeLimitTooltip;
+
+                    if (!tooltipComplete)
+                    {
+                        StartCoroutine(Wait5Seconds());
+                    }
+
+                    break;
+
+                case 16:
+                    currentTooltip = finalTooltip;
+
+                    if (!tooltipComplete)
+                    {
+                        StartCoroutine(Wait5Seconds());
+                    }
+
+                    break;
+
+                case 17:
+                    isLevelOver = true;
+                    break;
+
+                default:
+                    currentTooltip = null;
+                    break;
+            }
+
+            // enable the new tooltip
+            if (currentTooltip != null)
+            {
+                currentTooltip.SetActive(true);
+            }
+        }
     }
 }

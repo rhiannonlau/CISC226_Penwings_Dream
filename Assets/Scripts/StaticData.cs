@@ -1,16 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Scripting.APIUpdating;
 
 public class StaticData : MonoBehaviour
 {
+    // KEY BINDINGS INFORMATION /////////////////////////////////////
+    // public static KeyCode moveLeft, moveRight;
+
+
+
+    // SOUND INFORMATION /////////////////////////////////////////
+    public static float masterVolume, musicVolume, effectsVolume;
+
+    
+    // GAME INFORMATION /////////////////////////////////////
+
+    // dictionaries for storing high scores
     public static Dictionary<string, float> goals = new Dictionary<string, float>();
     public static Dictionary<string, float> highscores = new Dictionary<string, float>();
     public static Dictionary<string, float> highestSatisfactions = new Dictionary<string, float>();
 
+    // store the information from the game that was just played
+    // to display in the post game screen
     public static float goal, score, highestSatisfaction;
-
     public static string justPlayed;
 
+    // alert menus that we want to go to the post game screen, not the main menu
+    // after the game
     public static bool toPostGame;
 }
