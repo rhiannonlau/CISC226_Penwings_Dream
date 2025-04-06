@@ -447,16 +447,21 @@ public class PlayerMovement : MonoBehaviour
     // }
 
  
-    private int GetFloorNum()
+    public int GetFloorNum()
     {
         Vector2 position = new Vector2(coll.bounds.center.x, coll.bounds.center.y - coll.bounds.size.y * 0.5f);
         Vector2 sliver = new Vector2(coll.bounds.size.x, 0.2f);
 
         RaycastHit2D raycastHit = Physics2D.BoxCast(position, sliver, 0, Vector2.down, 0.2f, floorMask);
 
-        int num = 1;
+        int num = 99; // default to 99, the elevator's designation
 
-        string name = raycastHit.collider.gameObject.name;
+        string name = "";
+
+        if (raycastHit)
+        {
+            name = raycastHit.collider.gameObject.name;
+        }
 
         // temp hard coded
         if (name.Contains("Ground"))
@@ -512,6 +517,7 @@ public class PlayerMovement : MonoBehaviour
                 // i.e. run is true when the player is moving/arrow keys are being pressed
         anim.SetBool("run", horizontalInput != 0);
         anim.SetBool("grounded", IsGrounded());
+        anim.SetBool("onElevator", IsOnElevator());
         anim.SetBool("sliding", sliding);
         anim.SetBool("holdingObject", holdingFood); // || holdingTicket
         anim.SetBool("swinging", swinging);

@@ -35,7 +35,8 @@ public class Tutorial : MonoBehaviour
     // for pausing when a tooltip is showing
     private bool pauseTimer;
 
-    [SerializeField] private GameObject moveTooltip, jumpTooltip, slideTooltip, sensorTooltip, elevatorTooltip, webTooltip, fallTooltip, takeOrderTooltip;
+    [SerializeField] private GameObject welcomeTooltip, welcome2Tooltip;
+    [SerializeField] private GameObject moveTooltip, jumpTooltip, slideTooltip, sensorTooltip, elevatorTooltip, goTo3Tooltip, webTooltip, fallTooltip, takeOrderTooltip;
     [SerializeField] private GameObject waitOrderTooltip, watchPatienceTooltip, patiencePenaltyTooltip, foodReadyTooltip, deliverTooltip, moneyTooltip;
     [SerializeField] private GameObject timeTooltip, timeLimitTooltip, finalTooltip;
 
@@ -47,6 +48,7 @@ public class Tutorial : MonoBehaviour
     private float playerX, playerY;
     [SerializeField] GameObject player;
 
+    private bool skippable = false;
     private bool tooltipComplete = false;
     private bool orderTaken = false, orderReady = false, orderPickedUp = false, orderDelivered = false;
 
@@ -84,6 +86,7 @@ public class Tutorial : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        skippable = false;
         playerX = player.transform.localPosition.x;
         playerY = player.transform.localPosition.y;
 
@@ -103,6 +106,7 @@ public class Tutorial : MonoBehaviour
             transitioning = true;
 
             soundManager.PlaySoundEffect(soundManager.endOfDaySound);
+            soundManager.StopMusic();
 
             // Should freeze most things in the game
             Time.timeScale = 0f;
@@ -111,8 +115,10 @@ public class Tutorial : MonoBehaviour
             // add to static data to keep track of data across scenes
             StaticData.score = dailyTotal;
             StaticData.highestSatisfaction = highestSatisfaction;
-
             StaticData.toPostGame = true;
+
+            // mark tutorial as completed for this player
+            StaticData.tutorialCompleted = true;
 
             StartCoroutine(WaitTransition());
         }
@@ -139,7 +145,30 @@ public class Tutorial : MonoBehaviour
         switch (state)
         {
             case 0:
+                currentTooltip = welcomeTooltip;
+                skippable = true;
+
+                if (!tooltipComplete)
+                {
+                    StartCoroutine(Wait5Seconds());
+                }
+
+                break;
+
+            case 1:
+                currentTooltip = welcome2Tooltip;
+                skippable = true;
+
+                if (!tooltipComplete)
+                {
+                    StartCoroutine(Wait5Seconds());
+                }
+
+                break;
+
+            case 2: // move left right
                 currentTooltip = moveTooltip;
+                skippable = false;
 
                 if (!tooltipComplete && (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow)))
                 {
@@ -148,8 +177,9 @@ public class Tutorial : MonoBehaviour
 
                 break;
 
-            case 1:
+            case 3: // jump
                 currentTooltip = jumpTooltip;
+                skippable = false;
 
                 if (!tooltipComplete && Input.GetKeyDown(KeyCode.X))
                 {
@@ -158,8 +188,9 @@ public class Tutorial : MonoBehaviour
 
                 break;
 
-            case 2:
+            case 4: // slide
                 currentTooltip = slideTooltip;
+                skippable = false;
 
                 if (!tooltipComplete && Input.GetKeyDown(KeyCode.DownArrow))
                 {
@@ -168,8 +199,9 @@ public class Tutorial : MonoBehaviour
 
                 break;
 
-            case 3:
+            case 5: // sensor
                 currentTooltip = sensorTooltip;
+                skippable = false;
 
                 if (!tooltipComplete && playerX >= 6f)
                 {
@@ -178,8 +210,9 @@ public class Tutorial : MonoBehaviour
 
                 break;
 
-            case 4:
+            case 6: // elevator
                 currentTooltip = elevatorTooltip;
+                skippable = false;
 
                 if (!tooltipComplete && Input.GetKeyDown(KeyCode.UpArrow))
                 {
@@ -188,30 +221,45 @@ public class Tutorial : MonoBehaviour
 
                 break;
 
-            case 5:
+            case 7: // go to floor 3
+                currentTooltip = goTo3Tooltip;
+                skippable = false;
+
+                if (!tooltipComplete && player.GetComponent<PlayerMovement>().GetFloorNum() == 3)
+                {
+                    StartCoroutine(WaitBetweenToolTips());
+                }
+
+                break;
+
+            case 8: // web
                 currentTooltip = webTooltip;
+                skippable = false;
 
-                if (!tooltipComplete && playerX <= 3.5f)
+                if (!tooltipComplete && playerX <= 3.5f && player.GetComponent<PlayerMovement>().GetFloorNum() == 3)
                 {
                     StartCoroutine(WaitBetweenToolTips());
                 }
 
                 break;
 
-            case 6:
+            case 9: // hole
                 currentTooltip = fallTooltip;
+                skippable = false;
 
-                if (!tooltipComplete && playerX <= -2f)
+                if (!tooltipComplete && playerX <= -2f && player.GetComponent<PlayerMovement>().GetFloorNum() == 3)
                 {
                     StartCoroutine(WaitBetweenToolTips());
                 }
 
                 break;
 
-            case 7:
+            case 10:
                 currentTooltip = takeOrderTooltip;
+                skippable = false;
 
-                print(orderTaken);
+                // print(orderTaken);
+
                 if (!tooltipComplete && orderTaken)
                 {
                     StartCoroutine(WaitBetweenToolTips());
@@ -219,9 +267,9 @@ public class Tutorial : MonoBehaviour
 
                 break;
 
-            case 8:
+            case 11:
                 currentTooltip = waitOrderTooltip;
-
+                skippable = true;
                 
                 if (!tooltipComplete)
                 {
@@ -230,8 +278,9 @@ public class Tutorial : MonoBehaviour
 
                 break;
 
-            case 9:
+            case 12:
                 currentTooltip = watchPatienceTooltip;
+                skippable = true;
 
                 if (!tooltipComplete)
                 {
@@ -240,8 +289,9 @@ public class Tutorial : MonoBehaviour
 
                 break;
 
-            case 10:
+            case 13:
                 currentTooltip = patiencePenaltyTooltip;
+                skippable = false;
                 
                 if (!tooltipComplete && orderReady)
                 {
@@ -250,8 +300,9 @@ public class Tutorial : MonoBehaviour
 
                 break;
 
-            case 11:
+            case 14:
                 currentTooltip = foodReadyTooltip;
+                skippable = false;
 
                 if (!tooltipComplete && orderPickedUp)
                 {
@@ -260,8 +311,9 @@ public class Tutorial : MonoBehaviour
 
                 break;
 
-            case 12:
+            case 15:
                 currentTooltip = deliverTooltip;
+                skippable = false;
 
                 if (!tooltipComplete && orderDelivered)
                 {
@@ -270,38 +322,9 @@ public class Tutorial : MonoBehaviour
 
                 break;
 
-            case 13:
-                currentTooltip = moneyTooltip;
-
-                if (!tooltipComplete)
-                {
-                    StartCoroutine(Wait5Seconds());
-                }
-
-                break;
-
-            case 14:
-                currentTooltip = timeTooltip;
-
-                if (!tooltipComplete)
-                {
-                    StartCoroutine(Wait5Seconds());
-                }
-
-                break;
-
-            case 15:
-                currentTooltip = timeLimitTooltip;
-
-                if (!tooltipComplete)
-                {
-                    StartCoroutine(Wait5Seconds());
-                }
-
-                break;
-
             case 16:
-                currentTooltip = finalTooltip;
+                currentTooltip = moneyTooltip;
+                skippable = true;
 
                 if (!tooltipComplete)
                 {
@@ -311,6 +334,39 @@ public class Tutorial : MonoBehaviour
                 break;
 
             case 17:
+                currentTooltip = timeTooltip;
+                skippable = true;
+
+                if (!tooltipComplete)
+                {
+                    StartCoroutine(Wait5Seconds());
+                }
+
+                break;
+
+            case 18:
+                currentTooltip = timeLimitTooltip;
+                skippable = true;
+
+                if (!tooltipComplete)
+                {
+                    StartCoroutine(Wait5Seconds());
+                }
+
+                break;
+
+            case 19:
+                currentTooltip = finalTooltip;
+                skippable = true;
+
+                if (!tooltipComplete)
+                {
+                    StartCoroutine(Wait5Seconds());
+                }
+
+                break;
+
+            case 20:
                 isLevelOver = true;
                 break;
 
@@ -325,6 +381,12 @@ public class Tutorial : MonoBehaviour
             currentTooltip.SetActive(true);
         }
 
+        // press space to skip
+        if (Input.GetKeyDown(KeyCode.Space) && skippable)
+        {
+            state++;
+        }
+
         // cheat for testing to skip to end of time
         if (Input.GetKeyDown(KeyCode.T))
         {
@@ -337,9 +399,9 @@ public class Tutorial : MonoBehaviour
             dailyTotal = dailyGoal;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            state = 16;
+            state = 6;
         }
     }
 
@@ -484,8 +546,11 @@ public class Tutorial : MonoBehaviour
     private IEnumerator WaitBetweenToolTips()
     {
         tooltipComplete = true;
-        yield return new WaitForSeconds(1);
-        state++;
+        currentTooltip = null; // disable the tooltip
+
+        yield return new WaitForSeconds(0.5f);
+
+        state++; // show the next tooltip
         tooltipComplete = false;
     }
 
@@ -499,7 +564,7 @@ public class Tutorial : MonoBehaviour
 
     public void OrderTaken()
     {
-        Debug.Log("ordertaken called!");
+        // Debug.Log("ordertaken called!");
         orderTaken = true;
     }
 
@@ -511,206 +576,5 @@ public class Tutorial : MonoBehaviour
     public void OrderPickedUp()
     {
         orderPickedUp = true;
-    }
-
-    private void TutorialController()
-    {
-        while (!isLevelOver)
-        {
-            // disable the old tooltip
-            if (currentTooltip != null)
-            {
-                currentTooltip.SetActive(false);
-            }
-
-            switch (state)
-            {
-                case 0:
-                    currentTooltip = moveTooltip;
-
-                    if (!tooltipComplete && (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.RightArrow)))
-                    {
-                        StartCoroutine(WaitBetweenToolTips());
-                    }
-
-                    break;
-
-                case 1:
-                    currentTooltip = jumpTooltip;
-
-                    if (!tooltipComplete && Input.GetKeyDown(KeyCode.X))
-                    {
-                        StartCoroutine(WaitBetweenToolTips());
-                    }
-
-                    break;
-
-                case 2:
-                    currentTooltip = slideTooltip;
-
-                    if (!tooltipComplete && Input.GetKeyDown(KeyCode.DownArrow))
-                    {
-                        StartCoroutine(WaitBetweenToolTips());
-                    }
-
-                    break;
-
-                case 3:
-                    currentTooltip = sensorTooltip;
-
-                    if (!tooltipComplete && playerX >= 6f)
-                    {
-                        StartCoroutine(WaitBetweenToolTips());
-                    }
-
-                    break;
-
-                case 4:
-                    currentTooltip = elevatorTooltip;
-
-                    if (!tooltipComplete && Input.GetKeyDown(KeyCode.UpArrow))
-                    {
-                        StartCoroutine(WaitBetweenToolTips());
-                    }
-
-                    break;
-
-                case 5:
-                    currentTooltip = webTooltip;
-
-                    if (!tooltipComplete && playerX <= 3.5f)
-                    {
-                        StartCoroutine(WaitBetweenToolTips());
-                    }
-
-                    break;
-
-                case 6:
-                    currentTooltip = fallTooltip;
-
-                    if (!tooltipComplete && playerX <= -2f)
-                    {
-                        StartCoroutine(WaitBetweenToolTips());
-                    }
-
-                    break;
-
-                case 7:
-                    currentTooltip = takeOrderTooltip;
-
-                    print(orderTaken);
-                    if (!tooltipComplete && orderTaken)
-                    {
-                        StartCoroutine(WaitBetweenToolTips());
-                    }
-
-                    break;
-
-                case 8:
-                    currentTooltip = waitOrderTooltip;
-
-                    
-                    if (!tooltipComplete)
-                    {
-                        StartCoroutine(Wait5Seconds());
-                    }
-
-                    break;
-
-                case 9:
-                    currentTooltip = watchPatienceTooltip;
-
-                    if (!tooltipComplete)
-                    {
-                        StartCoroutine(Wait5Seconds());
-                    }
-
-                    break;
-
-                case 10:
-                    currentTooltip = patiencePenaltyTooltip;
-                    
-                    if (!tooltipComplete && orderReady)
-                    {
-                        StartCoroutine(WaitBetweenToolTips());
-                    }
-
-                    break;
-
-                case 11:
-                    currentTooltip = foodReadyTooltip;
-
-                    if (!tooltipComplete && orderPickedUp)
-                    {
-                        StartCoroutine(WaitBetweenToolTips());
-                    }
-
-                    break;
-
-                case 12:
-                    currentTooltip = deliverTooltip;
-
-                    if (!tooltipComplete && orderDelivered)
-                    {
-                        StartCoroutine(WaitBetweenToolTips());
-                    }
-
-                    break;
-
-                case 13:
-                    currentTooltip = moneyTooltip;
-
-                    if (!tooltipComplete)
-                    {
-                        StartCoroutine(Wait5Seconds());
-                    }
-
-                    break;
-
-                case 14:
-                    currentTooltip = timeTooltip;
-
-                    if (!tooltipComplete)
-                    {
-                        StartCoroutine(Wait5Seconds());
-                    }
-
-                    break;
-
-                case 15:
-                    currentTooltip = timeLimitTooltip;
-
-                    if (!tooltipComplete)
-                    {
-                        StartCoroutine(Wait5Seconds());
-                    }
-
-                    break;
-
-                case 16:
-                    currentTooltip = finalTooltip;
-
-                    if (!tooltipComplete)
-                    {
-                        StartCoroutine(Wait5Seconds());
-                    }
-
-                    break;
-
-                case 17:
-                    isLevelOver = true;
-                    break;
-
-                default:
-                    currentTooltip = null;
-                    break;
-            }
-
-            // enable the new tooltip
-            if (currentTooltip != null)
-            {
-                currentTooltip.SetActive(true);
-            }
-        }
     }
 }

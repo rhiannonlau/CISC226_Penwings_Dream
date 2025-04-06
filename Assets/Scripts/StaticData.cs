@@ -15,6 +15,7 @@ public class StaticData : MonoBehaviour
 
     
     // GAME INFORMATION /////////////////////////////////////
+    public static bool tutorialCompleted = false;
 
     // dictionaries for storing high scores
     public static Dictionary<string, float> goals = new Dictionary<string, float>();
