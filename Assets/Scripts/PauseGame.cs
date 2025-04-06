@@ -4,28 +4,29 @@ using UnityEngine.EventSystems;
 
 public class PauseGame : MonoBehaviour
 {
+    // for storing the reference to the scene that calls the pause
+    private GameManager gm;
+    private string sceneName;
+
     // private int selected;
-    private GameObject selected;
-    private GameObject lastSelected;
+    private GameObject selected, lastSelected;
 
     private GameObject btnResume, btnRestart, btnOptions, btnQuit;
 
     private GameObject resumeCloche, restartCloche, optionsCloche, quitCloche;
 
-    private bool showingControls;
     private bool showingOptions;
 
     private GameObject quitPopUp;
     private bool showingQuitConf;
 
-    private GameObject yesQuit;
-    private GameObject noQuit;
+    private GameObject yesQuit, noQuit;
 
-    public UISoundManager uiSoundManager;
+    // public UISoundManager uiSoundManager;
 
     void Awake() 
     {
-        uiSoundManager = GameObject.FindGameObjectWithTag("Sound").GetComponent<UISoundManager>();
+        // uiSoundManager = GameObject.FindGameObjectWithTag("Sound").GetComponent<UISoundManager>();
     }
 
     public void Start()
@@ -33,13 +34,14 @@ public class PauseGame : MonoBehaviour
         lastSelected = btnResume;
 
         // get the references to the buttons
-        btnResume = transform.GetChild(2).gameObject;
+        btnResume = transform.GetChild(1).gameObject;
         btnRestart = transform.GetChild(2).gameObject;
         btnOptions = transform.GetChild(3).gameObject;
         btnQuit = transform.GetChild(4).gameObject;
 
         // get the references to their cloches
         resumeCloche = btnResume.transform.GetChild(1).gameObject;
+        restartCloche = btnRestart.transform.GetChild(1).gameObject;
         optionsCloche = btnOptions.transform.GetChild(1).gameObject;
         quitCloche = btnQuit.transform.GetChild(1).gameObject;
 
@@ -48,15 +50,17 @@ public class PauseGame : MonoBehaviour
         resumeCloche.SetActive(true);
         EventSystem.current.SetSelectedGameObject(btnResume);
 
-        showingControls = false;
+        showingOptions = false;
+
+        Debug.Log("Start worked");
 
         // quit pop up hidden
-        quitPopUp = transform.GetChild(6).gameObject;
-        showingQuitConf = false;
+        // quitPopUp = transform.GetChild(6).gameObject;
+        // showingQuitConf = false;
 
-        // get the yes and no options for the quit confirmation
-        yesQuit = quitPopUp.transform.GetChild(1).gameObject;
-        noQuit = quitPopUp.transform.GetChild(2).gameObject;
+        // // get the yes and no options for the quit confirmation
+        // yesQuit = quitPopUp.transform.GetChild(1).gameObject;
+        // noQuit = quitPopUp.transform.GetChild(2).gameObject;
     }
 
     public void Update()
@@ -70,12 +74,12 @@ public class PauseGame : MonoBehaviour
             EventSystem.current.SetSelectedGameObject(lastSelected);
         }
 
-        // else if (!(selected == btnLvl1 || selected == btnLvl2 || selected == btnLvl3 || selected == btnLvl4 || selected == btnLvl5 || selected == btnMainMenu) || !lastSelected)
-        // {
-        //     EventSystem.current.SetSelectedGameObject(btnLvl1);
-        // }
+        else if (!(selected == btnResume || selected == btnRestart || selected == btnOptions || selected == btnQuit) || !lastSelected)
+        {
+            EventSystem.current.SetSelectedGameObject(btnResume);
+        }
 
-        quitPopUp.SetActive(showingQuitConf);
+        // quitPopUp.SetActive(showingQuitConf);
 
         // depending on which option is selected, show the cloche
         if (selected == btnResume)
@@ -108,15 +112,15 @@ public class PauseGame : MonoBehaviour
         }
 
         // if the quit confirmation is showing
-        if (showingQuitConf && !showingControls)
+        if (showingQuitConf && !showingOptions)
         {
             if (Input.GetKeyDown(KeyCode.X))
             {
-                uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
+                // uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
 
                 if (selected == yesQuit)
                 {
-                    MainMenu();
+                    SceneManager.LoadSceneAsync("Menus");
                 }
 
                 else if (selected == noQuit)
@@ -127,21 +131,22 @@ public class PauseGame : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Z))
             {
-                uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
+                // uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
 
                 Back();
             }
         }
 
-        if (!showingQuitConf && !showingControls)
+        if (!showingQuitConf && !showingOptions)
         {
             if (Input.GetKeyDown(KeyCode.X))
             {
-                uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
+                // uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
 
                 if (selected == btnResume)
                 {
-                    ResumeGame();
+                    Debug.Log("Resume game");
+                    gm.Unpause();
                 }
 
                 else if (selected == btnRestart)
@@ -150,66 +155,38 @@ public class PauseGame : MonoBehaviour
                     // .GetComponent<ConfirmAction>().RestartLevel();
                     // maybe make it a bool instead of void then
                     // set a bool = RestartLevel() then act based off that
+                    SceneManager.LoadSceneAsync(sceneName);
                 }
 
                 else if (selected == btnOptions)
                 {
-                    // ShowControls();
+                    SceneManager.LoadScene("Options", LoadSceneMode.Additive);
+                    showingOptions = true;
                 }
 
                 else if (selected == btnQuit)
                 {
-                    ConfirmQuit();
+                    showingQuitConf = true;
+                    EventSystem.current.SetSelectedGameObject(noQuit);
                 }
             }
         }
 
-        if (showingControls && Input.GetKeyDown(KeyCode.Z))
+        if (showingOptions && Input.GetKeyDown(KeyCode.Z))
         {
-            uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
+            // uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
             
-            HideControls();
+            int n = SceneManager.sceneCount;
+
+            if (n > 1)
+            {
+                SceneManager.UnloadSceneAsync("Controls");
+            }
+
+            showingOptions = false;
         }
 
         lastSelected = selected;
-    }
-
-    // user presses resume game
-    private void ResumeGame()
-    {
-        Debug.Log("Resume game");
-        // SceneManager.LoadSceneAsync("LoadingScreen");
-    }
-
-    private void ShowControls()
-    {
-        SceneManager.LoadScene("Controls", LoadSceneMode.Additive);
-        showingControls = true;
-    }
-
-    public void HideControls()
-    {
-        int n = SceneManager.sceneCount;
-
-        if (n > 1)
-        {
-            SceneManager.UnloadSceneAsync("Controls");
-        }
-
-        showingControls = false;
-    }
-
-    // user presses quit game, give a quit confirmation popup
-    // to verify that this is what they want
-    private void ConfirmQuit()
-    {
-        showingQuitConf = true;
-        EventSystem.current.SetSelectedGameObject(noQuit);
-    }
-
-    private void MainMenu()
-    {
-        SceneManager.LoadSceneAsync("StartMenu");
     }
 
     private void Back()
@@ -225,5 +202,11 @@ public class PauseGame : MonoBehaviour
         restartCloche.SetActive(false);
         optionsCloche.SetActive(false);
         quitCloche.SetActive(false);
+    }
+
+    public void GetBaseInfo(GameManager gm, string sceneName)
+    {
+        this.gm = gm;
+        this.sceneName = sceneName;
     }
 }

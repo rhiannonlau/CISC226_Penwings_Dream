@@ -113,11 +113,23 @@ public class GameManager : MonoBehaviour
             StartCoroutine(WaitExitGame());
         }
 
+        // pause the game when the user presses the escape key
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (!paused)
             {
-                Pause();
+                // pause game bgm
+                soundManager.StopMusic();
+
+                paused = true;
+                Time.timeScale = 0f;
+
+                // load the pause screen 
+                SceneManager.LoadScene("PauseScreen", LoadSceneMode.Additive);
+
+                // get a reference to the pause screen's PauseGame script
+                PauseGame p = GameObject.Find("PauseScreen").GetComponent<PauseGame>();
+                p.GetBaseInfo(this, sceneName); // pass a reference to this gm script and the name of this scene
             }
             
             else
@@ -247,16 +259,7 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadSceneAsync("Menus");
     }
 
-    private void Pause()
-    {
-        paused = true;
-        Time.timeScale = 0f;
-
-        // load the pause screen 
-        SceneManager.LoadScene("PauseScreen", LoadSceneMode.Additive);
-    }
-
-    private void Unpause()
+    public void Unpause()
     {
         // unload the pause screen
         int n = SceneManager.sceneCount;
@@ -265,8 +268,11 @@ public class GameManager : MonoBehaviour
         {
             SceneManager.UnloadSceneAsync("PauseScreen");
         }
-        
+
         paused = false;
         Time.timeScale = 1f;
+
+        // play game bgm
+        soundManager.PlayMusic();
     }
 }
