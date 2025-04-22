@@ -22,7 +22,8 @@ public class MainMenu : MonoBehaviour
     // controlling the quit confirmation pop up
     private GameObject quitPopUp;
     private bool showingQuitConf;
-    private GameObject yesQuit, noQuit;
+    private GameObject btnYesQuit, btnNoQuit;
+    private GameObject yesQuitCloche, noQuitCloche;
 
     public UISoundManager uiSoundManager;
 
@@ -46,8 +47,10 @@ public class MainMenu : MonoBehaviour
 
         // get the reference to the quit confirmation pop up
         quitPopUp = transform.GetChild(7).gameObject;
-        yesQuit = quitPopUp.transform.GetChild(1).gameObject;
-        noQuit = quitPopUp.transform.GetChild(2).gameObject;
+        btnYesQuit = quitPopUp.transform.GetChild(1).gameObject;
+        btnNoQuit = quitPopUp.transform.GetChild(2).gameObject;
+        yesQuitCloche = btnYesQuit.transform.GetChild(1).gameObject;
+        noQuitCloche = btnNoQuit.transform.GetChild(1).gameObject;
 
         // set the first selection on awake
         lastSelected = btnStart;
@@ -134,16 +137,33 @@ public class MainMenu : MonoBehaviour
         // if the quit confirmation is showing
         if (showingQuitConf && !showingControls)
         {
+            if (selected != btnYesQuit && selected != btnNoQuit)
+            {
+                selected = btnNoQuit;
+            }
+
+            if (selected == btnYesQuit)
+            {
+                yesQuitCloche.SetActive(true);
+                noQuitCloche.SetActive(false);
+            }
+
+            else if(selected == btnNoQuit)
+            {
+                yesQuitCloche.SetActive(false);
+                noQuitCloche.SetActive(true);
+            }
+
             if (Input.GetKeyDown(KeyCode.X))
             {
                 uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
 
-                if (selected == yesQuit)
+                if (selected == btnYesQuit)
                 {
                     QuitGame();
                 }
 
-                else if (selected == noQuit)
+                else if (selected == btnNoQuit)
                 {
                     Back();
                 }
@@ -193,7 +213,7 @@ public class MainMenu : MonoBehaviour
                 }
             }
 
-            if (Input.GetKeyDown(KeyCode.Z))
+            if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Escape))
             {
                 uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
 
@@ -252,7 +272,7 @@ public class MainMenu : MonoBehaviour
     private void ConfirmQuit()
     {
         showingQuitConf = true;
-        EventSystem.current.SetSelectedGameObject(noQuit);
+        EventSystem.current.SetSelectedGameObject(btnNoQuit);
     }
 
     private void QuitGame()

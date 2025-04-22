@@ -14,9 +14,13 @@ public class LoadingBar : MonoBehaviour
     // used to move penwing's sprite and follow bar
     [SerializeField] private RectTransform sprite;
 
+    private SpriteRenderer spriteRend;
+
+    private Animator anim;
+
 
     // where the sprite starts and ends
-    private float leftXBoundary = -370f, rightXBoundary = 370f;
+    private float leftXBoundary = -400f, rightXBoundary = 425f;
     private float y = 65f;
     private float distance; // calculate the distance the sprite has to travel
     private float xPos = 0; // the sprite's x position
@@ -25,12 +29,21 @@ public class LoadingBar : MonoBehaviour
 
     public void Awake()
     {
+        spriteRend = sprite.GetComponent<SpriteRenderer>();
+        anim = GetComponent<Animator>();
+
         // calculate distance as diff between start and end point
         distance = Mathf.Abs(rightXBoundary) + Mathf.Abs(leftXBoundary);
     }
 
     public void OnEnable()
     {
+        Application.runInBackground = true; // keep the loading screen going if the user alt tabs
+
+        sprite.localPosition = new Vector2(leftXBoundary, y);
+        anim.SetBool("walk", true);
+        // spriteRend.enabled = true;
+
         progressBar.value = 0; // reset progress bar
 
         nextScene = "";
@@ -47,21 +60,28 @@ public class LoadingBar : MonoBehaviour
         {
             // StartCoroutine(FillBar());
 
-            if (Random.Range(0, 10) < 1)
+            if (Random.Range(0, 3) < 1)
             {
                 // progress the bar
                 progressBar.value += 0.005f;
 
                 // move the sprite proportionally to the amount the bar has been filled
                 xPos = leftXBoundary + progressBar.value * distance;
-                Debug.Log(xPos);
-                Debug.Log(distance);
+                // Debug.Log(xPos);
+                // Debug.Log(distance);
                 sprite.localPosition = new Vector2(xPos, y);
             }
         }
 
         if (progressBar.value == 1)
         {
+            // spriteRend.enabled = false;
+
+            // run in background enables the game to play when the user alt tabs
+            // turn this off after leaving the loading screen to prevent
+            // the game from running in the bg
+            Application.runInBackground = false;
+
             if (nextScene != "")
             {
                 canvas.GetComponent<MenuManager>().FromLoadingToLevel(nextScene);
@@ -83,7 +103,7 @@ public class LoadingBar : MonoBehaviour
     {
         // do a coinflip to add some occasional delay to the
         // filling of the bar so it isn't linear every time
-        if (Random.Range(0, 2) < 1)
+        if (Random.Range(0, 3) < 1)
         {
             yield return new WaitForSeconds(0.5f);
         }
