@@ -25,7 +25,7 @@ public class StaticData : MonoBehaviour
     // store the information from the game that was just played
     // to display in the post game screen
     public static float goal, score, highestSatisfaction;
-    public static string justPlayed;
+    public static string currentLevel, justPlayed;
 
     // alert menus that we want to go to the post game screen, not the main menu
     // after the game

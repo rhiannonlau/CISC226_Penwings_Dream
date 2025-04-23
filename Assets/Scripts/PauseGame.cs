@@ -52,7 +52,9 @@ public class PauseGame : MonoBehaviour
 
         showingOptions = false;
 
-        Debug.Log("Start worked");
+        Debug.Log("Paused");
+
+        sceneName = StaticData.currentLevel;
 
         // quit pop up hidden
         // quitPopUp = transform.GetChild(6).gameObject;
@@ -146,7 +148,9 @@ public class PauseGame : MonoBehaviour
                 if (selected == btnResume)
                 {
                     Debug.Log("Resume game");
-                    gm.Unpause();
+                    // gm.Unpause();
+                    Time.timeScale = 1f;
+                    Destroy(gameObject);
                 }
 
                 else if (selected == btnRestart)
@@ -166,8 +170,9 @@ public class PauseGame : MonoBehaviour
 
                 else if (selected == btnQuit)
                 {
-                    showingQuitConf = true;
-                    EventSystem.current.SetSelectedGameObject(noQuit);
+                    // showingQuitConf = true;
+                    // EventSystem.current.SetSelectedGameObject(noQuit);
+                    SceneManager.LoadSceneAsync("Menus");
                 }
             }
         }

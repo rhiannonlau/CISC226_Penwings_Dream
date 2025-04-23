@@ -53,6 +53,7 @@ public class GameManager : MonoBehaviour
         // StaticData.goals[sceneName] = dailyGoal;
         StaticData.goal = dailyGoal;
         StaticData.justPlayed = sceneName;
+        StaticData.currentLevel = sceneName;
     }
 
     // Update is called once per frame
@@ -128,8 +129,8 @@ public class GameManager : MonoBehaviour
                 SceneManager.LoadScene("PauseScreen", LoadSceneMode.Additive);
 
                 // get a reference to the pause screen's PauseGame script
-                PauseGame p = GameObject.Find("PauseScreen").GetComponent<PauseGame>();
-                p.GetBaseInfo(this, sceneName); // pass a reference to this gm script and the name of this scene
+                // PauseGame p = GameObject.Find("PauseCanvas").GetComponent<PauseGame>();
+                // p.GetBaseInfo(this, sceneName); // pass a reference to this gm script and the name of this scene
             }
             
             else

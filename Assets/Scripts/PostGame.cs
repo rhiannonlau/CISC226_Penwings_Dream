@@ -26,7 +26,7 @@ public class PostGame : MonoBehaviour
 
     // references to the buttons
     private GameObject btnNextLevel, btnNext, btnRetry, btnMainMenu;
-    private Button mM, act;
+    private Button mainMenu, active;
     private Navigation nav;
     
     private GameObject btnActive;
@@ -90,14 +90,14 @@ public class PostGame : MonoBehaviour
 
         // setting the mode of the main menu button explicitly
         // so that it can properly navigate depending on which button is active
-        mM = btnMainMenu.GetComponent<Button>();
-        act = btnActive.GetComponent<Button>();
+        mainMenu = btnMainMenu.GetComponent<Button>();
+        active = btnActive.GetComponent<Button>();
         nav.mode = Navigation.Mode.Explicit;
-        nav.selectOnUp = act;
-        nav.selectOnLeft = act;
-        nav.selectOnDown = act;
-        nav.selectOnRight = act;
-        mM.navigation = nav;
+        nav.selectOnUp = active;
+        nav.selectOnLeft = active;
+        nav.selectOnDown = active;
+        nav.selectOnRight = active;
+        mainMenu.navigation = nav;
 
         EventSystem.current.SetSelectedGameObject(btnActive);
         btnActive.SetActive(true);
@@ -128,7 +128,7 @@ public class PostGame : MonoBehaviour
         }
 
         // if selected is not = to a button in this panel and lastSelected is null, reset to btnStart
-        else if (!(selected == btnNextLevel || selected == btnRetry || selected == btnMainMenu) && !lastSelected)
+        else if (!(selected == btnNextLevel || selected == btnRetry || selected == btnNext || selected == btnMainMenu) && !lastSelected)
         {
             EventSystem.current.SetSelectedGameObject(btnActive);
         }
