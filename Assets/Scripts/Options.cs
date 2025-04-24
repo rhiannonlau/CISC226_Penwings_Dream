@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.SceneManagement;
 using System;
+using Unity.Collections;
 
 public class Options : MonoBehaviour
 {
@@ -20,23 +21,29 @@ public class Options : MonoBehaviour
 
     // sound panel vars
     // private float masterVol
-    private GameObject sldMasterVol, sldMusicVol, sldEffectsVol;
+    private GameObject sldMasterVol, sldMusicVol, sldEffectsVol, btnResetSound;
     private TMP_Text txtMasterVol, txtMusicVol, txtEffectsVol;
+    private GameObject resetSoundCloche;
     private GameObject activeSlider;
     private TMP_Text activeSliderText;
     private bool spedUp;
     private float? startHold = null; // a float that can be null
     [SerializeField] private float speedUpAfter = 1f;
     [SerializeField] private float incrementVal = 0.01f, increaseFactor = 50f;
-    private UISoundManager uiSoundManager;
-
+    
     // controls panel vars
-    private GameObject btnMoveLeft, btnMoveRight, btnJump, btnInteract, btnDuck, btnEleUp, btnEleDown, btnPause, btnReset;
+    private GameObject btnMoveLeft, btnMoveRight, btnJump, btnInteract, btnDuck, btnEleUp, btnEleDown, btnPause, btnResetControls;
+    private TMP_Text txtMoveLeft, txtMoveRight, txtJump, txtInteract, txtDuck, txtEleUp, txtEleDown, txtPause;
     private TMP_Text txtCurrentControl, txtLastControl;
+    private GameObject resetControlsCloche;
     private TMP_Text txtSelectedControl;
+    private string playerPrefsKey;
     private GameObject btnCurrentControl;
     private bool growing;
     private float fontSize;
+
+
+    private UISoundManager uiSoundManager;
 
     public void Awake()
     {
@@ -68,6 +75,7 @@ public class Options : MonoBehaviour
 
     public void Start()
     {
+        // get references to options panel objects
         btnSound = transform.GetChild(0).GetChild(1).gameObject;
         btnControls = transform.GetChild(0).GetChild(2).gameObject;
         btnReturn = transform.GetChild(0).GetChild(3).gameObject;
@@ -85,6 +93,7 @@ public class Options : MonoBehaviour
         pnlControlsTooltip = transform.GetChild(5).gameObject;
         pnlChangingControlsTooltip = transform.GetChild(6).gameObject;
 
+        // get references to sound panel objects
         sldMasterVol = pnlSound.transform.GetChild(1).GetChild(0).gameObject;
         sldMusicVol = pnlSound.transform.GetChild(2).GetChild(0).gameObject;
         sldEffectsVol = pnlSound.transform.GetChild(3).GetChild(0).gameObject;
@@ -93,21 +102,13 @@ public class Options : MonoBehaviour
         txtMusicVol = pnlSound.transform.GetChild(2).GetChild(2).GetComponent<TMP_Text>();
         txtEffectsVol = pnlSound.transform.GetChild(3).GetChild(2).GetComponent<TMP_Text>();
 
-        float masterVol = PlayerPrefs.GetFloat("MasterVolume", StaticData.defMasterVol) * 100;
-        float musicVol = PlayerPrefs.GetFloat("MusicVolume", StaticData.defMusicVol) * 100;
-        float effectsVol = PlayerPrefs.GetFloat("EffectsVolume", StaticData.defEffectsVol) * 100;
+        // get the current sound settings from playerprefs with default from staticdata
+        UpdateSoundDisplay();
 
-        // sldMasterVol.GetComponent<Slider>().value = StaticData.masterVolume * 100;
-        // sldMusicVol.GetComponent<Slider>().value = StaticData.musicVolume * 100;
-        // sldEffectsVol.GetComponent<Slider>().value = StaticData.effectsVolume * 100;
-        sldMasterVol.GetComponent<Slider>().value = masterVol;
-        sldMusicVol.GetComponent<Slider>().value = musicVol;
-        sldEffectsVol.GetComponent<Slider>().value = effectsVol;
+        // btnResetSound = 
+        // resetSoundCloche = 
 
-        txtMasterVol.text = masterVol.ToString();
-        txtMusicVol.text = musicVol.ToString();
-        txtEffectsVol.text = effectsVol.ToString();
-
+        // get references to control panel objects
         btnMoveLeft = pnlControls.transform.GetChild(1).GetChild(2).gameObject;
         btnMoveRight = pnlControls.transform.GetChild(2).GetChild(2).gameObject;
         btnJump = pnlControls.transform.GetChild(3).GetChild(2).gameObject;
@@ -116,7 +117,21 @@ public class Options : MonoBehaviour
         btnEleUp = pnlControls.transform.GetChild(6).GetChild(2).gameObject;
         btnEleDown = pnlControls.transform.GetChild(7).GetChild(2).gameObject;
         btnPause = pnlControls.transform.GetChild(8).GetChild(2).gameObject;
-        btnReset = pnlControls.transform.GetChild(9).gameObject;
+        btnResetControls = pnlControls.transform.GetChild(9).gameObject;
+
+        txtMoveLeft = btnMoveLeft.transform.GetChild(0).GetComponent<TMP_Text>();
+        txtMoveRight = btnMoveRight.transform.GetChild(0).GetComponent<TMP_Text>();
+        txtJump = btnJump.transform.GetChild(0).GetComponent<TMP_Text>();
+        txtInteract = btnInteract.transform.GetChild(0).GetComponent<TMP_Text>();
+        txtDuck = btnDuck.transform.GetChild(0).GetComponent<TMP_Text>();
+        txtEleUp = btnEleUp.transform.GetChild(0).GetComponent<TMP_Text>();
+        txtEleDown = btnEleDown.transform.GetChild(0).GetComponent<TMP_Text>();
+        txtPause = btnPause.transform.GetChild(0).GetComponent<TMP_Text>();
+
+        // get the current control settings from playerprefs with default from staticdata
+        UpdateControlsDisplay();
+
+        resetControlsCloche = btnResetControls.transform.GetChild(1).gameObject;
 
         AllOptionsFalse();
         onPnlSound = false;
@@ -224,16 +239,27 @@ public class Options : MonoBehaviour
                 activeSliderText = txtMasterVol;
             }
 
-            else if(selected == sldMusicVol)
+            else if (selected == sldMusicVol)
             {
                 activeSlider = sldMusicVol;
                 activeSliderText = txtMusicVol;
             }
 
-            else if(selected == sldEffectsVol)
+            else if (selected == sldEffectsVol)
             {
                 activeSlider = sldEffectsVol;
                 activeSliderText = txtEffectsVol;
+            }
+
+            else if (selected == btnResetSound)
+            {
+                activeSlider = null;
+
+                PlayerPrefs.SetFloat("VolumeMaster", StaticData.defMasterVol);
+                PlayerPrefs.SetFloat("VolumeMusic", StaticData.defMusicVol);
+                PlayerPrefs.SetFloat("VolumeEffects", StaticData.defEffectsVol);
+
+                UpdateSoundDisplay();
             }
 
             else
@@ -263,22 +289,22 @@ public class Options : MonoBehaviour
             // update the static variables and actual volume in real time
             if (activeSlider == sldMasterVol)
             {
-                // StaticData.masterVolume = sldMasterVol.GetComponent<Slider>().value / 100;
-                PlayerPrefs.SetFloat("MasterVolume", sldMasterVol.GetComponent<Slider>().value / 100);
+                // save the master value to playerprefs and update in real time
+                PlayerPrefs.SetFloat("VolumeMaster", sldMasterVol.GetComponent<Slider>().value / 100);
                 uiSoundManager.UpdateMasterVolume();
             }
 
             else if (activeSlider == sldMusicVol)
             {
-                // StaticData.musicVolume = sldMusicVol.GetComponent<Slider>().value / 100;
-                PlayerPrefs.SetFloat("MusicVolume", sldMusicVol.GetComponent<Slider>().value / 100);
+                // save the music value to playerprefs and update in real time
+                PlayerPrefs.SetFloat("VolumeMusic", sldMusicVol.GetComponent<Slider>().value / 100);
                 uiSoundManager.UpdateMusicVolume();
             }
 
             else if (activeSlider == sldEffectsVol)
             {
-                // StaticData.effectsVolume = sldEffectsVol.GetComponent<Slider>().value / 100;
-                PlayerPrefs.SetFloat("EffectsVolume", sldEffectsVol.GetComponent<Slider>().value / 100);
+                // save the effects value to playerprefs and update in real time
+                PlayerPrefs.SetFloat("VolumeEffects", sldEffectsVol.GetComponent<Slider>().value / 100);
                 uiSoundManager.UpdateEffectsVolume();
             }
 
@@ -312,12 +338,12 @@ public class Options : MonoBehaviour
             pnlControlsTooltip.SetActive(true);
 
             // if selected is not = to a button in this panel and lastSelected is not null, reset to btnStart
-            if (!selected && (lastSelected == btnMoveLeft || lastSelected == btnMoveRight || lastSelected == btnJump || lastSelected == btnInteract || lastSelected == btnDuck || lastSelected == btnEleUp || lastSelected == btnEleDown || lastSelected == btnPause || lastSelected == btnReset))
+            if (!selected && (lastSelected == btnMoveLeft || lastSelected == btnMoveRight || lastSelected == btnJump || lastSelected == btnInteract || lastSelected == btnDuck || lastSelected == btnEleUp || lastSelected == btnEleDown || lastSelected == btnPause || lastSelected == btnResetControls))
             {
                 EventSystem.current.SetSelectedGameObject(lastSelected);
             }
 
-            else if (!(selected == btnMoveLeft || selected == btnMoveRight || selected == btnJump || selected == btnInteract || selected == btnDuck || selected == btnEleUp || selected == btnEleDown || selected == btnPause || selected == btnReset))
+            else if (!(selected == btnMoveLeft || selected == btnMoveRight || selected == btnJump || selected == btnInteract || selected == btnDuck || selected == btnEleUp || selected == btnEleDown || selected == btnPause || selected == btnResetControls))
             {
                 EventSystem.current.SetSelectedGameObject(btnMoveLeft);
                 lastSelected = btnMoveLeft;
@@ -325,6 +351,66 @@ public class Options : MonoBehaviour
             }
 
             // Debug.Log(selected);
+
+            // get the key value corresponding to the control that is being hovered
+            // so that it can be properly changed/saved in playerprefs
+            if (selected == btnMoveLeft)
+            {
+                playerPrefsKey = "KeyMoveLeft";
+            }
+
+            else if (selected == btnMoveRight)
+            {
+                playerPrefsKey = "KeyMoveRight";
+            }
+
+            else if (selected == btnJump)
+            {
+                playerPrefsKey = "KeyJump";
+            }
+
+            else if (selected == btnInteract)
+            {
+                playerPrefsKey = "KeyInteract";
+            }
+
+            else if (selected == btnDuck)
+            {
+                playerPrefsKey = "KeyDuck";
+            }
+
+            else if (selected == btnEleUp)
+            {
+                playerPrefsKey = "KeyEleUp";
+            }
+
+            else if (selected == btnEleDown)
+            {
+                playerPrefsKey = "KeyEleDown";
+            }
+
+            else if (selected == btnPause)
+            {
+                playerPrefsKey = "KeyPause";
+            }
+
+            else if (selected == btnResetControls)
+            {
+                playerPrefsKey = null;
+                // turn on the cloche
+                resetControlsCloche.SetActive(true);
+            }
+
+            else
+            {
+                playerPrefsKey = null;
+            }
+
+            // set the reset cloche to false if reset isn't being hovered/selected
+            if (selected != btnResetControls)
+            {
+                resetControlsCloche.SetActive(false);
+            }
 
             // depending on which option is currently being hovered, increase the font size
             if (selected != btnControls && selected != btnSound)
@@ -341,8 +427,7 @@ public class Options : MonoBehaviour
                 if (txtLastSelectedControl.text == "")
                 {
                     // reset to what it was saved as before
-                    // PlayerPrefs.GetString("CustomKey");
-                    txtLastSelectedControl.text = "X";
+                    txtLastSelectedControl.text = PlayerPrefs.GetString(playerPrefsKey);
 
                     AllTooltipsFalse();
                     pnlControlsTooltip.SetActive(true);
@@ -350,23 +435,39 @@ public class Options : MonoBehaviour
             }
 
             // the user has selected a key to change
-            if (Input.GetKeyDown(KeyCode.X) && txtSelectedControl)
+            if (Input.GetKeyDown(KeyCode.X) && txtSelectedControl && playerPrefsKey != null)
             {
                 AllTooltipsFalse();
                 pnlChangingControlsTooltip.SetActive(true);
 
                 txtSelectedControl.text = ""; // make the key text blank
 
-                // foreach (KeyCode keycode in Enum.GetValues(typeof(KeyCode)))
-                // {
-                //     if (Input.GetKey(keycode))
-                //     {
-                //         string key = keycode.ToString();
-                //         txtSelectedControl.text = key; // show the value that they've just inputted
-                //         // PlayerPrefs.SetString("CustomKey", keycode.ToString());
-                //         // PlayerPrefs.Save();
-                //     }
-                // }
+                // bug status: when the user presses x, it registers
+                // and sets the text to "" then instantly on the same loop takes that
+                // x and enters it as the input for the new key
+                foreach (KeyCode keycode in Enum.GetValues(typeof(KeyCode)))
+                {
+                    if (Input.GetKey(keycode))
+                    {
+                        string key = keycode.ToString();
+                        txtSelectedControl.text = key; // show the value that they've just inputted
+                        PlayerPrefs.SetString(playerPrefsKey, keycode.ToString());
+                    }
+                }
+            }
+
+            else if (Input.GetKeyDown(KeyCode.X) && selected == btnResetControls)
+            {
+                PlayerPrefs.SetString("KeyMoveLeft", StaticData.defMoveLeft.ToString());
+                PlayerPrefs.SetString("KeyMoveRight", StaticData.defMoveRight.ToString());
+                PlayerPrefs.SetString("KeyJump", StaticData.defJump.ToString());
+                PlayerPrefs.SetString("KeyInteract", StaticData.defInteract.ToString());
+                PlayerPrefs.SetString("KeyDuck", StaticData.defDuck.ToString());
+                PlayerPrefs.SetString("KeyElevatorUp", StaticData.defEleUp.ToString());
+                PlayerPrefs.SetString("KeyElevatorDown", StaticData.defEleDown.ToString());
+                PlayerPrefs.SetString("KeyPause", StaticData.defPause.ToString());
+
+                UpdateControlsDisplay();
             }
 
             // selected = EventSystem.current.currentSelectedGameObject;
@@ -458,5 +559,37 @@ public class Options : MonoBehaviour
         pnlSoundTooltip.SetActive(false);
         pnlControlsTooltip.SetActive(false);
         pnlChangingControlsTooltip.SetActive(false);
+    }
+
+    private void UpdateSoundDisplay()
+    {
+        float masterVol = PlayerPrefs.GetFloat("VolumeMaster", StaticData.defMasterVol) * 100;
+        float musicVol = PlayerPrefs.GetFloat("VolumeMusic", StaticData.defMusicVol) * 100;
+        float effectsVol = PlayerPrefs.GetFloat("VolumeEffects", StaticData.defEffectsVol) * 100;
+
+        // PlayerPrefs.DeleteKey("MasterVolume");
+        // PlayerPrefs.DeleteKey("MusicVolume");
+        // PlayerPrefs.DeleteKey("EffectsVolume");
+        // PlayerPrefs.Save();
+
+        sldMasterVol.GetComponent<Slider>().value = masterVol;
+        sldMusicVol.GetComponent<Slider>().value = musicVol;
+        sldEffectsVol.GetComponent<Slider>().value = effectsVol;
+
+        txtMasterVol.text = masterVol.ToString();
+        txtMusicVol.text = musicVol.ToString();
+        txtEffectsVol.text = effectsVol.ToString();
+    }
+
+    private void UpdateControlsDisplay()
+    {
+        txtMoveLeft.text = PlayerPrefs.GetString("KeyMoveLeft", StaticData.defMoveLeft.ToString());
+        txtMoveRight.text = PlayerPrefs.GetString("KeyMoveRight", StaticData.defMoveRight.ToString());
+        txtJump.text = PlayerPrefs.GetString("KeyJump", StaticData.defJump.ToString());
+        txtInteract.text = PlayerPrefs.GetString("KeyInteract", StaticData.defInteract.ToString());
+        txtDuck.text = PlayerPrefs.GetString("KeyDuck", StaticData.defDuck.ToString());
+        txtEleUp.text = PlayerPrefs.GetString("KeyElevatorUp", StaticData.defEleUp.ToString());
+        txtEleDown.text = PlayerPrefs.GetString("KeyElevatorDown", StaticData.defEleDown.ToString());
+        txtPause.text = PlayerPrefs.GetString("KeyPause", StaticData.defPause.ToString());
     }
 }

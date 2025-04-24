@@ -36,14 +36,14 @@ public class UISoundManager : MonoBehaviour
 
     public void UpdateMusicVolume()
     {
-        // musicSource.volume = StaticData.musicVolume * StaticData.masterVolume;
-        musicSource.volume = PlayerPrefs.GetFloat("MusicVolume") * PlayerPrefs.GetFloat("MasterVolume");
+        // set the effects settings in player prefs with the defaults from staticdata
+        musicSource.volume = PlayerPrefs.GetFloat("VolumeMusic", StaticData.musicVolume) * PlayerPrefs.GetFloat("VolumeMaster", StaticData.masterVolume);
     }
 
     public void UpdateEffectsVolume()
     {
-        // soundEffectsSource.volume = StaticData.effectsVolume * StaticData.masterVolume;
-        soundEffectsSource.volume = PlayerPrefs.GetFloat("EffectsVolume") * PlayerPrefs.GetFloat("MasterVolume");
+        // set the effects settings in player prefs with the defaults from staticdata
+        soundEffectsSource.volume = PlayerPrefs.GetFloat("VolumeEffects", StaticData.effectsVolume) * PlayerPrefs.GetFloat("VolumeMaster", StaticData.masterVolume);
     }
 
     public void UpdateMasterVolume()
