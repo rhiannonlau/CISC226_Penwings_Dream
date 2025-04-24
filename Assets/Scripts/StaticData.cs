@@ -11,7 +11,7 @@ public class StaticData : MonoBehaviour
 
 
     // SOUND INFORMATION /////////////////////////////////////////
-    public static float masterVolume = 0.7f, musicVolume = 0.7f, effectsVolume = 0.7f;
+    public static float masterVolume = 0.7f, musicVolume = 0.5f, effectsVolume = 0.7f;
 
     
     // GAME INFORMATION /////////////////////////////////////

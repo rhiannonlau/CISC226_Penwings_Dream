@@ -5,6 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using System;
 
 public class Options : MonoBehaviour
 {
@@ -27,9 +28,14 @@ public class Options : MonoBehaviour
     private float? startHold = null; // a float that can be null
     [SerializeField] private float speedUpAfter = 1f;
     [SerializeField] private float incrementVal = 0.01f, increaseFactor = 50f;
-    public UISoundManager uiSoundManager;
+    private UISoundManager uiSoundManager;
 
     // controls panel vars
+    private GameObject btnMoveLeft, btnMoveRight, btnJump, btnInteract, btnDuck, btnEleUp, btnEleDown, btnPause, btnReset;
+    private TMP_Text txtCurrentControl, txtLastControl;
+    private GameObject btnCurrentControl;
+    private bool growing;
+    private float fontSize;
 
     public void Awake()
     {
@@ -93,6 +99,16 @@ public class Options : MonoBehaviour
         txtMasterVol.text = (StaticData.masterVolume  * 100).ToString();
         txtMusicVol.text = (StaticData.musicVolume  * 100).ToString();
         txtEffectsVol.text = (StaticData.effectsVolume  * 100).ToString();
+
+        btnMoveLeft = pnlControls.transform.GetChild(1).GetChild(2).gameObject;
+        btnMoveRight = pnlControls.transform.GetChild(2).GetChild(2).gameObject;
+        btnJump = pnlControls.transform.GetChild(3).GetChild(2).gameObject;
+        btnInteract = pnlControls.transform.GetChild(4).GetChild(2).gameObject;
+        btnDuck = pnlControls.transform.GetChild(5).GetChild(2).gameObject;
+        btnEleUp = pnlControls.transform.GetChild(6).GetChild(2).gameObject;
+        btnEleDown = pnlControls.transform.GetChild(7).GetChild(2).gameObject;
+        btnPause = pnlControls.transform.GetChild(8).GetChild(2).gameObject;
+        btnReset = pnlControls.transform.GetChild(9).gameObject;
 
         AllOptionsFalse();
         onPnlSound = false;
@@ -285,10 +301,21 @@ public class Options : MonoBehaviour
             pnlControlsTooltip.SetActive(true);
 
             // if selected is not = to a button in this panel and lastSelected is null, reset to btnStart
-            if (!(selected == btnSound || selected == btnControls || selected == btnReturn) && !lastSelected)
-            {
-                EventSystem.current.SetSelectedGameObject(btnSound);
-            }
+            // if (!selected && (lastSelected == btnMoveLeft || lastSelected == btnMoveRight || lastSelected == btnJump || lastSelected == btnInteract || lastSelected == btnDuck || lastSelected == btnEleUp || lastSelected == btnEleDown || lastSelected == btnPause || lastSelected == btnReset))
+            // {
+            //     EventSystem.current.SetSelectedGameObject(btnMoveLeft);
+            //     lastSelected = btnMoveLeft;
+            //     txtLastControl = btnMoveLeft.transform.GetChild(0).GetComponent<TMP_Text>();
+            // }
+
+            // else if (!(selected == btnMoveLeft || selected == btnMoveRight || selected == btnJump || selected == btnInteract || selected == btnDuck || selected == btnEleUp || selected == btnEleDown || selected == btnPause || selected == btnReset) && !lastSelected)
+            // {
+            //     EventSystem.current.SetSelectedGameObject(btnMoveLeft);
+            //     lastSelected = btnMoveLeft;
+            //     txtLastControl = btnMoveLeft.transform.GetChild(0).GetComponent<TMP_Text>();
+            // }
+
+            // Debug.Log(selected);
 
             // depending on which option is currently being hovered, show the cloche
             // if (selected == btnSound)
@@ -334,6 +361,54 @@ public class Options : MonoBehaviour
             //         returnCloche.SetActive(true);
             //     }
             // }
+
+            // selected = EventSystem.current.currentSelectedGameObject;
+            // txtCurrentControl = selected.transform.GetChild(0).GetComponent<TMP_Text>();
+
+            // if (!txtLastControl)
+            // {
+            //     txtLastControl = selected.transform.GetChild(0).GetComponent<TMP_Text>();
+            // }
+
+            // if (txtLastControl != txtCurrentControl)
+            // {
+            //     txtLastControl.fontSize = 50;
+            //     growing = true;
+            // }
+
+            // if (growing && fontSize >= 50 && fontSize < 55)
+            // {
+            //     fontSize += 1;
+
+            //     if (fontSize == 55)
+            //     {
+            //         growing = false;
+            //     }
+            // }
+
+            // else if (!growing && fontSize > 51 && fontSize <= 55)
+            // {
+            //     fontSize -= 1;
+
+            //     if (fontSize == 50)
+            //     {
+            //         growing = true;
+            //     }
+            // }
+
+            // txtCurrentControl.fontSize = fontSize;
+
+            // foreach (KeyCode keycode in Enum.GetValues(typeof(KeyCode)))
+            // {
+            //     if (Input.GetKey(keycode))
+            //     {
+            //         string key = keycode.ToString();
+            //         if (key == "Enter")
+            //         txtCurrentControl.text = key;
+            //     }
+            // }
+
+            // txtLastControl = txtCurrentControl;
         }
 
         if (onPnlSound || onPnlControls)
