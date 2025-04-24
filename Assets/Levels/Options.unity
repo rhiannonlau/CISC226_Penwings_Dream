@@ -2485,7 +2485,6 @@ GameObject:
   m_Component:
   - component: {fileID: 430628281}
   - component: {fileID: 430628280}
-  - component: {fileID: 430628279}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2493,14 +2492,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &430628279
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 430628278}
-  m_Enabled: 1
 --- !u!20 &430628280
 Camera:
   m_ObjectHideFlags: 0
@@ -4073,7 +4064,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 0.49803922, g: 0.49803922, b: 0.49803922, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -4094,9 +4085,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 386981558}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 1
-  m_WholeNumbers: 0
-  m_Value: 0
+  m_MaxValue: 100
+  m_WholeNumbers: 1
+  m_Value: 70
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -4933,7 +4924,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 9.000061, y: 0}
+  m_AnchoredPosition: {x: 9.000092, y: 0}
   m_SizeDelta: {x: 48.7666, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1068196915
@@ -5142,7 +5133,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 9.000061, y: 0}
+  m_AnchoredPosition: {x: 9.000122, y: 0}
   m_SizeDelta: {x: 48.7666, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1092549482
@@ -7031,7 +7022,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 0.49803922, g: 0.49803922, b: 0.49803922, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -7052,9 +7043,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1092549481}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 1
-  m_WholeNumbers: 0
-  m_Value: 0
+  m_MaxValue: 100
+  m_WholeNumbers: 1
+  m_Value: 70
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -8536,6 +8527,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e53e85574c8af8419923b4aff71ec46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speedUpAfter: 1
+  incrementVal: 0.01
+  increaseFactor: 50
+  uiSoundManager: {fileID: 0}
 --- !u!1 &1833028588
 GameObject:
   m_ObjectHideFlags: 0
@@ -9455,7 +9450,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 0.49803922, g: 0.49803922, b: 0.49803922, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -9476,9 +9471,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1068196914}
   m_Direction: 0
   m_MinValue: 0
-  m_MaxValue: 1
-  m_WholeNumbers: 0
-  m_Value: 0
+  m_MaxValue: 100
+  m_WholeNumbers: 1
+  m_Value: 70
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []

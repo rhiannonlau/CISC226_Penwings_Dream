@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float dailyGoal = 70f;
 
     public SoundManager soundManager;
+    public AudioListener audioListener;
 
     public TMP_Text time;
     public TMP_Text goal;
@@ -39,6 +40,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
 
         soundManager = GameObject.FindGameObjectWithTag("Sound").GetComponent<SoundManager>();
+        audioListener = GameObject.Find("Main Camera").GetComponent<AudioListener>();
         
         sceneName = SceneManager.GetActiveScene().name;
 
@@ -76,7 +78,7 @@ public class GameManager : MonoBehaviour
 
             soundManager.PlaySoundEffect(soundManager.endOfDaySound);
 
-            soundManager.StopMusic();
+            soundManager.PauseMusic();
 
             hotelSign.GetComponent<HotelSignController>().TurnOff();
 
@@ -120,7 +122,9 @@ public class GameManager : MonoBehaviour
             if (!paused)
             {
                 // pause game bgm
-                soundManager.StopMusic();
+                soundManager.PauseMusic();
+
+                audioListener.enabled = false;
 
                 paused = true;
                 Time.timeScale = 0f;
@@ -133,10 +137,23 @@ public class GameManager : MonoBehaviour
                 // p.GetBaseInfo(this, sceneName); // pass a reference to this gm script and the name of this scene
             }
             
-            else
-            {
-                Unpause();
-            }
+            // else
+            // {
+            //     Unpause();
+            // }
+        }
+
+        int n = SceneManager.sceneCount;
+
+        // if there's only one scene (the game) i.e. the game is not paused
+        // but the audio listener was disabled i.e. the game was paused at some point before
+        // then re-enable the audio listener to play the in game music again
+        if (n == 1 && !audioListener.enabled)
+        {
+            // play game bgm
+            audioListener.enabled = true;
+            soundManager.PlayMusic();
+            paused = false;
         }
 
         // cheat for testing to skip to end of time
@@ -260,20 +277,21 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadSceneAsync("Menus");
     }
 
-    public void Unpause()
-    {
-        // unload the pause screen
-        int n = SceneManager.sceneCount;
+    // public void Unpause()
+    // {
+    //     // unload the pause screen
+    //     int n = SceneManager.sceneCount;
 
-        if (n > 1)
-        {
-            SceneManager.UnloadSceneAsync("PauseScreen");
-        }
+    //     if (n > 1)
+    //     {
+    //         SceneManager.UnloadSceneAsync("PauseScreen");
+    //     }
 
-        paused = false;
-        Time.timeScale = 1f;
+    //     paused = false;
+    //     Time.timeScale = 1f;
 
-        // play game bgm
-        soundManager.PlayMusic();
-    }
+    //     // play game bgm
+    //     audioListener.enabled = true;
+    //     soundManager.PlayMusic();
+    // }
 }

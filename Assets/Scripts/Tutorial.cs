@@ -106,7 +106,7 @@ public class Tutorial : MonoBehaviour
             transitioning = true;
 
             soundManager.PlaySoundEffect(soundManager.endOfDaySound);
-            soundManager.StopMusic();
+            soundManager.PauseMusic();
 
             // Should freeze most things in the game
             Time.timeScale = 0f;

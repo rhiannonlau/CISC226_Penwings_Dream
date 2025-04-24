@@ -1,12 +1,14 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+using System.Collections;
 
 public class PauseGame : MonoBehaviour
 {
     // for storing the reference to the scene that calls the pause
     private GameManager gm;
     private string sceneName;
+    Scene pauseScene;
 
     // private int selected;
     private GameObject selected, lastSelected;
@@ -22,22 +24,26 @@ public class PauseGame : MonoBehaviour
 
     private GameObject yesQuit, noQuit;
 
-    // public UISoundManager uiSoundManager;
+    public UISoundManager uiSoundManager;
+
+    private EventSystem eventSystem;
 
     void Awake() 
     {
-        // uiSoundManager = GameObject.FindGameObjectWithTag("Sound").GetComponent<UISoundManager>();
+        eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();
+        uiSoundManager = GameObject.Find("UI Sound Manager").GetComponent<UISoundManager>();
+        pauseScene = SceneManager.GetSceneByName("PauseScreen");
     }
 
     public void Start()
     {
-        lastSelected = btnResume;
-
         // get the references to the buttons
         btnResume = transform.GetChild(1).gameObject;
         btnRestart = transform.GetChild(2).gameObject;
         btnOptions = transform.GetChild(3).gameObject;
         btnQuit = transform.GetChild(4).gameObject;
+
+        lastSelected = btnResume;
 
         // get the references to their cloches
         resumeCloche = btnResume.transform.GetChild(1).gameObject;
@@ -48,11 +54,9 @@ public class PauseGame : MonoBehaviour
         // start with Start Game selected
         AllSelectionsFalse();
         resumeCloche.SetActive(true);
-        EventSystem.current.SetSelectedGameObject(btnResume);
+        eventSystem.SetSelectedGameObject(btnResume);
 
         showingOptions = false;
-
-        Debug.Log("Paused");
 
         sceneName = StaticData.currentLevel;
 
@@ -67,19 +71,26 @@ public class PauseGame : MonoBehaviour
 
     public void Update()
     {
-        selected = EventSystem.current.currentSelectedGameObject;
+        if (SceneManager.sceneCount == 2 && !eventSystem.enabled)
+        {
+            eventSystem.enabled = true;
+            showingOptions = false;
+        }
 
         // to catch edge cases where mouse deselects all options
         // reset the selected option to be the last known selection
-        if (selected == null)
+        if (!selected && (lastSelected == btnResume || lastSelected == btnRestart || lastSelected == btnOptions || lastSelected == btnQuit))
         {
-            EventSystem.current.SetSelectedGameObject(lastSelected);
+            eventSystem.SetSelectedGameObject(lastSelected);
         }
 
-        else if (!(selected == btnResume || selected == btnRestart || selected == btnOptions || selected == btnQuit) || !lastSelected)
+        else if (!(selected == btnResume || selected == btnRestart || selected == btnOptions || selected == btnQuit) && !showingOptions)
         {
-            EventSystem.current.SetSelectedGameObject(btnResume);
+            eventSystem.SetSelectedGameObject(btnResume);
+            lastSelected = btnResume;
         }
+
+        selected = eventSystem.currentSelectedGameObject;
 
         // quitPopUp.SetActive(showingQuitConf);
 
@@ -118,7 +129,7 @@ public class PauseGame : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.X))
             {
-                // uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
+                uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
 
                 if (selected == yesQuit)
                 {
@@ -133,7 +144,7 @@ public class PauseGame : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Z))
             {
-                // uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
+                uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
 
                 Back();
             }
@@ -143,14 +154,22 @@ public class PauseGame : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.X))
             {
-                // uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
+                uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
 
                 if (selected == btnResume)
                 {
                     Debug.Log("Resume game");
                     // gm.Unpause();
                     Time.timeScale = 1f;
-                    Destroy(gameObject);
+
+                    int n = SceneManager.sceneCount;
+
+                    if (n > 1)
+                    {
+                        SceneManager.UnloadSceneAsync("PauseScreen");
+                    }
+
+                    uiSoundManager.PauseMusic();
                 }
 
                 else if (selected == btnRestart)
@@ -160,10 +179,12 @@ public class PauseGame : MonoBehaviour
                     // maybe make it a bool instead of void then
                     // set a bool = RestartLevel() then act based off that
                     SceneManager.LoadSceneAsync(sceneName);
+                    uiSoundManager.PauseMusic();
                 }
 
                 else if (selected == btnOptions)
                 {
+                    eventSystem.enabled = false;// turn off this eventsystem to prevent conflicts with the eventsystem in options
                     SceneManager.LoadScene("Options", LoadSceneMode.Additive);
                     showingOptions = true;
                 }
@@ -177,27 +198,13 @@ public class PauseGame : MonoBehaviour
             }
         }
 
-        if (showingOptions && Input.GetKeyDown(KeyCode.Z))
-        {
-            // uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
-            
-            int n = SceneManager.sceneCount;
-
-            if (n > 1)
-            {
-                SceneManager.UnloadSceneAsync("Controls");
-            }
-
-            showingOptions = false;
-        }
-
         lastSelected = selected;
     }
 
     private void Back()
     {
         showingQuitConf = false;
-        EventSystem.current.SetSelectedGameObject(btnResume);
+        eventSystem.SetSelectedGameObject(btnResume);
     }
 
     // helper function to turn off all cloches

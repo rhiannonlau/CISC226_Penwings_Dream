@@ -14,12 +14,13 @@ public class UISoundManager : MonoBehaviour
     void Start()
     {
         musicSource.clip = menuMusic;
+        UpdateMasterVolume();
         musicSource.Play();
     }
     
     public void PlaySoundEffect(AudioClip soundEffect)
     {
-        soundEffectsSource.PlayOneShot(soundEffect); 
+        soundEffectsSource.PlayOneShot(soundEffect);
     }
 
     // to pause and play the music when the videos are playing
@@ -28,8 +29,24 @@ public class UISoundManager : MonoBehaviour
         musicSource.Play();
     }
 
-    public void StopMusic()
+    public void PauseMusic()
     {
         musicSource.Pause();
+    }
+
+    public void UpdateMusicVolume()
+    {
+        musicSource.volume = StaticData.musicVolume * StaticData.masterVolume;
+    }
+
+    public void UpdateEffectsVolume()
+    {
+        soundEffectsSource.volume = StaticData.effectsVolume * StaticData.masterVolume;
+    }
+
+    public void UpdateMasterVolume()
+    {
+        UpdateMusicVolume();
+        UpdateEffectsVolume();
     }
 }

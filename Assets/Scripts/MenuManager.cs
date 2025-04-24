@@ -124,7 +124,7 @@ public class MenuManager : MonoBehaviour
     {
         AllInactive();
 
-        uiSoundManager.StopMusic();
+        uiSoundManager.PauseMusic();
         
         if (video == "intro")
         {
@@ -171,20 +171,20 @@ public class MenuManager : MonoBehaviour
         pnlPostGame.SetActive(false);
     }
 
-    IEnumerator PauseAfterPlay(VideoPlayer vp)
-    {
-        yield return new WaitForSeconds(2);
+    // IEnumerator PauseAfterPlay(VideoPlayer vp)
+    // {
+    //     yield return new WaitForSeconds(2);
 
-        if (vp == vpIntro)
-        {
-            vpIntro.enabled = false;
-            ToLevel("Level 1");
-        }
+    //     if (vp == vpIntro)
+    //     {
+    //         vpIntro.enabled = false;
+    //         ToLevel("Level 1");
+    //     }
 
-        else if (vp == vpOutro)
-        {
-            vpOutro.enabled = false;
-            ToCredits();
-        }
-    }
+    //     else if (vp == vpOutro)
+    //     {
+    //         vpOutro.enabled = false;
+    //         ToCredits();
+    //     }
+    // }
 }

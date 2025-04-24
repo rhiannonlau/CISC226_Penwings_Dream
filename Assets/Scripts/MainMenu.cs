@@ -17,7 +17,7 @@ public class MainMenu : MonoBehaviour
     private GameObject startCloche, levelsCloche, tutorialCloche, creditsCloche, optionsCloche, quitCloche;
 
     // true when the controls panel is showing
-    private bool showingControls;
+    private bool showingOptions;
 
     // controlling the quit confirmation pop up
     private GameObject quitPopUp;
@@ -27,8 +27,12 @@ public class MainMenu : MonoBehaviour
 
     public UISoundManager uiSoundManager;
 
+    private EventSystem eventSystem;
+
     void Awake() 
     {
+        eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();
+
         // get the references to the buttons
         btnStart = transform.GetChild(1).gameObject;
         btnLevels = transform.GetChild(2).gameObject;
@@ -65,7 +69,7 @@ public class MainMenu : MonoBehaviour
         AllSelectionsFalse();
 
         // make sure other pop ups are hidden
-        showingControls = false;
+        showingOptions = false;
         showingQuitConf = false;
 
         // start with the last option that was selected
@@ -74,21 +78,34 @@ public class MainMenu : MonoBehaviour
 
     public void Update()
     {
-        // get the current selection
-        selected = EventSystem.current.currentSelectedGameObject;
+        if (SceneManager.sceneCount == 1 && !eventSystem.enabled)
+        {
+            eventSystem.enabled = true;
+            showingOptions = false;
+        }
+
+        if (SceneManager.sceneCount == 1)
+        {
+            showingOptions = false;
+            showingQuitConf = false;
+        }
 
         // to catch edge cases where mouse deselects all options
         // reset the selected option to be the last known selection
-        if (!selected)
+        if (!selected && (lastSelected == btnStart || lastSelected == btnLevels || lastSelected == btnTutorial || lastSelected == btnOptions || lastSelected == btnCredits || lastSelected == btnQuit))
         {
-            EventSystem.current.SetSelectedGameObject(lastSelected);
+            eventSystem.SetSelectedGameObject(lastSelected);
         }
 
         // if selected is not = to a button in this panel and lastSelected is null, reset to btnStart
-        else if (!(selected == btnStart || selected == btnLevels || selected == btnOptions || selected == btnCredits || selected == btnQuit) && !lastSelected)
+        else if (!(selected == btnStart || selected == btnLevels || selected == btnTutorial || selected == btnOptions || selected == btnCredits || selected == btnQuit) && !showingOptions)
         {
-            EventSystem.current.SetSelectedGameObject(btnStart);
+            eventSystem.SetSelectedGameObject(btnStart);
+            lastSelected = btnStart;
         }
+
+        // get the current selection
+        selected = eventSystem.currentSelectedGameObject;
 
         quitPopUp.SetActive(showingQuitConf);
 
@@ -135,7 +152,7 @@ public class MainMenu : MonoBehaviour
         }
 
         // if the quit confirmation is showing
-        if (showingQuitConf && !showingControls)
+        if (showingQuitConf && !showingOptions)
         {
             if (selected != btnYesQuit && selected != btnNoQuit)
             {
@@ -176,7 +193,7 @@ public class MainMenu : MonoBehaviour
             }
         }
 
-        if (!showingQuitConf && !showingControls)
+        if (!showingQuitConf && !showingOptions)
         {
             if (Input.GetKeyDown(KeyCode.X))
             {
@@ -187,19 +204,21 @@ public class MainMenu : MonoBehaviour
                     StartGame();
                 }
 
-                else if(selected == btnLevels)
+                else if (selected == btnLevels)
                 {
                     Levels();
                 }
 
-                else if(selected == btnTutorial)
+                else if (selected == btnTutorial)
                 {
                     canvas.GetComponent<MenuManager>().ToLevel("Tutorial");
                 }
 
-                else if(selected == btnOptions)
+                else if (selected == btnOptions)
                 {
-                    ShowControls();
+                    SceneManager.LoadScene("Options", LoadSceneMode.Additive);
+                    showingOptions = true;
+                    eventSystem.enabled = false;
                 }
 
                 else if (selected == btnCredits)
@@ -221,11 +240,11 @@ public class MainMenu : MonoBehaviour
             }
         }
 
-        if (showingControls && Input.GetKeyDown(KeyCode.Z))
-        {
-            uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
-            HideControls();
-        }
+        // if (showingControls && Input.GetKeyDown(KeyCode.Z))
+        // {
+        //     uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
+        //     HideControls();
+        // }
 
         lastSelected = selected;
     }
@@ -242,23 +261,23 @@ public class MainMenu : MonoBehaviour
         canvas.GetComponent<MenuManager>().ToLevels();
     }
 
-    private void ShowControls()
-    {
-        SceneManager.LoadScene("Controls", LoadSceneMode.Additive);
-        showingControls = true;
-    }
+    // private void ShowControls()
+    // {
+    //     SceneManager.LoadScene("Controls", LoadSceneMode.Additive);
+    //     showingControls = true;
+    // }
 
-    private void HideControls()
-    {
-        int n = SceneManager.sceneCount;
+    // private void HideControls()
+    // {
+    //     int n = SceneManager.sceneCount;
 
-        if (n > 1)
-        {
-            SceneManager.UnloadSceneAsync("Controls");
-        }
+    //     if (n > 1)
+    //     {
+    //         SceneManager.UnloadSceneAsync("Controls");
+    //     }
 
-        showingControls = false;
-    }
+    //     showingControls = false;
+    // }
 
     // user presses credits
     private void Credits()
@@ -272,7 +291,7 @@ public class MainMenu : MonoBehaviour
     private void ConfirmQuit()
     {
         showingQuitConf = true;
-        EventSystem.current.SetSelectedGameObject(btnNoQuit);
+        eventSystem.SetSelectedGameObject(btnNoQuit);
     }
 
     private void QuitGame()
@@ -283,7 +302,7 @@ public class MainMenu : MonoBehaviour
     private void Back()
     {
         showingQuitConf = false;
-        EventSystem.current.SetSelectedGameObject(btnStart);
+        eventSystem.SetSelectedGameObject(btnStart);
     }
 
     // helper function to turn off all cloches

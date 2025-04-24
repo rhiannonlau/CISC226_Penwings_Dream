@@ -18,11 +18,13 @@ public class SoundManager : MonoBehaviour
     public AudioClip moneySound;
 
     public AudioClip menuSelect;
+    public AudioClip menuMusic;
 
     // Start is called before the first frame update
     void Start()
     {
         musicSource.clip = inGameMusic;
+        UpdateMasterVolume();
         musicSource.Play();
     }
 
@@ -31,13 +33,34 @@ public class SoundManager : MonoBehaviour
         soundEffectsSource.PlayOneShot(soundEffect); 
     }
 
-    public void StopMusic()
+    public void PauseMusic()
     {
         musicSource.Pause();
+    }
+
+    public void PlayMenuMusic()
+    {
+        musicSource.Play();
     }
 
     public void PlayMusic()
     {
         musicSource.Play();
+    }
+
+    public void UpdateMusicVolume()
+    {
+        musicSource.volume = StaticData.musicVolume * StaticData.masterVolume;
+    }
+
+    public void UpdateEffectsVolume()
+    {
+        soundEffectsSource.volume = StaticData.effectsVolume * StaticData.masterVolume;
+    }
+
+    public void UpdateMasterVolume()
+    {
+        UpdateMusicVolume();
+        UpdateEffectsVolume();
     }
 }
