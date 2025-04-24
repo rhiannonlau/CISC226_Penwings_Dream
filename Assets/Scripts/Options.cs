@@ -33,6 +33,7 @@ public class Options : MonoBehaviour
     // controls panel vars
     private GameObject btnMoveLeft, btnMoveRight, btnJump, btnInteract, btnDuck, btnEleUp, btnEleDown, btnPause, btnReset;
     private TMP_Text txtCurrentControl, txtLastControl;
+    private TMP_Text txtSelectedControl;
     private GameObject btnCurrentControl;
     private bool growing;
     private float fontSize;
@@ -92,13 +93,20 @@ public class Options : MonoBehaviour
         txtMusicVol = pnlSound.transform.GetChild(2).GetChild(2).GetComponent<TMP_Text>();
         txtEffectsVol = pnlSound.transform.GetChild(3).GetChild(2).GetComponent<TMP_Text>();
 
-        sldMasterVol.GetComponent<Slider>().value = StaticData.masterVolume * 100;
-        sldMusicVol.GetComponent<Slider>().value = StaticData.musicVolume * 100;
-        sldEffectsVol.GetComponent<Slider>().value = StaticData.effectsVolume * 100;
+        float masterVol = PlayerPrefs.GetFloat("MasterVolume", StaticData.defMasterVol) * 100;
+        float musicVol = PlayerPrefs.GetFloat("MusicVolume", StaticData.defMusicVol) * 100;
+        float effectsVol = PlayerPrefs.GetFloat("EffectsVolume", StaticData.defEffectsVol) * 100;
 
-        txtMasterVol.text = (StaticData.masterVolume  * 100).ToString();
-        txtMusicVol.text = (StaticData.musicVolume  * 100).ToString();
-        txtEffectsVol.text = (StaticData.effectsVolume  * 100).ToString();
+        // sldMasterVol.GetComponent<Slider>().value = StaticData.masterVolume * 100;
+        // sldMusicVol.GetComponent<Slider>().value = StaticData.musicVolume * 100;
+        // sldEffectsVol.GetComponent<Slider>().value = StaticData.effectsVolume * 100;
+        sldMasterVol.GetComponent<Slider>().value = masterVol;
+        sldMusicVol.GetComponent<Slider>().value = musicVol;
+        sldEffectsVol.GetComponent<Slider>().value = effectsVol;
+
+        txtMasterVol.text = masterVol.ToString();
+        txtMusicVol.text = musicVol.ToString();
+        txtEffectsVol.text = effectsVol.ToString();
 
         btnMoveLeft = pnlControls.transform.GetChild(1).GetChild(2).gameObject;
         btnMoveRight = pnlControls.transform.GetChild(2).GetChild(2).gameObject;
@@ -255,19 +263,22 @@ public class Options : MonoBehaviour
             // update the static variables and actual volume in real time
             if (activeSlider == sldMasterVol)
             {
-                StaticData.masterVolume = sldMasterVol.GetComponent<Slider>().value / 100;
+                // StaticData.masterVolume = sldMasterVol.GetComponent<Slider>().value / 100;
+                PlayerPrefs.SetFloat("MasterVolume", sldMasterVol.GetComponent<Slider>().value / 100);
                 uiSoundManager.UpdateMasterVolume();
             }
 
             else if (activeSlider == sldMusicVol)
             {
-                StaticData.musicVolume = sldMusicVol.GetComponent<Slider>().value / 100;
+                // StaticData.musicVolume = sldMusicVol.GetComponent<Slider>().value / 100;
+                PlayerPrefs.SetFloat("MusicVolume", sldMusicVol.GetComponent<Slider>().value / 100);
                 uiSoundManager.UpdateMusicVolume();
             }
 
             else if (activeSlider == sldEffectsVol)
             {
-                StaticData.effectsVolume = sldEffectsVol.GetComponent<Slider>().value / 100;
+                // StaticData.effectsVolume = sldEffectsVol.GetComponent<Slider>().value / 100;
+                PlayerPrefs.SetFloat("EffectsVolume", sldEffectsVol.GetComponent<Slider>().value / 100);
                 uiSoundManager.UpdateEffectsVolume();
             }
 
@@ -300,67 +311,63 @@ public class Options : MonoBehaviour
             AllTooltipsFalse();
             pnlControlsTooltip.SetActive(true);
 
-            // if selected is not = to a button in this panel and lastSelected is null, reset to btnStart
-            // if (!selected && (lastSelected == btnMoveLeft || lastSelected == btnMoveRight || lastSelected == btnJump || lastSelected == btnInteract || lastSelected == btnDuck || lastSelected == btnEleUp || lastSelected == btnEleDown || lastSelected == btnPause || lastSelected == btnReset))
-            // {
-            //     EventSystem.current.SetSelectedGameObject(btnMoveLeft);
-            //     lastSelected = btnMoveLeft;
-            //     txtLastControl = btnMoveLeft.transform.GetChild(0).GetComponent<TMP_Text>();
-            // }
+            // if selected is not = to a button in this panel and lastSelected is not null, reset to btnStart
+            if (!selected && (lastSelected == btnMoveLeft || lastSelected == btnMoveRight || lastSelected == btnJump || lastSelected == btnInteract || lastSelected == btnDuck || lastSelected == btnEleUp || lastSelected == btnEleDown || lastSelected == btnPause || lastSelected == btnReset))
+            {
+                EventSystem.current.SetSelectedGameObject(lastSelected);
+            }
 
-            // else if (!(selected == btnMoveLeft || selected == btnMoveRight || selected == btnJump || selected == btnInteract || selected == btnDuck || selected == btnEleUp || selected == btnEleDown || selected == btnPause || selected == btnReset) && !lastSelected)
-            // {
-            //     EventSystem.current.SetSelectedGameObject(btnMoveLeft);
-            //     lastSelected = btnMoveLeft;
-            //     txtLastControl = btnMoveLeft.transform.GetChild(0).GetComponent<TMP_Text>();
-            // }
+            else if (!(selected == btnMoveLeft || selected == btnMoveRight || selected == btnJump || selected == btnInteract || selected == btnDuck || selected == btnEleUp || selected == btnEleDown || selected == btnPause || selected == btnReset))
+            {
+                EventSystem.current.SetSelectedGameObject(btnMoveLeft);
+                lastSelected = btnMoveLeft;
+                // txtLastControl = btnMoveLeft.transform.GetChild(0).GetComponent<TMP_Text>();
+            }
 
             // Debug.Log(selected);
 
-            // depending on which option is currently being hovered, show the cloche
-            // if (selected == btnSound)
-            // {
-            //     AllOptionsFalse();
-            //     soundCloche.SetActive(true);
-            // }
+            // depending on which option is currently being hovered, increase the font size
+            if (selected != btnControls && selected != btnSound)
+            {
+                txtSelectedControl = selected.transform.GetChild(0).GetComponent<TMP_Text>();
+                txtSelectedControl.fontSize = 60;
+            }
 
-            // else if(selected == btnControls)
-            // {
-            //     AllOptionsFalse();
-            //     controlsCloche.SetActive(true);
-            // }
+            if (lastSelected != selected && lastSelected != btnControls && lastSelected != btnSound)
+            {
+                TMP_Text txtLastSelectedControl = lastSelected.transform.GetChild(0).GetComponent<TMP_Text>();
+                txtLastSelectedControl.fontSize = 50;
+                
+                if (txtLastSelectedControl.text == "")
+                {
+                    // reset to what it was saved as before
+                    // PlayerPrefs.GetString("CustomKey");
+                    txtLastSelectedControl.text = "X";
 
-            // else if(selected == btnReturn)
-            // {
-            //     AllOptionsFalse();
-            //     returnCloche.SetActive(true);
-            // }
+                    AllTooltipsFalse();
+                    pnlControlsTooltip.SetActive(true);
+                }
+            }
 
-            // else
-            // {
-            //     AllOptionsFalse();
-            // }
+            // the user has selected a key to change
+            if (Input.GetKeyDown(KeyCode.X) && txtSelectedControl)
+            {
+                AllTooltipsFalse();
+                pnlChangingControlsTooltip.SetActive(true);
 
-            // if (Input.GetKeyDown(KeyCode.X))
-            // {
-            //     if (selected == btnSound)
-            //     {
-            //         AllOptionsFalse();
-            //         soundCloche.SetActive(true);
-            //     }
+                txtSelectedControl.text = ""; // make the key text blank
 
-            //     else if(selected == btnControls)
-            //     {
-            //         AllOptionsFalse();
-            //         controlsCloche.SetActive(true);
-            //     }
-
-            //     else if(selected == btnReturn)
-            //     {
-            //         AllOptionsFalse();
-            //         returnCloche.SetActive(true);
-            //     }
-            // }
+                // foreach (KeyCode keycode in Enum.GetValues(typeof(KeyCode)))
+                // {
+                //     if (Input.GetKey(keycode))
+                //     {
+                //         string key = keycode.ToString();
+                //         txtSelectedControl.text = key; // show the value that they've just inputted
+                //         // PlayerPrefs.SetString("CustomKey", keycode.ToString());
+                //         // PlayerPrefs.Save();
+                //     }
+                // }
+            }
 
             // selected = EventSystem.current.currentSelectedGameObject;
             // txtCurrentControl = selected.transform.GetChild(0).GetComponent<TMP_Text>();
@@ -398,17 +405,9 @@ public class Options : MonoBehaviour
 
             // txtCurrentControl.fontSize = fontSize;
 
-            // foreach (KeyCode keycode in Enum.GetValues(typeof(KeyCode)))
-            // {
-            //     if (Input.GetKey(keycode))
-            //     {
-            //         string key = keycode.ToString();
-            //         if (key == "Enter")
-            //         txtCurrentControl.text = key;
-            //     }
-            // }
-
             // txtLastControl = txtCurrentControl;
+
+            lastSelected = selected;
         }
 
         if (onPnlSound || onPnlControls)
@@ -418,9 +417,11 @@ public class Options : MonoBehaviour
                 onPnlSound = false;
                 onPnlControls = false;
                 AllPanelsFalse();
+
+                // by default, playerprefs only saves to disk on game quit
+                PlayerPrefs.Save(); // save all modifications to disk instantly
             }
         }
-        
 
         // next: need if statements around most of the update to check
         // which panel we are currently on so that we can do two things:

@@ -5,16 +5,22 @@ using UnityEngine.Scripting.APIUpdating;
 
 public class StaticData : MonoBehaviour
 {
-    // KEY BINDINGS INFORMATION /////////////////////////////////////
-    // public static KeyCode moveLeft, moveRight;
+    // DEFAULT KEY BINDINGS INFORMATION ////////////////////////////////////
+    public static KeyCode defMoveLeft = KeyCode.LeftArrow,
+                            defMoveRight = KeyCode.RightArrow,
+                            defJump = KeyCode.X,
+                            defInteract = KeyCode.Z,
+                            defDuck = KeyCode.DownArrow,
+                            defEleUp = KeyCode.UpArrow,
+                            defEleDown = KeyCode.DownArrow,
+                            defPause = KeyCode.Escape;
 
 
-
-    // SOUND INFORMATION /////////////////////////////////////////
+    // DEFAULT SOUND INFORMATION ///////////////////////////////////////////
     public static float masterVolume = 0.7f, musicVolume = 0.5f, effectsVolume = 0.7f;
-
+    public static float defMasterVol = 0.7f, defMusicVol = 0.5f, defEffectsVol = 0.7f;
     
-    // GAME INFORMATION /////////////////////////////////////
+    // GAME INFORMATION ////////////////////////////////////////////////////
     public static bool tutorialCompleted = false;
 
     // dictionaries for storing high scores
