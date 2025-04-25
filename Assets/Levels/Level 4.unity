@@ -641,11 +641,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5504167625236750280, guid: 198a8d8903e474ac69cf8f0bc26dda83, type: 3}
       propertyPath: leftboundX
-      value: -6.5
+      value: -6
       objectReference: {fileID: 0}
     - target: {fileID: 5504167625236750280, guid: 198a8d8903e474ac69cf8f0bc26dda83, type: 3}
       propertyPath: rightboundX
-      value: -3.75
+      value: -4.25
       objectReference: {fileID: 0}
     - target: {fileID: 5504167625236750280, guid: 198a8d8903e474ac69cf8f0bc26dda83, type: 3}
       propertyPath: tableInteractions
@@ -864,7 +864,7 @@ Transform:
   m_GameObject: {fileID: 154961169}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.9652, y: 1.3119, z: 0}
+  m_LocalPosition: {x: 2.75, y: 1.29, z: 0}
   m_LocalScale: {x: 0.3137299, y: 0.30585375, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1391,6 +1391,7 @@ MonoBehaviour:
   endOfDaySound: {fileID: 8300000, guid: c88f543e477e647d1b5105b3a98d48f2, type: 3}
   moneySound: {fileID: 8300000, guid: d8f86a8bc00f04b55ba3c79d1de17c6d, type: 3}
   menuSelect: {fileID: 8300000, guid: de470d386a30f4c1091b8c1522ad21da, type: 3}
+  menuMusic: {fileID: 0}
 --- !u!1 &333386134
 GameObject:
   m_ObjectHideFlags: 0
@@ -1807,7 +1808,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 883601414483886844, guid: 198a8d8903e474ac69cf8f0bc26dda83, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.9522
+      value: -0.94
       objectReference: {fileID: 0}
     - target: {fileID: 883601414483886844, guid: 198a8d8903e474ac69cf8f0bc26dda83, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1887,11 +1888,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5504167625236750280, guid: 198a8d8903e474ac69cf8f0bc26dda83, type: 3}
       propertyPath: leftboundX
-      value: -6.5
+      value: -6
       objectReference: {fileID: 0}
     - target: {fileID: 5504167625236750280, guid: 198a8d8903e474ac69cf8f0bc26dda83, type: 3}
       propertyPath: rightboundX
-      value: -3.75
+      value: -4.25
       objectReference: {fileID: 0}
     - target: {fileID: 5504167625236750280, guid: 198a8d8903e474ac69cf8f0bc26dda83, type: 3}
       propertyPath: tableInteractions
@@ -2925,6 +2926,7 @@ MonoBehaviour:
   timeOfDay: 0
   dailyGoal: 85
   soundManager: {fileID: 0}
+  audioListener: {fileID: 0}
   time: {fileID: 1084195907}
   goal: {fileID: 362334843}
   money: {fileID: 1124756613}
@@ -4579,11 +4581,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5504167625236750280, guid: 198a8d8903e474ac69cf8f0bc26dda83, type: 3}
       propertyPath: leftboundX
-      value: -6.5
+      value: -6
       objectReference: {fileID: 0}
     - target: {fileID: 5504167625236750280, guid: 198a8d8903e474ac69cf8f0bc26dda83, type: 3}
       propertyPath: rightboundX
-      value: -3.75
+      value: -4.25
       objectReference: {fileID: 0}
     - target: {fileID: 5504167625236750280, guid: 198a8d8903e474ac69cf8f0bc26dda83, type: 3}
       propertyPath: tableInteractions
@@ -8166,7 +8168,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 883601414483886844, guid: 198a8d8903e474ac69cf8f0bc26dda83, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.8155
+      value: -2.78
       objectReference: {fileID: 0}
     - target: {fileID: 883601414483886844, guid: 198a8d8903e474ac69cf8f0bc26dda83, type: 3}
       propertyPath: m_LocalPosition.z
@@ -8262,11 +8264,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5504167625236750280, guid: 198a8d8903e474ac69cf8f0bc26dda83, type: 3}
       propertyPath: leftboundX
-      value: -6.5
+      value: -6
       objectReference: {fileID: 0}
     - target: {fileID: 5504167625236750280, guid: 198a8d8903e474ac69cf8f0bc26dda83, type: 3}
       propertyPath: rightboundX
-      value: -3.75
+      value: -4.25
       objectReference: {fileID: 0}
     - target: {fileID: 5504167625236750280, guid: 198a8d8903e474ac69cf8f0bc26dda83, type: 3}
       propertyPath: tableInteractions
@@ -10642,7 +10644,7 @@ Transform:
   m_GameObject: {fileID: 2103513752}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.6538, y: 2.0103, z: 0}
+  m_LocalPosition: {x: -0.86, y: 2.04, z: 0}
   m_LocalScale: {x: -0.27382275, y: 0.49728182, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -99,6 +99,7 @@ public class NPCWandering : MonoBehaviour
         wander = false;
         // Stop any movement logic
         GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        GetComponent<Rigidbody2D>().drag = 20f;
     }
 
     public void StartWandering()
