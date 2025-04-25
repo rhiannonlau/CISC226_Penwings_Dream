@@ -180,12 +180,12 @@ public class PlayerMovement : MonoBehaviour
             // elevatorPosition = new Vector2(body.position.x, elevatorPosition.y);
             // body.position = Vector2.MoveTowards(body.position, elevatorPosition, Time.deltaTime * 2);
 
-            if (Input.GetKeyDown(KeyCode.UpArrow))
+            if (Input.GetKeyDown(GetKeyCode("KeyEleUp")))
             {
                 elevator.SendMessage("Up");
             }
 
-            if (Input.GetKeyDown(KeyCode.DownArrow))
+            if (Input.GetKeyDown(GetKeyCode("KeyEleDown")))
             {
                 elevator.SendMessage("Down");
             }
@@ -208,25 +208,25 @@ public class PlayerMovement : MonoBehaviour
 
         // game logic /////////////////////////////////
         // x to jump
-        if (Input.GetKeyDown(KeyCode.X) && (grounded || onElevator) && !swinging) // key down prevents them from holding down the button and floating
+        if (Input.GetKeyDown(GetKeyCode("KeyJump")) && (grounded || onElevator) && !swinging) // key down prevents them from holding down the button and floating
         {
             Jump();
         }
 
         // sliding
-        if (Input.GetKeyDown(KeyCode.DownArrow) && IsGrounded())
+        if (Input.GetKeyDown(GetKeyCode("KeyDuck")) && IsGrounded())
         {
             Slide();
         }
 
-        if (Input.GetKeyUp(KeyCode.DownArrow) || !IsGrounded())
+        if (Input.GetKeyUp(GetKeyCode("KeyDuck")) || !IsGrounded())
         {
             EndSlide();
         }
 
         // drop food if the player is holding any
         // eliminates error cases where the boxcast can't find the food for any reason
-        if (holdingFood && (IsGrounded() || IsOnElevator()) && Input.GetKeyDown(KeyCode.Z))
+        if (holdingFood && (IsGrounded() || IsOnElevator()) && Input.GetKeyDown(GetKeyCode("KeyInteract")))
         {
             Invoke(nameof(DropFood), 0f);
         }
@@ -238,7 +238,7 @@ public class PlayerMovement : MonoBehaviour
             GameObject obj = hitObject();
             int layer = obj.layer;
 
-            if (Input.GetKeyDown(KeyCode.Z))
+            if (Input.GetKeyDown(GetKeyCode("KeyInteract")))
             {
                 if ((IsGrounded() || IsOnElevator()) && layer == foodLayer)
                 {
@@ -305,7 +305,7 @@ public class PlayerMovement : MonoBehaviour
         if (swinging)
         {
             // release z to unswing
-            if (Input.GetKeyUp(KeyCode.Z) || IsGrounded())
+            if (Input.GetKeyUp(GetKeyCode("KeyInteract")) || IsGrounded())
             {            
                 // store the angular velocity before stopping to use for propulsion
                 float currentAngularVelocity = body.angularVelocity;
@@ -351,16 +351,6 @@ public class PlayerMovement : MonoBehaviour
         {
             Reset();
         }
-
-        // if (hitObject())
-        // {
-        //     Debug.Log(hitObject().name);
-        // }
-
-        // else
-        // {
-        //     Debug.Log("null");
-        // }
 
         // update the information from this frame
         wasGroundedLastUpdate = grounded;
@@ -897,5 +887,12 @@ public class PlayerMovement : MonoBehaviour
         
         foodObject = null;
         holdingFood = false;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    // KEY REMAPPING METHODS ///////////////////////////////////////////////////////////////////////////////////
+    private KeyCode GetKeyCode(string key)
+    {
+        return (KeyCode)Enum.Parse( typeof(KeyCode), PlayerPrefs.GetString(key));
     }
 }

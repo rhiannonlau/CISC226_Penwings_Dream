@@ -37,6 +37,9 @@ public class Options : MonoBehaviour
     private TMP_Text txtCurrentControl, txtLastControl;
     private GameObject resetControlsCloche;
     private TMP_Text txtSelectedControl;
+    private GameObject pnlNewControlPopUp;
+    private TMP_Text txtNewControl;
+    private bool showingPopUp;
     private string playerPrefsKey;
     private GameObject btnCurrentControl;
     private bool growing;
@@ -111,22 +114,26 @@ public class Options : MonoBehaviour
         // get references to control panel objects
         btnMoveLeft = pnlControls.transform.GetChild(1).GetChild(2).gameObject;
         btnMoveRight = pnlControls.transform.GetChild(2).GetChild(2).gameObject;
-        btnJump = pnlControls.transform.GetChild(3).GetChild(2).gameObject;
-        btnInteract = pnlControls.transform.GetChild(4).GetChild(2).gameObject;
-        btnDuck = pnlControls.transform.GetChild(5).GetChild(2).gameObject;
-        btnEleUp = pnlControls.transform.GetChild(6).GetChild(2).gameObject;
-        btnEleDown = pnlControls.transform.GetChild(7).GetChild(2).gameObject;
+        btnEleUp = pnlControls.transform.GetChild(3).GetChild(2).gameObject;
+        btnEleDown = pnlControls.transform.GetChild(4).GetChild(2).gameObject;
+        btnJump = pnlControls.transform.GetChild(5).GetChild(2).gameObject;
+        btnInteract = pnlControls.transform.GetChild(6).GetChild(2).gameObject;
+        btnDuck = pnlControls.transform.GetChild(7).GetChild(2).gameObject;
         btnPause = pnlControls.transform.GetChild(8).GetChild(2).gameObject;
         btnResetControls = pnlControls.transform.GetChild(9).gameObject;
 
         txtMoveLeft = btnMoveLeft.transform.GetChild(0).GetComponent<TMP_Text>();
         txtMoveRight = btnMoveRight.transform.GetChild(0).GetComponent<TMP_Text>();
+        txtEleUp = btnEleUp.transform.GetChild(0).GetComponent<TMP_Text>();
+        txtEleDown = btnEleDown.transform.GetChild(0).GetComponent<TMP_Text>();
         txtJump = btnJump.transform.GetChild(0).GetComponent<TMP_Text>();
         txtInteract = btnInteract.transform.GetChild(0).GetComponent<TMP_Text>();
         txtDuck = btnDuck.transform.GetChild(0).GetComponent<TMP_Text>();
-        txtEleUp = btnEleUp.transform.GetChild(0).GetComponent<TMP_Text>();
-        txtEleDown = btnEleDown.transform.GetChild(0).GetComponent<TMP_Text>();
         txtPause = btnPause.transform.GetChild(0).GetComponent<TMP_Text>();
+
+        pnlNewControlPopUp = pnlControls.transform.GetChild(10).gameObject;
+        txtNewControl = pnlNewControlPopUp.transform.GetChild(1).GetComponent<TMP_Text>();
+        showingPopUp = false;
 
         // get the current control settings from playerprefs with default from staticdata
         UpdateControlsDisplay();
@@ -413,50 +420,64 @@ public class Options : MonoBehaviour
             }
 
             // depending on which option is currently being hovered, increase the font size
-            if (selected != btnControls && selected != btnSound)
+            if (selected != btnControls && selected != btnSound && selected != btnReturn && selected != btnResetControls)
             {
                 txtSelectedControl = selected.transform.GetChild(0).GetComponent<TMP_Text>();
-                txtSelectedControl.fontSize = 60;
+                txtSelectedControl.fontSize = 50;
             }
 
-            if (lastSelected != selected && lastSelected != btnControls && lastSelected != btnSound)
+            if (lastSelected != selected && lastSelected != btnControls && lastSelected != btnSound && lastSelected != btnReturn && lastSelected != btnResetControls)
             {
                 TMP_Text txtLastSelectedControl = lastSelected.transform.GetChild(0).GetComponent<TMP_Text>();
-                txtLastSelectedControl.fontSize = 50;
+                txtLastSelectedControl.fontSize = 45;
                 
-                if (txtLastSelectedControl.text == "")
-                {
-                    // reset to what it was saved as before
-                    txtLastSelectedControl.text = PlayerPrefs.GetString(playerPrefsKey);
+                // if (txtLastSelectedControl.text == "")
+                // {
+                //     // reset to what it was saved as before
+                //     txtLastSelectedControl.text = PlayerPrefs.GetString(playerPrefsKey);
 
-                    AllTooltipsFalse();
-                    pnlControlsTooltip.SetActive(true);
-                }
+                //     AllTooltipsFalse();
+                //     pnlControlsTooltip.SetActive(true);
+                // }
             }
 
-            // the user has selected a key to change
-            if (Input.GetKeyDown(KeyCode.X) && txtSelectedControl && playerPrefsKey != null)
+            pnlNewControlPopUp.SetActive(showingPopUp);
+
+            Debug.Log(showingPopUp);
+
+            // show the key change pop up
+            if (showingPopUp)
             {
-                AllTooltipsFalse();
-                pnlChangingControlsTooltip.SetActive(true);
-
-                txtSelectedControl.text = ""; // make the key text blank
-
                 // bug status: when the user presses x, it registers
                 // and sets the text to "" then instantly on the same loop takes that
                 // x and enters it as the input for the new key
-                foreach (KeyCode keycode in Enum.GetValues(typeof(KeyCode)))
-                {
-                    if (Input.GetKey(keycode))
-                    {
-                        string key = keycode.ToString();
-                        txtSelectedControl.text = key; // show the value that they've just inputted
-                        PlayerPrefs.SetString(playerPrefsKey, keycode.ToString());
-                    }
-                }
+                // foreach (KeyCode keycode in Enum.GetValues(typeof(KeyCode)))
+                // {
+                //     if (Input.GetKey(keycode))
+                //     {
+                //         string key = keycode.ToString();
+                //         txtSelectedControl.text = key; // show the value that they've just inputted
+                //         PlayerPrefs.SetString(playerPrefsKey, keycode.ToString());
+
+                //         showingPopUp = false;
+                //     }
+                // }
             }
 
-            else if (Input.GetKeyDown(KeyCode.X) && selected == btnResetControls)
+            // the user has selected a key to change
+            if (Input.GetKeyDown(KeyCode.X) && txtSelectedControl && playerPrefsKey != null && !showingPopUp)
+            {
+                // AllTooltipsFalse();
+                // pnlChangingControlsTooltip.SetActive(true);
+
+                // txtSelectedControl.text = ""; // make the key text blank
+
+                showingPopUp = true;
+
+                // PlayerPrefs.SetString(playerPrefsKey, KeyCode.Space.ToString());
+            }
+
+            else if (Input.GetKeyDown(KeyCode.X) && selected == btnResetControls && !showingPopUp)
             {
                 PlayerPrefs.SetString("KeyMoveLeft", StaticData.defMoveLeft.ToString());
                 PlayerPrefs.SetString("KeyMoveRight", StaticData.defMoveRight.ToString());
@@ -469,44 +490,6 @@ public class Options : MonoBehaviour
 
                 UpdateControlsDisplay();
             }
-
-            // selected = EventSystem.current.currentSelectedGameObject;
-            // txtCurrentControl = selected.transform.GetChild(0).GetComponent<TMP_Text>();
-
-            // if (!txtLastControl)
-            // {
-            //     txtLastControl = selected.transform.GetChild(0).GetComponent<TMP_Text>();
-            // }
-
-            // if (txtLastControl != txtCurrentControl)
-            // {
-            //     txtLastControl.fontSize = 50;
-            //     growing = true;
-            // }
-
-            // if (growing && fontSize >= 50 && fontSize < 55)
-            // {
-            //     fontSize += 1;
-
-            //     if (fontSize == 55)
-            //     {
-            //         growing = false;
-            //     }
-            // }
-
-            // else if (!growing && fontSize > 51 && fontSize <= 55)
-            // {
-            //     fontSize -= 1;
-
-            //     if (fontSize == 50)
-            //     {
-            //         growing = true;
-            //     }
-            // }
-
-            // txtCurrentControl.fontSize = fontSize;
-
-            // txtLastControl = txtCurrentControl;
 
             lastSelected = selected;
         }
@@ -537,6 +520,22 @@ public class Options : MonoBehaviour
         if (n > 1)
         {
             SceneManager.UnloadSceneAsync("Options");
+        }
+    }
+
+    private void NewControl()
+    {
+        // bug status: when the user presses x, it registers
+        // and sets the text to "" then instantly on the same loop takes that
+        // x and enters it as the input for the new key
+        foreach (KeyCode keycode in Enum.GetValues(typeof(KeyCode)))
+        {
+            if (Input.GetKey(keycode))
+            {
+                string key = keycode.ToString();
+                txtSelectedControl.text = key; // show the value that they've just inputted
+                PlayerPrefs.SetString(playerPrefsKey, keycode.ToString());
+            }
         }
     }
 
