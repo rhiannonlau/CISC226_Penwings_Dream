@@ -157,17 +157,32 @@ public class PostGame : MonoBehaviour
             {
                 if (completedLevel && justPlayed != "Level 5")
                 {
-                    NextLevel();
+                    if (justPlayed != "Tutorial")
+                    {
+                        // get the level's number as a char
+                        char justPlayedNum = justPlayed[6];
+
+                        // convert to int and increment by one
+                        int nextLevelNum = justPlayedNum - '0';
+                        nextLevelNum++;
+
+                        canvas.GetComponent<MenuManager>().ToLevel("Level " + nextLevelNum.ToString());
+                    }
+                    
+                    else
+                    {
+                        canvas.GetComponent<MenuManager>().ToLevel("Level 1");
+                    }
                 }
 
                 else if (completedLevel && justPlayed == "Level 5")
                 {
-                    Next();
+                    canvas.GetComponent<MenuManager>().ToVideo("outro");
                 }
 
                 else
                 {
-                    RetryLevel();
+                    canvas.GetComponent<MenuManager>().ToLevel("Level " + justPlayed[6].ToString());
                 }
             }
 
@@ -184,36 +199,6 @@ public class PostGame : MonoBehaviour
         
 
         lastSelected = selected;
-    }
-
-    void NextLevel()
-    {
-        if (justPlayed != "Tutorial")
-        {
-            // get the level's number as a char
-            char justPlayedNum = justPlayed[6];
-
-            // convert to int and increment by one
-            int nextLevelNum = justPlayedNum - '0';
-            nextLevelNum++;
-
-            canvas.GetComponent<MenuManager>().ToLevel("Level " + nextLevelNum.ToString());
-        }
-        
-        else
-        {
-            canvas.GetComponent<MenuManager>().ToLevel("Level 1");
-        }
-    }
-
-    void Next()
-    {
-        canvas.GetComponent<MenuManager>().ToVideo("outro");
-    }
-
-    void RetryLevel()
-    {
-        canvas.GetComponent<MenuManager>().ToLevel("Level 2");
     }
 
     void MainMenu()

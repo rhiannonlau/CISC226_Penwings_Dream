@@ -24,7 +24,11 @@ public class SoundManager : MonoBehaviour
     void Start()
     {
         musicSource.clip = inGameMusic;
-        UpdateMasterVolume();
+
+        // set the volume settings in player prefs with the defaults from staticdata
+        musicSource.volume = PlayerPrefs.GetFloat("VolumeMusic", StaticData.musicVolume) * PlayerPrefs.GetFloat("VolumeMaster", StaticData.masterVolume);
+        soundEffectsSource.volume = PlayerPrefs.GetFloat("VolumeEffects", StaticData.effectsVolume) * PlayerPrefs.GetFloat("VolumeMaster", StaticData.masterVolume);
+
         musicSource.Play();
     }
 
@@ -46,21 +50,5 @@ public class SoundManager : MonoBehaviour
     public void PlayMusic()
     {
         musicSource.Play();
-    }
-
-    public void UpdateMusicVolume()
-    {
-        musicSource.volume = StaticData.musicVolume * StaticData.masterVolume;
-    }
-
-    public void UpdateEffectsVolume()
-    {
-        soundEffectsSource.volume = StaticData.effectsVolume * StaticData.masterVolume;
-    }
-
-    public void UpdateMasterVolume()
-    {
-        UpdateMusicVolume();
-        UpdateEffectsVolume();
     }
 }
