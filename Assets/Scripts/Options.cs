@@ -39,7 +39,7 @@ public class Options : MonoBehaviour
     private TMP_Text txtSelectedControl;
     private GameObject pnlNewControlPopUp;
     private TMP_Text txtNewControl;
-    private bool showingPopUp;
+    private bool showingPopUp, waitingForKey;
     private string playerPrefsKey;
     private GameObject btnCurrentControl;
     private bool growing;
@@ -131,7 +131,7 @@ public class Options : MonoBehaviour
         txtDuck = btnDuck.transform.GetChild(0).GetComponent<TMP_Text>();
         txtPause = btnPause.transform.GetChild(0).GetComponent<TMP_Text>();
 
-        pnlNewControlPopUp = pnlControls.transform.GetChild(10).gameObject;
+        pnlNewControlPopUp = pnlControls.transform.GetChild(11).gameObject;
         txtNewControl = pnlNewControlPopUp.transform.GetChild(1).GetComponent<TMP_Text>();
         showingPopUp = false;
 
@@ -461,36 +461,62 @@ public class Options : MonoBehaviour
 
             Debug.Log(showingPopUp);
 
-            // show the key change pop up
-            if (showingPopUp)
-            {
-                // bug status: when the user presses x, it registers
-                // and sets the text to "" then instantly on the same loop takes that
-                // x and enters it as the input for the new key
-                // foreach (KeyCode keycode in Enum.GetValues(typeof(KeyCode)))
-                // {
-                //     if (Input.GetKey(keycode))
-                //     {
-                //         string key = keycode.ToString();
-                //         txtSelectedControl.text = key; // show the value that they've just inputted
-                //         PlayerPrefs.SetString(playerPrefsKey, keycode.ToString());
+            // // show the key change pop up
+            // if (showingPopUp)
+            // {
+            //     // bug status: when the user presses x, it registers
+            //     // and sets the text to "" then instantly on the same loop takes that
+            //     // x and enters it as the input for the new key
+            //     foreach (KeyCode keycode in Enum.GetValues(typeof(KeyCode)))
+            //     {
+            //         if (Input.GetKey(keycode))
+            //         {
+            //             string key = keycode.ToString();
+            //             txtSelectedControl.text = key; // show the value that they've just inputted
+            //             PlayerPrefs.SetString(playerPrefsKey, keycode.ToString());
 
-                //         showingPopUp = false;
-                //     }
-                // }
-            }
+            //             showingPopUp = false;
+            //             break;
+            //         }
+            //     }
+            // }
 
-            // the user has selected a key to change
+            // else
+            // {
+            //     // the user has selected a key to change
+            //     if (Input.GetKeyDown(KeyCode.X) && txtSelectedControl && playerPrefsKey != null && !showingPopUp)
+            //     {
+            //         // AllTooltipsFalse();
+            //         // pnlChangingControlsTooltip.SetActive(true);
+
+            //         // txtSelectedControl.text = ""; // make the key text blank
+
+            //         showingPopUp = true;
+            //         return;
+
+            //         // PlayerPrefs.SetString(playerPrefsKey, KeyCode.Space.ToString());
+            //     }
+
+            //     else if (Input.GetKeyDown(KeyCode.X) && selected == btnResetControls && !showingPopUp)
+            //     {
+            //         PlayerPrefs.SetString("KeyMoveLeft", StaticData.defMoveLeft.ToString());
+            //         PlayerPrefs.SetString("KeyMoveRight", StaticData.defMoveRight.ToString());
+            //         PlayerPrefs.SetString("KeyJump", StaticData.defJump.ToString());
+            //         PlayerPrefs.SetString("KeyInteract", StaticData.defInteract.ToString());
+            //         PlayerPrefs.SetString("KeyDuck", StaticData.defDuck.ToString());
+            //         PlayerPrefs.SetString("KeyElevatorUp", StaticData.defEleUp.ToString());
+            //         PlayerPrefs.SetString("KeyElevatorDown", StaticData.defEleDown.ToString());
+            //         PlayerPrefs.SetString("KeyPause", StaticData.defPause.ToString());
+
+            //         UpdateControlsDisplay();
+            //     }
+            // }
+
+            // user has selected a key to change
             if (Input.GetKeyDown(KeyCode.X) && txtSelectedControl && playerPrefsKey != null && !showingPopUp)
             {
-                // AllTooltipsFalse();
-                // pnlChangingControlsTooltip.SetActive(true);
-
-                // txtSelectedControl.text = ""; // make the key text blank
-
                 showingPopUp = true;
-
-                // PlayerPrefs.SetString(playerPrefsKey, KeyCode.Space.ToString());
+                waitingForKey = false; // reset waiting flag
             }
 
             else if (Input.GetKeyDown(KeyCode.X) && selected == btnResetControls && !showingPopUp)
@@ -505,6 +531,31 @@ public class Options : MonoBehaviour
                 PlayerPrefs.SetString("KeyPause", StaticData.defPause.ToString());
 
                 UpdateControlsDisplay();
+            }
+
+            if (showingPopUp)
+            {
+                if (!waitingForKey)
+                {
+                    // wait until the next frame
+                    waitingForKey = true;
+                    return;
+                }
+
+                // NOW start detecting key input
+                foreach (KeyCode keycode in Enum.GetValues(typeof(KeyCode)))
+                {
+                    if (Input.GetKeyDown(keycode)) // use GetKeyDown to avoid holding a key
+                    {
+                        string key = keycode.ToString();
+                        txtSelectedControl.text = key;
+                        PlayerPrefs.SetString(playerPrefsKey, key);
+
+                        showingPopUp = false;
+                        waitingForKey = false;
+                        break; // stop checking other keys
+                    }
+                }
             }
 
             lastSelected = selected;
