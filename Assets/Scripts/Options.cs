@@ -234,7 +234,7 @@ public class Options : MonoBehaviour
             pnlSoundTooltip.SetActive(true);
 
             // if selected is not = to a button in this panel and lastSelected is null, reset to btnStart
-            if (!(selected == sldMasterVol || selected == sldMusicVol || selected == sldEffectsVol))
+            if (!(selected == sldMasterVol || selected == sldMusicVol || selected == sldEffectsVol || selected == btnResetSound))
             {
                 EventSystem.current.SetSelectedGameObject(sldMasterVol);
             }
@@ -244,25 +244,35 @@ public class Options : MonoBehaviour
             {
                 activeSlider = sldMasterVol;
                 activeSliderText = txtMasterVol;
+
+                // save the master value to playerprefs and update in real time
+                PlayerPrefs.SetFloat("VolumeMaster", sldMasterVol.GetComponent<Slider>().value / 100);
+                uiSoundManager.UpdateMasterVolume();
             }
 
             else if (selected == sldMusicVol)
             {
                 activeSlider = sldMusicVol;
                 activeSliderText = txtMusicVol;
+
+                // save the music value to playerprefs and update in real time
+                PlayerPrefs.SetFloat("VolumeMusic", sldMusicVol.GetComponent<Slider>().value / 100);
+                uiSoundManager.UpdateMusicVolume();
             }
 
             else if (selected == sldEffectsVol)
             {
                 activeSlider = sldEffectsVol;
                 activeSliderText = txtEffectsVol;
-                Debug.Log(selected);
+
+                // save the effects value to playerprefs and update in real time
+                PlayerPrefs.SetFloat("VolumeEffects", sldEffectsVol.GetComponent<Slider>().value / 100);
+                uiSoundManager.UpdateEffectsVolume();
             }
 
             // if hovering the reset button
             else if (selected == btnResetSound)
             {
-                Debug.Log(selected);
                 activeSlider = null;
 
                 // turn on cloche
@@ -276,6 +286,8 @@ public class Options : MonoBehaviour
                     PlayerPrefs.SetFloat("VolumeEffects", StaticData.defEffectsVol);
 
                     UpdateSoundDisplay();
+
+                    uiSoundManager.UpdateMasterVolume();
                 }
             }
 
@@ -307,28 +319,6 @@ public class Options : MonoBehaviour
             {
                 activeSlider.GetComponent<Slider>().value += incrementVal;
                 activeSliderText.text = activeSlider.GetComponent<Slider>().value.ToString();
-            }
-
-            // update the static variables and actual volume in real time
-            if (activeSlider == sldMasterVol)
-            {
-                // save the master value to playerprefs and update in real time
-                PlayerPrefs.SetFloat("VolumeMaster", sldMasterVol.GetComponent<Slider>().value / 100);
-                uiSoundManager.UpdateMasterVolume();
-            }
-
-            else if (activeSlider == sldMusicVol)
-            {
-                // save the music value to playerprefs and update in real time
-                PlayerPrefs.SetFloat("VolumeMusic", sldMusicVol.GetComponent<Slider>().value / 100);
-                uiSoundManager.UpdateMusicVolume();
-            }
-
-            else if (activeSlider == sldEffectsVol)
-            {
-                // save the effects value to playerprefs and update in real time
-                PlayerPrefs.SetFloat("VolumeEffects", sldEffectsVol.GetComponent<Slider>().value / 100);
-                uiSoundManager.UpdateEffectsVolume();
             }
 
             // when the arrow keys are released, stop tracking the time
@@ -446,73 +436,11 @@ public class Options : MonoBehaviour
             {
                 TMP_Text txtLastSelectedControl = lastSelected.transform.GetChild(0).GetComponent<TMP_Text>();
                 txtLastSelectedControl.fontSize = 45;
-                
-                // if (txtLastSelectedControl.text == "")
-                // {
-                //     // reset to what it was saved as before
-                //     txtLastSelectedControl.text = PlayerPrefs.GetString(playerPrefsKey);
-
-                //     AllTooltipsFalse();
-                //     pnlControlsTooltip.SetActive(true);
-                // }
             }
 
             pnlNewControlPopUp.SetActive(showingPopUp);
 
-            Debug.Log(showingPopUp);
-
-            // // show the key change pop up
-            // if (showingPopUp)
-            // {
-            //     // bug status: when the user presses x, it registers
-            //     // and sets the text to "" then instantly on the same loop takes that
-            //     // x and enters it as the input for the new key
-            //     foreach (KeyCode keycode in Enum.GetValues(typeof(KeyCode)))
-            //     {
-            //         if (Input.GetKey(keycode))
-            //         {
-            //             string key = keycode.ToString();
-            //             txtSelectedControl.text = key; // show the value that they've just inputted
-            //             PlayerPrefs.SetString(playerPrefsKey, keycode.ToString());
-
-            //             showingPopUp = false;
-            //             break;
-            //         }
-            //     }
-            // }
-
-            // else
-            // {
-            //     // the user has selected a key to change
-            //     if (Input.GetKeyDown(KeyCode.X) && txtSelectedControl && playerPrefsKey != null && !showingPopUp)
-            //     {
-            //         // AllTooltipsFalse();
-            //         // pnlChangingControlsTooltip.SetActive(true);
-
-            //         // txtSelectedControl.text = ""; // make the key text blank
-
-            //         showingPopUp = true;
-            //         return;
-
-            //         // PlayerPrefs.SetString(playerPrefsKey, KeyCode.Space.ToString());
-            //     }
-
-            //     else if (Input.GetKeyDown(KeyCode.X) && selected == btnResetControls && !showingPopUp)
-            //     {
-            //         PlayerPrefs.SetString("KeyMoveLeft", StaticData.defMoveLeft.ToString());
-            //         PlayerPrefs.SetString("KeyMoveRight", StaticData.defMoveRight.ToString());
-            //         PlayerPrefs.SetString("KeyJump", StaticData.defJump.ToString());
-            //         PlayerPrefs.SetString("KeyInteract", StaticData.defInteract.ToString());
-            //         PlayerPrefs.SetString("KeyDuck", StaticData.defDuck.ToString());
-            //         PlayerPrefs.SetString("KeyElevatorUp", StaticData.defEleUp.ToString());
-            //         PlayerPrefs.SetString("KeyElevatorDown", StaticData.defEleDown.ToString());
-            //         PlayerPrefs.SetString("KeyPause", StaticData.defPause.ToString());
-
-            //         UpdateControlsDisplay();
-            //     }
-            // }
-
-            // user has selected a key to change
+            // the user has selected a key to change
             if (Input.GetKeyDown(KeyCode.X) && txtSelectedControl && playerPrefsKey != null && !showingPopUp)
             {
                 showingPopUp = true;
@@ -533,6 +461,7 @@ public class Options : MonoBehaviour
                 UpdateControlsDisplay();
             }
 
+            // show the key change pop up
             if (showingPopUp)
             {
                 if (!waitingForKey)
@@ -542,13 +471,13 @@ public class Options : MonoBehaviour
                     return;
                 }
 
-                // NOW start detecting key input
+                // on the next frame, start detecting key input
                 foreach (KeyCode keycode in Enum.GetValues(typeof(KeyCode)))
                 {
-                    if (Input.GetKeyDown(keycode)) // use GetKeyDown to avoid holding a key
+                    if (Input.GetKeyDown(keycode))
                     {
                         string key = keycode.ToString();
-                        txtSelectedControl.text = key;
+                        txtSelectedControl.text = key; // show the value that they've just inputted
                         PlayerPrefs.SetString(playerPrefsKey, key);
 
                         showingPopUp = false;
@@ -573,11 +502,6 @@ public class Options : MonoBehaviour
                 PlayerPrefs.Save(); // save all modifications to disk instantly
             }
         }
-
-        // next: need if statements around most of the update to check
-        // which panel we are currently on so that we can do two things:
-        // 1. set the correct tooltip
-        // 2. tell the game how to navigate between selections
     }
 
     private void Return()
@@ -587,22 +511,6 @@ public class Options : MonoBehaviour
         if (n > 1)
         {
             SceneManager.UnloadSceneAsync("Options");
-        }
-    }
-
-    private void NewControl()
-    {
-        // bug status: when the user presses x, it registers
-        // and sets the text to "" then instantly on the same loop takes that
-        // x and enters it as the input for the new key
-        foreach (KeyCode keycode in Enum.GetValues(typeof(KeyCode)))
-        {
-            if (Input.GetKey(keycode))
-            {
-                string key = keycode.ToString();
-                txtSelectedControl.text = key; // show the value that they've just inputted
-                PlayerPrefs.SetString(playerPrefsKey, keycode.ToString());
-            }
         }
     }
 
