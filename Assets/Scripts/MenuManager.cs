@@ -34,6 +34,56 @@ public class MenuManager : MonoBehaviour
         pnlPostGame = tr.GetChild(5).gameObject;
 
         watchingVideo = false;
+
+        // all keybindings are set to default inside of options in first run of the game
+        // make sure all key bindings are set to default if options has not been used/opened
+        string temp = PlayerPrefs.GetString("KeyMoveLeft");
+        if (temp == "")
+        {
+            PlayerPrefs.SetString("KeyMoveLeft", StaticData.defMoveLeft.ToString());
+        }
+
+        temp = PlayerPrefs.GetString("KeyMoveRight");
+        if (temp == "")
+        {
+            PlayerPrefs.SetString("KeyMoveRight", StaticData.defMoveRight.ToString());
+        }
+
+        temp = PlayerPrefs.GetString("KeyJump");
+        if (temp == "")
+        {
+            PlayerPrefs.SetString("KeyJump", StaticData.defJump.ToString());
+        }
+
+        temp = PlayerPrefs.GetString("KeyInteract");
+        if (temp == "")
+        {
+            PlayerPrefs.SetString("KeyInteract", StaticData.defInteract.ToString());
+        }
+
+        temp = PlayerPrefs.GetString("KeyDuck");
+        if (temp == "")
+        {
+            PlayerPrefs.SetString("KeyDuck", StaticData.defDuck.ToString());
+        }
+
+        temp = PlayerPrefs.GetString("KeyElevatorUp");
+        if (temp == "")
+        {
+            PlayerPrefs.SetString("KeyElevatorUp", StaticData.defEleUp.ToString());
+        }
+
+        temp = PlayerPrefs.GetString("KeyElevatorDown");
+        if (temp == "")
+        {
+            PlayerPrefs.SetString("KeyElevatorDown", StaticData.defEleDown.ToString());
+        }
+
+        temp = PlayerPrefs.GetString("KeyPause");
+        if (temp == "")
+        {
+            PlayerPrefs.SetString("KeyPause", StaticData.defPause.ToString());
+        }
     }
 
     void Start()

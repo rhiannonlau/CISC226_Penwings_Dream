@@ -109,17 +109,6 @@ public class PlayerMovement : MonoBehaviour
         // to be able to return to original speed and jumpPower after penalty effects
         originalSpeed = speed;
         originalJumpPower = jumpPower;
-
-        // all keybindings are set to default inside of options in first run of the game
-        // make sure all key bindings are set to default if options has not been used/opened
-        string temp = PlayerPrefs.GetString("KeyMoveLeft", StaticData.defMoveLeft.ToString());
-        temp = PlayerPrefs.GetString("KeyMoveRight", StaticData.defMoveRight.ToString());
-        temp = PlayerPrefs.GetString("KeyJump", StaticData.defJump.ToString());
-        temp = PlayerPrefs.GetString("KeyInteract", StaticData.defInteract.ToString());
-        temp = PlayerPrefs.GetString("KeyDuck", StaticData.defDuck.ToString());
-        temp = PlayerPrefs.GetString("KeyElevatorUp", StaticData.defEleUp.ToString());
-        temp = PlayerPrefs.GetString("KeyElevatorDown", StaticData.defEleDown.ToString());
-        temp = PlayerPrefs.GetString("KeyPause", StaticData.defPause.ToString());
     }
 
     private void Start()
