@@ -180,12 +180,12 @@ public class PlayerMovement : MonoBehaviour
             // elevatorPosition = new Vector2(body.position.x, elevatorPosition.y);
             // body.position = Vector2.MoveTowards(body.position, elevatorPosition, Time.deltaTime * 2);
 
-            if (Input.GetKeyDown(GetKeyCode("KeyEleUp")))
+            if (Input.GetKeyDown(GetKeyCode("KeyElevatorUp")))
             {
                 elevator.SendMessage("Up");
             }
 
-            if (Input.GetKeyDown(GetKeyCode("KeyEleDown")))
+            if (Input.GetKeyDown(GetKeyCode("KeyElevatorDown")))
             {
                 elevator.SendMessage("Down");
             }

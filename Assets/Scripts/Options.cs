@@ -108,19 +108,19 @@ public class Options : MonoBehaviour
         // get the current sound settings from playerprefs with default from staticdata
         UpdateSoundDisplay();
 
-        // btnResetSound = 
-        // resetSoundCloche = 
+        btnResetSound = pnlSound.transform.GetChild(4).gameObject;
+        resetSoundCloche = btnResetSound.transform.GetChild(1).gameObject;
 
         // get references to control panel objects
-        btnMoveLeft = pnlControls.transform.GetChild(1).GetChild(2).gameObject;
-        btnMoveRight = pnlControls.transform.GetChild(2).GetChild(2).gameObject;
-        btnEleUp = pnlControls.transform.GetChild(3).GetChild(2).gameObject;
-        btnEleDown = pnlControls.transform.GetChild(4).GetChild(2).gameObject;
-        btnJump = pnlControls.transform.GetChild(5).GetChild(2).gameObject;
-        btnInteract = pnlControls.transform.GetChild(6).GetChild(2).gameObject;
-        btnDuck = pnlControls.transform.GetChild(7).GetChild(2).gameObject;
-        btnPause = pnlControls.transform.GetChild(8).GetChild(2).gameObject;
-        btnResetControls = pnlControls.transform.GetChild(9).gameObject;
+        btnMoveLeft = pnlControls.transform.GetChild(2).GetChild(2).gameObject;
+        btnMoveRight = pnlControls.transform.GetChild(3).GetChild(2).gameObject;
+        btnEleUp = pnlControls.transform.GetChild(4).GetChild(2).gameObject;
+        btnEleDown = pnlControls.transform.GetChild(5).GetChild(2).gameObject;
+        btnJump = pnlControls.transform.GetChild(6).GetChild(2).gameObject;
+        btnInteract = pnlControls.transform.GetChild(7).GetChild(2).gameObject;
+        btnDuck = pnlControls.transform.GetChild(8).GetChild(2).gameObject;
+        btnPause = pnlControls.transform.GetChild(9).GetChild(2).gameObject;
+        btnResetControls = pnlControls.transform.GetChild(10).gameObject;
 
         txtMoveLeft = btnMoveLeft.transform.GetChild(0).GetComponent<TMP_Text>();
         txtMoveRight = btnMoveRight.transform.GetChild(0).GetComponent<TMP_Text>();
@@ -256,22 +256,38 @@ public class Options : MonoBehaviour
             {
                 activeSlider = sldEffectsVol;
                 activeSliderText = txtEffectsVol;
+                Debug.Log(selected);
             }
 
+            // if hovering the reset button
             else if (selected == btnResetSound)
             {
+                Debug.Log(selected);
                 activeSlider = null;
 
-                PlayerPrefs.SetFloat("VolumeMaster", StaticData.defMasterVol);
-                PlayerPrefs.SetFloat("VolumeMusic", StaticData.defMusicVol);
-                PlayerPrefs.SetFloat("VolumeEffects", StaticData.defEffectsVol);
+                // turn on cloche
+                resetSoundCloche.SetActive(true);
 
-                UpdateSoundDisplay();
+                // if reset button pressed
+                if (Input.GetKeyDown(KeyCode.X))
+                {
+                    PlayerPrefs.SetFloat("VolumeMaster", StaticData.defMasterVol);
+                    PlayerPrefs.SetFloat("VolumeMusic", StaticData.defMusicVol);
+                    PlayerPrefs.SetFloat("VolumeEffects", StaticData.defEffectsVol);
+
+                    UpdateSoundDisplay();
+                }
             }
 
             else
             {
                 activeSlider = null;
+            }
+
+            // turn off the cloche if not hovering the reset button
+            if (selected != btnResetSound)
+            {
+                resetSoundCloche.SetActive(false);
             }
 
             // track the time when the arrow keys were held down
@@ -388,12 +404,12 @@ public class Options : MonoBehaviour
 
             else if (selected == btnEleUp)
             {
-                playerPrefsKey = "KeyEleUp";
+                playerPrefsKey = "KeyElevatorUp";
             }
 
             else if (selected == btnEleDown)
             {
-                playerPrefsKey = "KeyEleDown";
+                playerPrefsKey = "KeyElevatorDown";
             }
 
             else if (selected == btnPause)
