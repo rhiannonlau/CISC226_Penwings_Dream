@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float highestSatisfaction = 0f;
     [SerializeField] private int timeOfDay = 0;
     // [SerializeField] private bool isAM = true;
-    [SerializeField] private float dailyGoal = 70f;
+    [SerializeField] private float dailyGoal = 30f;
 
     public SoundManager soundManager;
     public AudioListener audioListener;
@@ -35,9 +35,17 @@ public class GameManager : MonoBehaviour
 
     private GameObject hotelSign;
 
+    public TMP_Text startingLevel;
+    public TMP_Text startingGoal;
+    public float startingDuration = 5f;
+    private float startingTimer = 0;
+    public bool isStarted = false;
+    [SerializeField] private int dayNum = 0;
+    public GameObject startingCard;
+
     void Awake() 
     {
-        Time.timeScale = 1f;
+        Time.timeScale = 0f;
 
         soundManager = GameObject.FindGameObjectWithTag("Sound").GetComponent<SoundManager>();
         audioListener = GameObject.Find("Main Camera").GetComponent<AudioListener>();
@@ -56,6 +64,10 @@ public class GameManager : MonoBehaviour
         StaticData.goal = dailyGoal;
         StaticData.justPlayed = sceneName;
         StaticData.currentLevel = sceneName;
+
+        Time.timeScale = 0f;
+        DisplayDay();
+        startingGoal.text = "Goal: $" + dailyGoal;
     }
 
     // Update is called once per frame
@@ -66,8 +78,33 @@ public class GameManager : MonoBehaviour
 
         // money.text = "Money: $" + (Mathf.Round(dailyTotal * 100)) / 100.0;
         money.text = "Money: $" + GetMoneyFormat(dailyTotal);
-        
-        if (timeUntilLevelOver > 0)
+
+        // if (isNotStarted)
+        // {
+        //     if (startingTimer < startingDuration)
+        //     {
+        //         startingTimer += Time.deltaTime;
+        //     }
+        //     else
+        //     {
+        //         Time.timeScale = 1f;
+        //         Destroy(startingCard);
+        //         isNotStarted = false;
+        //     }
+        // }
+
+        if (isStarted == false)
+        {
+            startingTimer += Time.unscaledDeltaTime;
+
+            if (startingTimer >= startingDuration)
+            {
+                Time.timeScale = 1f;
+                isStarted = true;
+                Destroy(startingCard);
+            }
+        }
+        else if (timeUntilLevelOver > 0)
         {
             timeUntilLevelOver -= Time.deltaTime;
         }
@@ -201,6 +238,39 @@ public class GameManager : MonoBehaviour
     public string GetMoneyFormat(float moneyAmount)
     {
         return moneyAmount.ToString("F2");
+    }
+
+    public void DisplayDay()
+    {
+        if (sceneName == "Level 1")
+        {
+            dayNum = 1;
+            startingLevel.text = "Day " + dayNum;
+        }
+
+        else if (sceneName == "Level 2")
+        {
+            dayNum = 2;
+            startingLevel.text = "Day " + dayNum;
+        }
+
+        else if (sceneName == "Level 3")
+        {
+            dayNum = 3;
+            startingLevel.text = "Day " + dayNum;
+        }
+
+        else if (sceneName == "Level 4")
+        {
+            dayNum = 4;
+            startingLevel.text = "Day " + dayNum;
+        }
+
+        else
+        {
+            dayNum = 5;
+            startingLevel.text = "Day " + dayNum;
+        }
     }
 
     public void DisplayTime()
