@@ -87,114 +87,73 @@ public class MainMenu : MonoBehaviour
         if (SceneManager.sceneCount == 1)
         {
             showingOptions = false;
-            showingQuitConf = false;
-        }
-
-        // to catch edge cases where mouse deselects all options
-        // reset the selected option to be the last known selection
-        if (!selected && (lastSelected == btnStart || lastSelected == btnLevels || lastSelected == btnTutorial || lastSelected == btnOptions || lastSelected == btnCredits || lastSelected == btnQuit))
-        {
-            eventSystem.SetSelectedGameObject(lastSelected);
-        }
-
-        // if selected is not = to a button in this panel and lastSelected is null, reset to btnStart
-        else if (!(selected == btnStart || selected == btnLevels || selected == btnTutorial || selected == btnOptions || selected == btnCredits || selected == btnQuit) && !showingOptions)
-        {
-            eventSystem.SetSelectedGameObject(btnStart);
-            lastSelected = btnStart;
+            // showingQuitConf = false;
         }
 
         // get the current selection
         selected = eventSystem.currentSelectedGameObject;
 
         quitPopUp.SetActive(showingQuitConf);
-
-        // depending on which option is currently being hovered, show the cloche
-        if (selected == btnStart)
-        {
-            AllSelectionsFalse();
-            startCloche.SetActive(true);
-        }
-
-        else if(selected == btnLevels)
-        {
-            AllSelectionsFalse();
-            levelsCloche.SetActive(true);
-        }
-
-        else if(selected == btnTutorial)
-        {
-            AllSelectionsFalse();
-            tutorialCloche.SetActive(true);
-        }
-
-        else if(selected == btnOptions)
-        {
-            AllSelectionsFalse();
-            optionsCloche.SetActive(true);
-        }
-
-        else if (selected == btnCredits)
-        {
-            AllSelectionsFalse();
-            creditsCloche.SetActive(true);
-        }
-
-        else if (selected == btnQuit)
-        {
-            AllSelectionsFalse();
-            quitCloche.SetActive(true);
-        }
-
-        else
-        {
-            AllSelectionsFalse();
-        }
-
-        // if the quit confirmation is showing
-        if (showingQuitConf && !showingOptions)
-        {
-            if (selected != btnYesQuit && selected != btnNoQuit)
-            {
-                selected = btnNoQuit;
-            }
-
-            if (selected == btnYesQuit)
-            {
-                yesQuitCloche.SetActive(true);
-                noQuitCloche.SetActive(false);
-            }
-
-            else if(selected == btnNoQuit)
-            {
-                yesQuitCloche.SetActive(false);
-                noQuitCloche.SetActive(true);
-            }
-
-            if (Input.GetKeyDown(KeyCode.X))
-            {
-                uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
-
-                if (selected == btnYesQuit)
-                {
-                    QuitGame();
-                }
-
-                else if (selected == btnNoQuit)
-                {
-                    Back();
-                }
-            }
-
-            if (Input.GetKeyDown(KeyCode.Z))
-            {
-                uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
-                Back();
-            }
-        }
+        Debug.Log(eventSystem.currentSelectedGameObject);
 
         if (!showingQuitConf && !showingOptions)
         {
+            // to catch edge cases where mouse deselects all options
+            // reset the selected option to be the last known selection
+            if (!selected && (lastSelected == btnStart || lastSelected == btnLevels || lastSelected == btnTutorial || lastSelected == btnOptions || lastSelected == btnCredits || lastSelected == btnQuit))
+            {
+                eventSystem.SetSelectedGameObject(lastSelected);
+            }
+
+            // if selected is not = to a button in this panel and lastSelected is null, reset to btnStart
+            else if (!(selected == btnStart || selected == btnLevels || selected == btnTutorial || selected == btnOptions || selected == btnCredits || selected == btnQuit) && !showingOptions)
+            {
+                eventSystem.SetSelectedGameObject(btnStart);
+                lastSelected = btnStart;
+            }
+
+            // depending on which option is currently being hovered, show the cloche
+            if (selected == btnStart)
+            {
+                AllSelectionsFalse();
+                startCloche.SetActive(true);
+            }
+
+            else if(selected == btnLevels)
+            {
+                AllSelectionsFalse();
+                levelsCloche.SetActive(true);
+            }
+
+            else if(selected == btnTutorial)
+            {
+                AllSelectionsFalse();
+                tutorialCloche.SetActive(true);
+            }
+
+            else if(selected == btnOptions)
+            {
+                AllSelectionsFalse();
+                optionsCloche.SetActive(true);
+            }
+
+            else if (selected == btnCredits)
+            {
+                AllSelectionsFalse();
+                creditsCloche.SetActive(true);
+            }
+
+            else if (selected == btnQuit)
+            {
+                AllSelectionsFalse();
+                quitCloche.SetActive(true);
+            }
+
+            else
+            {
+                AllSelectionsFalse();
+            }
+
             if (Input.GetKeyDown(KeyCode.X))
             {
                 uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
@@ -240,11 +199,47 @@ public class MainMenu : MonoBehaviour
             }
         }
 
-        // if (showingControls && Input.GetKeyDown(KeyCode.Z))
-        // {
-        //     uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
-        //     HideControls();
-        // }
+        // if the quit confirmation is showing
+        else if (showingQuitConf && !showingOptions)
+        {
+            if (selected != btnYesQuit && selected != btnNoQuit)
+            {
+                selected = btnNoQuit;
+            }
+
+            if (selected == btnYesQuit)
+            {
+                yesQuitCloche.SetActive(true);
+                noQuitCloche.SetActive(false);
+            }
+
+            else if (selected == btnNoQuit)
+            {
+                yesQuitCloche.SetActive(false);
+                noQuitCloche.SetActive(true);
+            }
+
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
+
+                if (selected == btnYesQuit)
+                {
+                    QuitGame();
+                }
+
+                else if (selected == btnNoQuit)
+                {
+                    Back();
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+                uiSoundManager.PlaySoundEffect(uiSoundManager.menuSelectSound);
+                Back();
+            }
+        }
 
         lastSelected = selected;
     }
@@ -260,24 +255,6 @@ public class MainMenu : MonoBehaviour
     {
         canvas.GetComponent<MenuManager>().ToLevels();
     }
-
-    // private void ShowControls()
-    // {
-    //     SceneManager.LoadScene("Controls", LoadSceneMode.Additive);
-    //     showingControls = true;
-    // }
-
-    // private void HideControls()
-    // {
-    //     int n = SceneManager.sceneCount;
-
-    //     if (n > 1)
-    //     {
-    //         SceneManager.UnloadSceneAsync("Controls");
-    //     }
-
-    //     showingControls = false;
-    // }
 
     // user presses credits
     private void Credits()

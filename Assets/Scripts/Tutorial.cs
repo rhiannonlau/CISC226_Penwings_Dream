@@ -123,18 +123,18 @@ public class Tutorial : MonoBehaviour
             StartCoroutine(WaitTransition());
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (!paused)
-            {
-                Pause();
-            }
+        // if (Input.GetKeyDown(KeyCode.Escape))
+        // {
+        //     if (!paused)
+        //     {
+        //         Pause();
+        //     }
             
-            else
-            {
-                Unpause();
-            }
-        }
+        //     else
+        //     {
+        //         Unpause();
+        //     }
+        // }
 
         // disable the old tooltip
         if (currentTooltip != null)
@@ -388,21 +388,21 @@ public class Tutorial : MonoBehaviour
         }
 
         // cheat for testing to skip to end of time
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            isLevelOver = true;
-        }
+        // if (Input.GetKeyDown(KeyCode.T))
+        // {
+        //     isLevelOver = true;
+        // }
 
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            isLevelOver = true;
-            dailyTotal = dailyGoal;
-        }
+        // if (Input.GetKeyDown(KeyCode.Y))
+        // {
+        //     isLevelOver = true;
+        //     dailyTotal = dailyGoal;
+        // }
 
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            state = 6;
-        }
+        // if (Input.GetKeyDown(KeyCode.E))
+        // {
+        //     state = 6;
+        // }
     }
 
     public void AddTableTip(float satisfaction)
@@ -557,7 +557,7 @@ public class Tutorial : MonoBehaviour
     private IEnumerator Wait5Seconds()
     {
         tooltipComplete = true;
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(3);
         state++;
         tooltipComplete = false;
     }

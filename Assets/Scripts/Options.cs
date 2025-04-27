@@ -7,6 +7,7 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 using System;
 using Unity.Collections;
+using System.Text.RegularExpressions;
 
 public class Options : MonoBehaviour
 {
@@ -34,11 +35,10 @@ public class Options : MonoBehaviour
     // controls panel vars
     private GameObject btnMoveLeft, btnMoveRight, btnJump, btnInteract, btnDuck, btnEleUp, btnEleDown, btnPause, btnResetControls;
     private TMP_Text txtMoveLeft, txtMoveRight, txtJump, txtInteract, txtDuck, txtEleUp, txtEleDown, txtPause;
-    private TMP_Text txtCurrentControl, txtLastControl;
     private GameObject resetControlsCloche;
     private TMP_Text txtSelectedControl;
     private GameObject pnlNewControlPopUp;
-    private TMP_Text txtNewControl;
+    private TMP_Text txtControlToChange;
     private bool showingPopUp, waitingForKey;
     private string playerPrefsKey;
     private GameObject btnCurrentControl;
@@ -132,7 +132,7 @@ public class Options : MonoBehaviour
         txtPause = btnPause.transform.GetChild(0).GetComponent<TMP_Text>();
 
         pnlNewControlPopUp = pnlControls.transform.GetChild(11).gameObject;
-        txtNewControl = pnlNewControlPopUp.transform.GetChild(1).GetComponent<TMP_Text>();
+        txtControlToChange = pnlNewControlPopUp.transform.GetChild(1).GetComponent<TMP_Text>();
         showingPopUp = false;
 
         // get the current control settings from playerprefs with default from staticdata
@@ -363,8 +363,6 @@ public class Options : MonoBehaviour
                 // txtLastControl = btnMoveLeft.transform.GetChild(0).GetComponent<TMP_Text>();
             }
 
-            // Debug.Log(selected);
-
             // get the key value corresponding to the control that is being hovered
             // so that it can be properly changed/saved in playerprefs
             if (selected == btnMoveLeft)
@@ -430,12 +428,15 @@ public class Options : MonoBehaviour
             {
                 txtSelectedControl = selected.transform.GetChild(0).GetComponent<TMP_Text>();
                 txtSelectedControl.fontSize = 50;
+                txtSelectedControl.color = Color.red;
             }
 
             if (lastSelected != selected && lastSelected != btnControls && lastSelected != btnSound && lastSelected != btnReturn && lastSelected != btnResetControls)
             {
                 TMP_Text txtLastSelectedControl = lastSelected.transform.GetChild(0).GetComponent<TMP_Text>();
                 txtLastSelectedControl.fontSize = 45;
+                txtLastSelectedControl.color = Color.white;
+                // StartCoroutine(Pulse(txtSelectedControl));
             }
 
             pnlNewControlPopUp.SetActive(showingPopUp);
@@ -445,6 +446,12 @@ public class Options : MonoBehaviour
             {
                 showingPopUp = true;
                 waitingForKey = false; // reset waiting flag
+
+                var r = new Regex(@"
+                (?<=[A-Z])(?=[A-Z][a-z]) |
+                 (?<=[^A-Z])(?=[A-Z]) |
+                 (?<=[A-Za-z])(?=[^A-Za-z])", RegexOptions.IgnorePatternWhitespace);
+                txtControlToChange.text = r.Replace(playerPrefsKey.Substring(3), " ");  // display the action they are rebinding using regex for spacing
             }
 
             else if (Input.GetKeyDown(KeyCode.X) && selected == btnResetControls && !showingPopUp)
@@ -513,6 +520,44 @@ public class Options : MonoBehaviour
             SceneManager.UnloadSceneAsync("Options");
         }
     }
+
+    IEnumerator Pulse(TMP_Text txt)
+	{
+        float approachSpeed = 0.02f;
+        float growthBound = 5f;
+        float shrinkBound = 0.5f;
+        float currentRatio = 1;
+
+		// Run this indefinitely
+		while (lastSelected == selected)
+		{
+			// Get bigger for a few seconds
+			while (currentRatio != growthBound)
+			{
+				// Determine the new ratio to use
+				currentRatio = Mathf.MoveTowards( currentRatio, growthBound, approachSpeed);
+
+				// Update our text element
+				txt.transform.localScale = Vector3.one * currentRatio;
+				txt.text = "Growing!";
+
+				yield return new WaitForEndOfFrame();
+			}
+
+			// Shrink for a few seconds
+			while (currentRatio != shrinkBound)
+			{
+				// Determine the new ratio to use
+				currentRatio = Mathf.MoveTowards( currentRatio, shrinkBound, approachSpeed);
+
+				// Update our text element
+				txt.transform.localScale = Vector3.one * currentRatio;
+				txt.text = "Shrinking!";
+
+				yield return new WaitForEndOfFrame();
+			}
+		}
+	}
 
     private void AllOptionsFalse()
     {

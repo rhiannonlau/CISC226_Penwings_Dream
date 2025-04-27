@@ -194,16 +194,16 @@ public class GameManager : MonoBehaviour
         }
 
         // cheat for testing to skip to end of time
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            timeUntilLevelOver = 1;
-        }
+        // if (Input.GetKeyDown(KeyCode.T))
+        // {
+        //     timeUntilLevelOver = 1;
+        // }
 
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            timeUntilLevelOver = 1;
-            dailyTotal = dailyGoal;
-        }
+        // if (Input.GetKeyDown(KeyCode.Y))
+        // {
+        //     timeUntilLevelOver = 1;
+        //     dailyTotal = dailyGoal;
+        // }
     }
 
     public void AddTableTip(float satisfaction)

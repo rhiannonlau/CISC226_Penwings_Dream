@@ -347,10 +347,10 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // for testing: reset the player's position and all settings
-        if (Input.GetKey(KeyCode.R))
-        {
-            Reset();
-        }
+        // if (Input.GetKey(KeyCode.R))
+        // {
+        //     Reset();
+        // }
 
         // update the information from this frame
         wasGroundedLastUpdate = grounded;
